@@ -1,4 +1,4 @@
-%% dustin_maskcorrected_FSC_subsets
+%% lmb_maskcorrected_FSC_subsets
 % A script to take in two references and an FSC mask, and calculate a
 % "mask-corrected" FSC. This works by randomizing the structure factor
 % phases beyond a particular resolution and calculating an additional FSC.
@@ -23,25 +23,19 @@
 % -WW 06-2016
 
 %% Inputs
-%% Inputs
-iter=5;
-name = 'nocldcl10';
-oname = 'nocldcl10_out_maskfsc10';
-%refA_names = dir(['even/ref/', name, 'bottom_subset*.em']); % Reference A
-%refB_names = dir(['odd/ref/', name, 'top_subset*.em']); % Reference B
-
-refA_names = dir(['./ref/ref', name, 'bottom_', num2str(iter),'_subset*.em']); % Reference A
-refB_names = dir(['./ref/ref', name, 'top_', num2str(iter),'_subset*.em']); % Reference B
+name = 'ref_3';
+oname = 'ref_3';
+refA_names = dir(['even/ref/', name, '_subset*.em']); % Reference A
+refB_names = dir(['odd/ref/', name, '_subset*.em']); % Reference B
 
 % The following are needed to figure out how many particles are in each subset
-refA_motl = ['./combinedmotl/allmotl',name,'bottom_',num2str(iter),'.em'];
-refB_motl = ['./combinedmotl/allmotl',name,'top_',num2str(iter),'.em'];
+refA_motl = 'even/combinedmotl/allmotl_3.em';
+refB_motl = 'odd/combinedmotl/allmotl_3.em';
 iclass = 1;
 
-mask_name = './otherinputs/mask_tube_cut_v10_fsc.em'; % FSC mask ('none' for no mask)
-pixelsize = (1.78); % Pixelsize (Angstroms)
+mask_name = 'fscmask.em'; % FSC mask ('none' for no mask)
+pixelsize = (1.177); % Pixelsize (Angstroms)
 symmetry = 1; % Symmetry (1 is no symmetry)
-
 
 % X-axis label resolutions (in Angstroms)
 resolution_label = 0; % (1 = on, 0 = off/Fourier pixels)
@@ -49,8 +43,8 @@ res_label = [32,16,8,4];
 
 % CTF Reweighting
 ctf_reweight = 1;    % 0 = off, 1 = on
-ctf_filter_A = 'ctffilter_even.em';  % Filter A
-ctf_filter_B = 'ctffilter_odd.em';  % Filter B
+ctf_filter_A = './even/otherinputs/filter.em';  % Filter A
+ctf_filter_B = './odd/otherinputs/filter.em';  % Filter B
 
 
 % Sharpen map
@@ -60,7 +54,7 @@ plot_sharp = 0; % Plot sharpening curve (0 = off, 1 = on)
 filtermode = 1;
 filterthresh = 0.143; % Lowpass filter threshold
 % Smooth box edge 
-box_gauss = 5; % 0 = off, otherwise odd number must be given.
+box_gauss = 3; % 0 = off, otherwise odd number must be given.
 
 %% Initialize 
 plot_colors = colormap('lines');
@@ -196,7 +190,17 @@ for subset_idx = 1:num_subsets
     umfsc = real(umAB_cc_array) ./ sqrt(umintA_array .* umintB_array);
 
     %% Calculate initial steps of Randomized FSC calculation
-    cutoff = find(umfsc < 0.8, 1, 'first')
+    cutoff = find(umfsc < 0.8, 1, 'first');
+
+    %% Sometimes there is a one pixel shift of the unmasked reweighted
+    %references that really throws off the calculations and so this is a small
+    % work around to make sure we don't use this artifact as the cutoff.
+    if cutoff <= 1
+        cutoff = find(umfsc < 0.8, 2, 'first');
+        cutoff = cutoff(end)
+    else
+        cutoff
+    end
 
     % Generate phase-randomized density maps
     disp('Randomizing phases!');
