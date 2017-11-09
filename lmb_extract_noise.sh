@@ -36,6 +36,12 @@ rootdir="${nfs6}/VMV013/20170528/subtomo/bin8"
 tomo_row=7
 # Relative path to allmotl file from root folder.
 allmotlfilename='combinedmotl/allmotl_1.em'
+# Relative path to noisemotl filename. If the file doesn't exist a new one will
+# be written with the determined noise positions. If a previously existing noise
+# motl exists it will be used instead. If the number of noise particles
+# requested has been increased new particles will be found and added and the
+# file will be updated.
+noisemotlfilename='combinedmotl/noisemotl.em'
 # Total number of tomograms in allmotl file
 n_tomos=16
 
@@ -108,7 +114,7 @@ set +C # Turn off prevention of redirection file overwriting
 set -e # Turn on exit on error
 set -f # Turn off filename expansion (globbing)
 echo \${HOSTNAME}
-execdir="\${bstore1}/software/clusterscripts/Matlab_compiled"
+execdir="\${bstore1}/software/Matlab_scripts/lmbtomopipeline/compiled"
 ldpath="/lmb/home/public/matlab/jbriggs/sys/opengl/lib/glnxa64"
 ldpath="/lmb/home/public/matlab/jbriggs/sys/os/glnxa64:\${ldpath}"
 ldpath="/lmb/home/public/matlab/jbriggs/bin/glnxa64:\${ldpath}"
@@ -118,10 +124,10 @@ cd ${rootdir}
 rm -rf ${rootdir}/${mcrcachedir}/${job_name}_\${SGE_TASK_ID}
 mkdir ${rootdir}/${mcrcachedir}/${job_name}_\${SGE_TASK_ID}
 export MCR_CACHE_ROOT="${rootdir}/${mcrcachedir}/${job_name}_\${SGE_TASK_ID}"
-time \${execdir}/dustin_extract_noise \\
+time \${execdir}/lmb_extract_noise \\
     ${tomo_folder} ${tomo_digits} ${rootdir} ${tomo_row} \\
-    ${noisename} ${allmotlfilename} ${subtomosize} ${num_noise} \\
-    ${checkstartname} ${checkdonename}
+    ${noisename} ${allmotlfilename} ${noisemotlfilename} ${subtomosize} \\
+    ${num_noise} ${checkstartname} ${checkdonename}
 rm -rf ${rootdir}/${mcrcachedir}/${job_name}_\${SGE_TASK_ID}
 JOBDATA
 

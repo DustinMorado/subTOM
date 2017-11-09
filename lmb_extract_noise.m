@@ -1,6 +1,7 @@
 function lmb_extract_noise(tomo_folder, tomo_digits, root_folder, tomo_row, ...
-                           noisename, allmotlfilename, subtomosize, ...
-                           num_noise, checkstartname, checkdonename)
+                           noisename, allmotlfilename, noisemotlfilename, ...
+                           subtomosize, num_noise, checkstartname, ...
+                           checkdonename)
 % LMB_EXTRACT_NOISE 
 % A script for extracting subtomograms on the cluster. This can be run in
 % parallel with local scripts, as it writes out a check file when it starts
@@ -20,25 +21,24 @@ function lmb_extract_noise(tomo_folder, tomo_digits, root_folder, tomo_row, ...
 
 %% Evaluate numeric inputs
 if ischar(tomo_digits)
-    tomo_digits = str2num(tomo_digits);
+    tomo_digits = str2double(tomo_digits);
 end
 
 if ischar(tomo_row)
-    tomo_row = str2num(tomo_row);
+    tomo_row = str2double(tomo_row);
 end
 
 if ischar(subtomosize)
-    subtomosize = str2num(subtomosize);
+    subtomosize = str2double(subtomosize);
 end
 
 if ischar(num_noise)
-    num_noise = str2num(num_noise)
+    num_noise = str2double(num_noise)
 end
 
 %% Initialize
 % Read in allmotl
-allmotl = tom_emread(allmotlfilename);
-allmotl = allmotl.Value;
+allmotl = getfield(tom_emread(allmotlfilename), 'Value');
 
 % Determine tomogram numbers
 tomos = unique(allmotl(tomo_row, :));
@@ -47,36 +47,56 @@ n_tomos = size(tomos, 2);
 % Go to root folder
 cd(root_folder);
 
+% check if noisemotl has already been calculated and if so read it in or
+% otherwise initialize a new empty one
+if exist(fullfile(pwd(), noisemotlfilename), 'file') == 2
+    noise_motl = getfield(tom_emread(noisemotlfilename), 'Value');
+    if size(noise_motl, 2) < (n_tomos * num_noise)
+        write_noise_motl = 1;
+    else
+        write_noise_motl = 0;
+    end
+else
+    noise_motl = [];
+    write_noise_motl = 1;
+end
+
 %% Write out subtomograms
 % Loop through each tomo in the allmotl
 for tomo_idx = 1:n_tomos
     % Tomogram string
-    tomo_str = sprintf(['%0', num2str(tomo_digits), 'd'], tomos(tomo_idx));
+    tomo_num = tomos(tomo_idx);
+    tomo_str = sprintf(['%0', num2str(tomo_digits), 'd'], tomo_num);
 
     % Check if it's not already being processed
-    if ~exist([checkstartname, '_', tomo_str], 'file')
-        disp(['Starting on tomogram: ', tomo_str]);
-
+    if ~exist(fullfile(pwd(), sprintf('%s_%s', checkstartname, tomo_str)), ...
+              'file')
         % Create start file
         system(['touch ', checkstartname, '_', tomo_str]);
 
-        % Parse motls
-        temp_motl = allmotl(:,  allmotl(tomo_row, :)==tomos(tomo_idx));
-        num_tomo_ptcl = size(temp_motl, 2);
+        % Parse particle motls
+        tomo_motl = allmotl(:,  allmotl(tomo_row, :) == tomo_num);
+        num_tomo_ptcl = size(tomo_motl, 2);
+
+        % If it exists (non-empty) parse noise motls
+        if size(noise_motl, 2) > 0
+            tomo_noise_motl = noise_motl(:, ...
+                                         noise_motl(tomo_row, :) == tomo_num);
+            noise_count = size(tomo_noise_motl, 2);
+        else
+            tomo_noise_motl = [];
+            noise_count = 0;
+        end
 
         % Read in the tomogram
         vol = tom_mrcread([tomo_folder, '/', tomo_str, '.rec']);
         vol_dim = [ vol.Header.MRC.nx, vol.Header.MRC.ny, vol.Header.MRC.nz ];
-
-        % Noise motls
-        noise_motl = zeros(20, num_noise);
 
         % Noise tomogram limits
         half_boxsize = subtomosize / 2;
         abs_min = [ subtomosize, subtomosize, subtomosize ];
         abs_max = vol_dim - abs_min;
 
-        noise_count = 0;
         while noise_count < num_noise
             test = [randi([abs_min(1), abs_max(1)]),...
                     randi([abs_min(2), abs_max(2)]),...
@@ -86,7 +106,7 @@ for tomo_idx = 1:n_tomos
 
             do_collide = false;
             for ptcl_idx = 1:num_tomo_ptcl
-                ptcl = temp_motl(8:10, ptcl_idx);
+                ptcl = tomo_motl(8:10, ptcl_idx);
                 ptcl_min = ptcl - half_boxsize;
                 ptcl_max = ptcl + half_boxsize - 1;
                 do_collide = all(  (test_min <= ptcl_max)...
@@ -98,7 +118,7 @@ for tomo_idx = 1:n_tomos
 
             if (noise_count > 0) & ~do_collide
                 for noise_idx = 1:noise_count
-                    noise = noise_motl(8:10, noise_idx);
+                    noise = tomo_noise_motl(8:10, noise_idx);
                     noise_min = noise - half_boxsize;
                     noise_max = noise + half_boxsize - 1;
                     do_collide = all(  (test_min <= noise_max)...
@@ -110,39 +130,43 @@ for tomo_idx = 1:n_tomos
             end
 
             if ~do_collide
-                noise_motl(8:10, noise_count + 1) = test;
+                temp_noise_motl = zeros(20, 1);
+                temp_noise_motl(5:7) = ones(3, 1) * tomo_num;
+                temp_noise_motl(8:10) =  test;
+                if size(tomo_noise_motl, 2) > 0
+                    tomo_noise_motl(:, end + 1) = temp_noise_motl;
+                else
+                    tomo_noise_motl = temp_noise_motl;
+                end
+
+                if size(noise_motl, 2) > 0
+                    noise_motl(:, end + 1) = temp_noise_motl;
+                else
+                    noise_motl = temp_noise_motl;
+                end
                 noise_count = noise_count + 1;
             end
         end
 
         % Extract the subtomograms for each tomogram
-        disp('Generating average noise amplitude spectra');
-        noise_ampspec_name = [noisename, '_', tomo_idx, '.em'];
+        noise_ampspec_name = sprintf('%s_%d.em', noisename, tomo_idx);
         noise_ampspec = extract_noise_ampspec(subtomosize, vol.Value,...
-                                              noise_motl);
-
+                                              tomo_noise_motl);
+        tom_emwrite(noise_ampspec_name, noise_ampspec);
         % Cleanup
         clear vol
-        disp(['Tomogram: ', tomo_str, ' extracted!!']);
         system(['touch ', checkdonename, '_', tomo_str]);
     end
+end
+
+if write_noise_motl
+    tom_emwrite(noisemotlfilename, noise_motl); 
 end
 
 function noise_ampspec_avg = extract_noise_ampspec(...
     subtomosize,...
     vol,...
     motl_vec)
-%% extract_noise_ampspec
-% A modified version of flo_extract_subtomos_MPMV. This is written as a
-% function for batch processing. This function takes in an already opened 
-% motl rather than a filename. -WW 09/2014
-%
-% v2: 
-%
-% WW 09-2016
-disp('Tomogram read; begin extraction!!!!');
-
-%% Extract and writeout subtomos
 % Initialize amplitude spectrum volume
 noise_ampspec_sum = zeros(subtomosize, subtomosize, subtomosize);
 num_noise = size(motl_vec, 2);
@@ -162,4 +186,4 @@ for indx = 1:num_noise
 end
 
 noise_ampspec_avg = noise_ampspec_sum ./ num_noise;
-noise_ampspec_avg = noies_ampspec_avg ./ max(noise_ampspec_avg(:));
+noise_ampspec_avg = noise_ampspec_avg ./ max(noise_ampspec_avg(:));
