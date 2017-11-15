@@ -1,4 +1,4 @@
-function julia_multiref_lmb_averageref_weighted_subsets(avg_fn_prefix, allmotl_fn_prefix,...
+function lmb_averageref_weighted_subsets(avg_fn_prefix, allmotl_fn_prefix,...
                                          weight_fn_prefix, iteration, class)
 % LMB_AVERAGEREF_WEIGHTED_SUBSETS joins and weights subsets of average subsets.
 %   LMB_AVERAGEREF_WEIGHTED_SUBSETS(REF_FN_PREFIX, MOTL_FN_PREFIX,
@@ -52,25 +52,17 @@ if ischar(class)
     iclass = str2double(class);
 end
 
-%read in allmotl and determine the class name
-allmotl_fn = sprintf('%s%d.em', allmotl_fn_prefix, iteration);
-allmotl=emread(allmotl_fn);
-
-classes=unique(allmotl(20,:));
-class_name=classes(class);
-allmotl_class=allmotl(:,allmotl(20,:)==classes(class));
-num_ptcls=size(allmotl_class,2);
 % Calculate the number of batches and also use this opportunity to make sure we
 % have an equal number of averages, weights and motl files
-%num_motl_batches   = length(dir(sprintf('%s_%d_*.em', ...
-%                                        motl_fn_prefix, iteration)));
-num_avg_batches = length(dir(sprintf('%s_%d_%d_*_subset1.em', avg_fn_prefix, class_name,  ...
+num_motl_batches = length(dir(sprintf('%s_%d_*.em', allmotl_fn_prefix, ...
+                                      iteration)));
+num_avg_batches = length(dir(sprintf('%s_%d_*_subset1.em', avg_fn_prefix, ...
                                      iteration)));
+num_weight_batches = length(dir(sprintf('%s_%d_*_subset1.em', ...
+                                        weight_fn_prefix, iteration)));
 
-num_weight_batches = length(dir(sprintf('%s_%d_%d_*_subset1.em', ...
-                                        weight_fn_prefix, class_name, iteration)));
-
-if ~ (num_weight_batches == num_avg_batches)
+if ~ (   num_motl_batches == num_avg_batches ...
+      && num_motl_batches == num_weight_batches )
       error('ERROR: unequal number of motl, avg, or weight files!');
 end
 
@@ -79,12 +71,13 @@ clear num_avg_batches num_weight_batches;
 
 % We calculate subsets in powers of two of the data but limit the smallest
 % subset that contains at least 128 particles.
-num_subsets = floor(log2(num_ptcls / 128)) + 1;
+num_subsets = length(dir(sprintf('%s_%d_1_subset*.em', avg_fn_prefix, ...
+                                 iteration)));
 
 % Run the first batch outside of a loop to initialize volumes without having to
 % know the box size of particles and weights
-%allmotl = getfield(tom_emread(sprintf('%s_%d_1.em', motl_fn_prefix, ...
-                                      %iteration)), 'Value');
+allmotl = getfield(tom_emread(sprintf('%s_%d_1.em', allmotl_fn_prefix, ...
+                                      iteration)), 'Value')
 avg_sum_cell = {};
 weight_sum_cell = {};
 for subset_idx = 1:num_subsets
@@ -98,24 +91,26 @@ end
 
 % Sum remaining reference files
 for batch_idx = 2:num_batches
-    motl = tom_emread(sprintf('%s_%d_%d.em', motl_fn_prefix, iteration, ...
-                              batch_idx));
-    allmotl = cat(2, allmotl, motl.Value);
-
+    temp_motl = getfield(tom_emread(sprintf('%s_%d_%d.em', ...
+        allmotl_fn_prefix, iteration, batch_idx)), 'Value');
+    allmotl(:, (end + 1):(end + 1 + size(temp_motl,2))) = getfield(...
+        tom_emread(sprintf('%s_%d_%d.em', allmotl_fn_prefix, iteration, ...
+        batch_idx)), 'Value');
+    clear temp_motl;
     for subset_idx = 1:num_subsets
-        avg = tom_emread(sprintf('%s_%d_%d_subset%d.em', avg_fn_prefix, ...
-                                 iteration, batch_idx, subset_idx));
-        avg_sum_cell{subset_idx} =  avg_sum_cell{subset_idx} + avg.Value;
-        weight = tom_emread(sprintf('%s_%d_%d_subset%d.em', ...
-                                    weight_fn_prefix, iteration, batch_idx, ...
-                                    subset_idx));
-        weight_sum_cell{subset_idx} =  weight_sum_cell{subset_idx} ...
-                                     + weight.Value;
+        avg_sum_cell{subset_idx} =  avg_sum_cell{subset_idx} + ...
+            getfield(tom_emread(sprintf('%s_%d_%d_subset%d.em', ...
+            avg_fn_prefix, iteration, batch_idx, subset_idx)), 'Value');
+        weight_sum_cell{subset_idx} = weight_sum_cell{subset_idx} + ...
+            getfield(tom_emread(sprintf('%s_%d_%d_subset%d.em', ...
+            weight_fn_prefix, iteration, batch_idx, subset_idx)), 'Value');
     end
+    clear subset_idx
 end
+clear batch_idx
 
 % Write out allmotl file
-allmotl_fn = sprintf('%s_%d.em', motl_fn_prefix, iteration);
+allmotl_fn = sprintf('%s_%d.em', allmotl_fn_prefix, iteration);
 tom_emwrite(allmotl_fn, allmotl);
 check_em_file(allmotl_fn, allmotl);
 disp(['WROTE MOTIVELIST: ', allmotl_fn]);

@@ -81,30 +81,26 @@ end
 % If iclass is 0 we keep all the particles otherwise we keep particles with
 % iclass 1 or the user-supplied iclass value
 if iclass == 0
-    good_allmotl = allmotl;
+    good_idxs = ptcl_start_idx:ptcl_end_idx;
 else
-    good_allmotl = allmotl(:, allmotl(20, :) == 1 | allmotl(20, :) == iclass);
+    good_idxs = find(allmotl(20, :) == 1 | allmotl(20, :) == iclass);
 end
-
-num_good_ptcls = size(good_allmotl, 2);
 
 % We calculate subsets in powers of two of the data but limit the smallest
 % subset that contains at least 128 particles.
-total_allmotl = getfield(tom_emread(sprintf('%s_1_%d.em', motl_fn_prefix, ...
-                                    iteration)), 'Value');
-for ptcl_idx = 2:num_ptcls
-    total_allmotl(:, end + 1) = getfield(tom_emread(sprintf('%s_%d_%d.em', ...
-                                   motl_fn_prefix, ptcl_idx, iteration)), ...
-                                   'Value');
-end
 if iclass == 0
-    total_good_allmotl = total_allmotl;
+    num_good_ptcls = num_ptcls;
 else
-    total_good_allmotl = total_allmotl(:, total_allmotl(20, :) == 1 | ...
-                                          total_allmotl(20, :) == iclass);
+    num_good_ptcls = 0;
+    for ptcl_idx = 1:num_ptcls
+        temp_motl = getfield(tom_emread(sprintf('%s_%d_%d.em', ...
+                                                motl_fn_prefix, ptcl_idx, ...
+                                                iteration)), 'Value');
+        num_good_ptcls =  num_good_ptcls ...
+                        + (temp_motl(20, 1) == 1 | temp_motl(20, 1) == iclass);
+    end
 end
-total_num_good_ptcls = size(total_good_allmotl, 2);
-num_subsets = floor(log2(total_num_good_ptcls / 128)) + 1;
+num_subsets = floor(log2(num_good_ptcls / 128)) + 1;
 
 % Initialize particle sum array
 ptcl_average_cell = {};
@@ -117,9 +113,9 @@ current_weight = 0;
 
 %% Rotate and sum particles
 % Loop through each subtomogram
-for motl_idx = 1:num_good_ptcls
+for motl_idx = good_idxs
     % Read in subtomogram
-    ptcl_fn = sprintf('%s_%d.em', ptcl_fn_prefix, good_allmotl(4, motl_idx));
+    ptcl_fn = sprintf('%s_%d.em', ptcl_fn_prefix, allmotl(4, motl_idx));
     ptcl = tom_emread(ptcl_fn);
 
     % Parse translations from motl
@@ -128,7 +124,7 @@ for motl_idx = 1:num_good_ptcls
     % motl they are ordered: X-axis shift, Y-axis shift, and Z-axis shift.
     % They have the inverse description here in terms of the particle
     % shifting to the reference register.
-    ptcl_shift = -good_allmotl(11:13, motl_idx);
+    ptcl_shift = -allmotl(11:13, motl_idx);
 
     % Parse rotations from motl
     % These rotations describe the rotations of the reference to the
@@ -136,15 +132,15 @@ for motl_idx = 1:num_good_ptcls
     % azimuthal rotation, inplane rotation, and zenithal rotation. They
     % have the inverse description here in terms of the particle rotating
     % to the reference orientation.
-    ptcl_rot = -good_allmotl([18, 17, 19], motl_idx);
+    ptcl_rot = -allmotl([18, 17, 19], motl_idx);
 
     % Shift and rotate particle
     aligned_ptcl = tom_shift(ptcl.Value, ptcl_shift);
     aligned_ptcl = tom_rotate(aligned_ptcl, ptcl_rot);
 
     % Read in weight
-    if current_weight ~= good_allmotl(5, motl_idx)
-        current_weight = good_allmotl(5, motl_idx);
+    if current_weight ~= allmotl(5, motl_idx)
+        current_weight = allmotl(5, motl_idx);
         weight_fn = sprintf('%s_%d.em', weight_fn_prefix, current_weight);
         weight = tom_emread(weight_fn);
     end

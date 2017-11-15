@@ -1,4 +1,4 @@
-function lmb_averageref_weighted(avg_fn_prefix, motl_fn_prefix, ...
+function lmb_averageref_weighted(avg_fn_prefix, allmotl_fn_prefix, ...
                                  weight_fn_prefix, iteration, iclass)
 % LMB_AVERAGEREF_WEIGHTED joins and weights parallel average subsets.
 %   LMB_AVERAGEREF_WEIGHTED(REF_FN_PREFIX, MOTL_FN_PREFIX, WEGIHT_FN_PREFIX,
@@ -45,11 +45,9 @@ end
 
 % Calculate the number of batches and also use this opportunity to make sure we
 % have equal number of average, weight, and motl files
-num_motl_batches   = length(dir(sprintf('%s_%d_*.em', ...
-                                        motl_fn_prefix, iteration)));
-
+num_motl_batches = length(dir(sprintf('%s_%d_*.em', allmotl_fn_prefix, ...
+                                      iteration)));
 num_avg_batches = length(dir(sprintf('%s_%d_*.em', avg_fn_prefix, iteration)));
-
 num_weight_batches = length(dir(sprintf('%s_%d_*.em', ...
                                         weight_fn_prefix, iteration)));
 
@@ -63,7 +61,7 @@ clear num_motl_batches num_avg_batches num_weight_batches;
 
 % Run the first batch outside of a loop to initialize volumes without having to
 % know the box size of particles and weights
-allmotl = getfield(tom_emread(sprintf('%s_%d_1.em', motl_fn_prefix, ...
+allmotl = getfield(tom_emread(sprintf('%s_%d_1.em', allmotl_fn_prefix, ...
                                       iteration)), 'Value');
 avg_sum = getfield(tom_emread(sprintf('%s_%d_1.em', avg_fn_prefix, ...
                                       iteration)), 'Value');
@@ -72,19 +70,14 @@ weight_sum = getfield(tom_emread(sprintf('%s_%d_1.em', weight_fn_prefix, ...
 
 % Sum the remaining batch files
 for batch_idx = 2:num_batches
-    motl = tom_emread(sprintf('%s_%d_%d.em', motl_fn_prefix, iteration, ...
-                              batch_idx));
-    allmotl = cat(2, allmotl, motl.Value);
-
-    avg = tom_emread(sprintf('%s_%d_%d.em', avg_fn_prefix, iteration, ...
-                             batch_idx));
-    avg_sum = avg_sum + avg.Value;
-
-    weight = tom_emread(sprintf('%s_%d_%d.em', weight_fn_prefix, iteration, ...
-                                batch_idx));
-    weight_sum = weight_sum + weight.Value;
+    allmotl(:, end + 1) = getfield(tom_emread(sprintf('%s_%d_%d.em', ...
+        allmotl_fn_prefix, iteration, batch_idx)), 'Value');
+    avg_sum = avg_sum + getfield(tom_emread(sprintf('%s_%d_%d.em', ...
+        avg_fn_prefix, iteration, batch_idx)), 'Value');
+    weight_sum = weight_sum + getfield(tom_emread(sprintf('%s_%d_%d.em', ...
+        weight_fn_prefix, iteration, batch_idx)), 'Value');
 end
-clear batch_idx motl avg weight
+clear batch_idx
 
 % Find motls with the good classes and number of motls used in sums
 if iclass == 0
@@ -97,11 +90,11 @@ else
 end
 
 % Write out allmotl file
-allmotl_fn = sprintf('%s_%d.em', motl_fn_prefix, iteration);
+allmotl_fn = sprintf('%s_%d.em', allmotl_fn_prefix, iteration);
 tom_emwrite(allmotl_fn, allmotl);
 check_em_file(allmotl_fn, allmotl);
 disp(['WROTE MOTIVELIST: ', allmotl_fn]);
-clear allmotl_fn allmotl iclass motl_fn_prefix
+clear allmotl_fn allmotl iclass allmotl_fn_prefix
 
 % Calculate and write-out the raw average from batches
 average = avg_sum ./ num_good_ptcls;
