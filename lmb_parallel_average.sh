@@ -28,11 +28,11 @@ scratch_dir="${nfs6}/VMV013/20170528/subtomo/bin1/even"
 # Folder on group shares
 local_dir="${bstore1}/VMV013/20170528/subtomo/bin1/even/local"
 
-# MRC directory for each job
+# MCR directory for each job
 mcr_cache_dir='mcr'
 
 # Directory for executables
-exec_dir=${bstore1}/software/clusterscripts/Matlab_compiled
+exec_dir=${bstore1}/software/lmbtomopipeline/compiled
 
 ################################################################################
 #                                  VARIABLES                                   #
@@ -84,7 +84,6 @@ avg_batch_size=150
 ################################################################################
 #                                 FILE OPTIONS                                 #
 ################################################################################
-
 # Relative path and name of the motivelist of the single particle (e.g.
 # part_n.em will have a motl_n_iter.em , the variable will be written as a
 # string e.g. ptcl_motl_fn_prefix='sub-directory/motl')
