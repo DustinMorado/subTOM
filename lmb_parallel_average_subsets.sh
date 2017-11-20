@@ -32,16 +32,16 @@ local_dir="${bstore1}/VMV013/20170528/subtomo/bin1/even/local"
 mcr_cache_dir='mcr'
 
 # Directory for executables
-exec_dir=${bstore1}/software/clusterscripts/Matlab_compiled
+exec_dir=${bstore1}/software/lmbtomopipeline/compiled
 
 ################################################################################
 #                                  VARIABLES                                   #
 ################################################################################
 # Parallel Averaging executable
-paral_avg_exec=${exec_dir}/dustin_parallel_create_average_subsets
+paral_avg_exec=${exec_dir}/lmb_parallel_create_average_subsets
 
 # Final Averaging executable
-avg_exec=${exec_dir}/dustin_averageref_weighted_subsets
+avg_exec=${exec_dir}/lmb_averageref_weighted_subsets
 
 ################################################################################
 #                                MEMORY OPTIONS                                #
