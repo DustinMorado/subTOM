@@ -300,8 +300,6 @@ time ${avg_exec} \\
 ${ref_fn_prefix} \\
 ${all_motl_fn_prefix} \\
 ${weight_sum_fn_prefix} \\
-${avg_batch_size} \\
-${num_ptcls} \\
 ${iteration} \\
 ${iclass}
 rm -rf \${MCRDIR}
