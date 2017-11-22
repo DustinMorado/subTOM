@@ -1,9 +1,9 @@
 function lmb_averageref_weighted(avg_fn_prefix, allmotl_fn_prefix, ...
-                                 weight_fn_prefix, iteration, iclass)
+    weight_fn_prefix, iteration, iclass)
 % LMB_AVERAGEREF_WEIGHTED joins and weights parallel average subsets.
 %   LMB_AVERAGEREF_WEIGHTED(REF_FN_PREFIX, MOTL_FN_PREFIX, WEGIHT_FN_PREFIX,
 %   ITERATION, ICLASS) takes the parallel average subsets with the name prefix
-%   REF_FN_PREFIX, the motl files subsets with name prefix MOTL_FN_PREFIX and
+%   REF_FN_PREFIX, the allmotl file with name prefix MOTL_FN_PREFIX and
 %   weight volume subsets with the name prefix WEIGHT_FN_PREFIX to generate the
 %   final average, which should then be used as the reference for iteration
 %   number ITERATION. ICLASS describes which class outside of one is included in
@@ -18,7 +18,6 @@ function lmb_averageref_weighted(avg_fn_prefix, allmotl_fn_prefix, ...
 %       * './ref/ref_3.em' - The weighted average
 %       * './otherinputs/wei_debug_3.em' - The average weight volume
 %       * './otherinputs/wei_debug_inv_3.em' - The inverse weight applied
-%       * './combinedmotl/allmotl_3.em' - The MOTL list for the next iteration
 %
 % See also LMB_PARALLEL_CREATE_AVERAGE
 
@@ -44,57 +43,49 @@ if ischar(iclass)
 end
 
 % Calculate the number of batches and also use this opportunity to make sure we
-% have equal number of average, weight, and motl files
-num_motl_batches = length(dir(sprintf('%s_%d_*.em', allmotl_fn_prefix, ...
-                                      iteration)));
+% have equal number of average and weight files
 num_avg_batches = length(dir(sprintf('%s_%d_*.em', avg_fn_prefix, iteration)));
 num_weight_batches = length(dir(sprintf('%s_%d_*.em', ...
-                                        weight_fn_prefix, iteration)));
+    weight_fn_prefix, iteration)));
 
-if ~ (   num_motl_batches == num_avg_batches ...
-      && num_motl_batches == num_weight_batches)
-      error('ERROR: unequal number of motl, avg, or weight files!');
+if num_avg_batches ~= num_weight_batches
+    error('ERROR: unequal number of avg, or weight files!');
 end
 
-num_batches = num_motl_batches;
-clear num_motl_batches num_avg_batches num_weight_batches;
+num_batches = num_avg_batches;
+clear num_avg_batches num_weight_batches;
 
 % Run the first batch outside of a loop to initialize volumes without having to
 % know the box size of particles and weights
-allmotl = getfield(tom_emread(sprintf('%s_%d_1.em', allmotl_fn_prefix, ...
-                                      iteration)), 'Value');
 avg_sum = getfield(tom_emread(sprintf('%s_%d_1.em', avg_fn_prefix, ...
-                                      iteration)), 'Value');
+    iteration)), 'Value');
+
 weight_sum = getfield(tom_emread(sprintf('%s_%d_1.em', weight_fn_prefix, ...
-                                         iteration)), 'Value');
+    iteration)), 'Value');
 
 % Sum the remaining batch files
 for batch_idx = 2:num_batches
-    allmotl(:, end + 1) = getfield(tom_emread(sprintf('%s_%d_%d.em', ...
-        allmotl_fn_prefix, iteration, batch_idx)), 'Value');
     avg_sum = avg_sum + getfield(tom_emread(sprintf('%s_%d_%d.em', ...
         avg_fn_prefix, iteration, batch_idx)), 'Value');
+
     weight_sum = weight_sum + getfield(tom_emread(sprintf('%s_%d_%d.em', ...
         weight_fn_prefix, iteration, batch_idx)), 'Value');
 end
 clear batch_idx
 
+% We need to read in the allmotl for the next part
+allmotl = getfield(tom_emread(sprintf('%s_%d.em', allmotl_fn_prefix, ...
+    iteration)), 'Value');
+
 % Find motls with the good classes and number of motls used in sums
 if iclass == 0
     % When iclass is 0 we have used all particles regardless of class value
-    num_good_ptcls = length(allmotl);
+    num_good_ptcls = size(allmotl, 2);
 else
     % When iclass is not zero then all particles with class value of 1 are
     % included in the average as well as particles with class value iclass
     num_good_ptcls = sum(allmotl(20, :) == 1 | allmotl(20, :) == iclass);
 end
-
-% Write out allmotl file
-allmotl_fn = sprintf('%s_%d.em', allmotl_fn_prefix, iteration);
-tom_emwrite(allmotl_fn, allmotl);
-check_em_file(allmotl_fn, allmotl);
-disp(['WROTE MOTIVELIST: ', allmotl_fn]);
-clear allmotl_fn allmotl iclass allmotl_fn_prefix
 
 % Calculate and write-out the raw average from batches
 average = avg_sum ./ num_good_ptcls;
@@ -120,7 +111,8 @@ if ~isempty(inf_idxs)
 end
 
 weight_average_inverse_fn = sprintf('%s_debug_inv_%d.em', weight_fn_prefix, ...
-                                    iteration);
+    iteration);
+
 tom_emwrite(weight_average_inverse_fn, weight_average_inverse);
 check_em_file(weight_average_inverse_fn, weight_average_inverse);
 clear weight_average inf_idxs weight_average_inverse_fn weight_fn_prefix

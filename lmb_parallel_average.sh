@@ -72,7 +72,7 @@ max_jobs=4000
 #                           PARALLELIZATION OPTIONS                            #
 ################################################################################
 # The index of the reference to generate : input will be
-# motilvelist_iteration.em (define as integer e.g. iteration=1)
+# all_motl_fn_prefix_iteration.em (define as integer e.g. iteration=1)
 iteration=3
 
 # Total number of particles
@@ -84,11 +84,6 @@ avg_batch_size=150
 ################################################################################
 #                                 FILE OPTIONS                                 #
 ################################################################################
-# Relative path and name of the motivelist of the single particle (e.g.
-# part_n.em will have a motl_n_iter.em , the variable will be written as a
-# string e.g. ptcl_motl_fn_prefix='sub-directory/motl')
-ptcl_motl_fn_prefix='motls/motl'
-
 # Relative path and name of the concatenated motivelist of all particles (e.g.
 # allmotl_iter.em , the variable will be written as a string e.g.
 # all_motl_fn_prefix='sub-directory/allmotl')
@@ -108,9 +103,6 @@ weight_fn_prefix='otherinputs/ampspec'
 
 # Relative path and name of the partial weight files
 weight_sum_fn_prefix='otherinputs/new_test_wei'
-
-# Checkjob name for averaging
-check_avg_job_fn_prefix='check_jobs/check_avg_job'
 
 ################################################################################
 #                              AVERAGING OPTIONS                               #
@@ -139,6 +131,16 @@ then
     exit 1
 fi
 
+# Check that the appropriate directories exist
+if [[ ! -d ${local_dir} ]]
+then
+    mkdir -p ${local_dir}
+fi
+
+if [[ ! -d $(dirname ${local_dir}/${ref_fn_prefix}) ]]
+then
+    mkdir -p $(dirname ${local_dir}/${ref_fn_prefix})
+fi
 ################################################################################
 #                                                                              #
 #                        SUBTOMOGRAM AVERAGING WORKFLOW                        #
@@ -181,24 +183,22 @@ ldpath=\${ldpath}:/lmb/home/public/matlab/jbriggs/sys/os/glnxa64
 ldpath=\${ldpath}:/lmb/home/public/matlab/jbriggs/sys/opengl/lib/glnxa64
 export LD_LIBRARY_PATH=\${ldpath}
 cd ${scratch_dir}
-batch_idx=\${SGE_TASK_ID}
-check="${all_motl_fn_prefix}_${iteration}_\${batch_idx}.em"
+process_idx=\${SGE_TASK_ID}
+check="${ref_fn_prefix}_${iteration}_\${process_idx}.em"
 if [[ -f "\${check}" ]]
 then
     echo "\${check} already complete. SKIPPING"
     exit 0
 fi
 MCRDIR=${scratch_dir}/${mcr_cache_dir}
-rm -rf \${MCRDIR}/${job_name}_paral_avg_\${batch_idx}
-mkdir \${MCRDIR}/${job_name}_paral_avg_\${batch_idx}
-export MCR_CACHE_ROOT=\${MCRDIR}/${job_name}_paral_avg_\${batch_idx}
-ptcl_start=\$(((${avg_batch_size} * (batch_idx - 1)) + 1))
+rm -rf \${MCRDIR}/${job_name}_paral_avg_\${process_idx}
+mkdir \${MCRDIR}/${job_name}_paral_avg_\${process_idx}
+export MCR_CACHE_ROOT=\${MCRDIR}/${job_name}_paral_avg_\${process_idx}
+ptcl_start_idx=\$(((${avg_batch_size} * (process_idx - 1)) + 1))
 time ${paral_avg_exec} \\
-\${ptcl_start} \\
+\${ptcl_start_idx} \\
 ${avg_batch_size} \\
-${num_ptcls} \\
 ${iteration} \\
-${ptcl_motl_fn_prefix} \\
 ${all_motl_fn_prefix} \\
 ${ref_fn_prefix} \\
 ${ptcl_fn_prefix} \\
@@ -206,8 +206,8 @@ ${tomo_row} \\
 ${weight_fn_prefix} \\
 ${weight_sum_fn_prefix} \\
 ${iclass} \\
-\${batch_idx}
-rm -rf \${MCRDIR}/${job_name}_paral_avg_\${batch_idx}
+\${process_idx}
+rm -rf \${MCRDIR}/${job_name}_paral_avg_\${process_idx}
 PAVGJOB
 
     qsub ${job_name}_paral_avg_array_${iteration}_${job_idx}
@@ -218,14 +218,14 @@ echo "STARTING Parallel Average in Iteration Number: ${iteration}"
 ################################################################################
 #                         PARALLEL AVERAGING PROGRESS                          #
 ################################################################################
-all_motl_dir=$(dirname ${scratch_dir}/${all_motl_fn_prefix})
-all_motl_base=$(basename ${scratch_dir}/${all_motl_fn_prefix})_${iteration}
-num_complete=$(find ${all_motl_dir} -name "${all_motl_base}_*.em" | wc -l)
+ref_dir=$(dirname ${scratch_dir}/${ref_fn_prefix})
+ref_base=$(basename ${scratch_dir}/${ref_fn_prefix})_${iteration}
+num_complete=$(find ${ref_dir} -name "${ref_base}_*.em" | wc -l)
 num_complete_prev=0
 unchanged_count=0
 while [ ${num_complete} -lt ${num_avg_batch} ]
 do
-    num_complete=$(find ${all_motl_dir} -name "${all_motl_base}_*.em" | wc -l)
+    num_complete=$(find ${ref_dir} -name "${ref_base}_*.em" | wc -l)
     echo "${num_complete} parallel average out of ${num_avg_batch}"
     if [[ ${num_complete} -eq ${num_complete_prev} ]]
     then
@@ -306,8 +306,6 @@ time ${avg_exec} \\
 ${ref_fn_prefix} \\
 ${all_motl_fn_prefix} \\
 ${weight_sum_fn_prefix} \\
-${avg_batch_size} \\
-${num_ptcls} \\
 ${iteration} \\
 ${iclass}
 rm -rf \${MCRDIR}
@@ -335,8 +333,6 @@ done
 #                            FINAL AVERAGE CLEAN UP                            #
 ################################################################################
 ### Copy file to group share
-cp ${scratch_dir}/${all_motl_fn_prefix}_${iteration}.em \
-    ${local_dir}/${all_motl_fn_prefix}_${iteration}.em
 cp ${scratch_dir}/${ref_fn_prefix}_${iteration}.em \
     ${local_dir}/${ref_fn_prefix}_${iteration}.em
 
@@ -381,11 +377,8 @@ ref_dir=$(dirname ${scratch_dir}/${ref_fn_prefix})
 ref_base=$(basename ${scratch_dir}/${ref_fn_prefix})_${iteration}
 weight_sum_dir=$(dirname ${scratch_dir}/${weight_sum_fn_prefix})
 weight_sum_base=$(basename ${scratch_dir}/${weight_sum_fn_prefix})_${iteration}
-all_motl_dir=$(dirname ${scratch_dir}/${all_motl_fn_prefix})
-all_motl_base=$(basename ${scratch_dir}/${all_motl_fn_prefix})_${iteration}
 find ${ref_dir} -name "${ref_base}_[0-9]*.em" -delete
 find ${weight_sum_dir} -name "${weight_sum_base}_[0-9]*.em" -delete
-find ${all_motl_dir} -name "${all_motl_base}_[0-9]*.em" -delete
 
 echo "FINISHED Final Average in Iteration Number: ${iteration}"
 echo "AVERAGE DONE IN ITERATION NUMBER ${iteration}"

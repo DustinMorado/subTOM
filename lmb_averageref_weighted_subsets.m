@@ -1,14 +1,14 @@
 function lmb_averageref_weighted_subsets(avg_fn_prefix, allmotl_fn_prefix,...
-                                         weight_fn_prefix, iteration, class)
+    weight_fn_prefix, iteration, class)
 % LMB_AVERAGEREF_WEIGHTED_SUBSETS joins and weights subsets of average subsets.
 %   LMB_AVERAGEREF_WEIGHTED_SUBSETS(REF_FN_PREFIX, MOTL_FN_PREFIX,
 %   WEGIHT_FN_PREFIX, ITERATION, ICLASS) takes the parallel average subsets with
-%   the name prefix REF_FN_PREFIX, the motl files subsets with name prefix
+%   the name prefix REF_FN_PREFIX, the allmotl file with name prefix
 %   MOTL_FN_PREFIX and weight volume subsets with the name prefix
-%   WEIGHT_FN_PREFIX to generate the final average, which should then be used
-%   as the reference for iteration number ITERATION. ICLASS describes which
-%   class outside of one is included in the final average and is used to
-%   correctly scale the average and weights.
+%   WEIGHT_FN_PREFIX to generate the final average, which should then be used as
+%   the reference for iteration number ITERATION. ICLASS describes which class
+%   outside of one is included in the final average and is used to correctly
+%   scale the average and weights.
 %
 % The difference between this function and LMB_AVERAGEREF_WEIGHTED is that this
 % function expects there to be a number of subsets of the average subsets, so
@@ -25,7 +25,6 @@ function lmb_averageref_weighted_subsets(avg_fn_prefix, allmotl_fn_prefix,...
 %       * './ref/ref_3_subset_*.em' - The weighted averages
 %       * './otherinputs/wei_debug_3_subset*.em' - The average weight volumes
 %       * './otherinputs/wei_debug_inv_3_subset*.em' - The inverse weights
-%       * './combinedmotl/allmotl_3.em' - The MOTL list for the next iteration
 %
 % See also LMB_AVERAGEREF_WEIGHTED LMB_PARALLEL_CREATE_AVERAGE_SUBSETS
 
@@ -53,20 +52,17 @@ if ischar(class)
 end
 
 % Calculate the number of batches and also use this opportunity to make sure we
-% have an equal number of averages, weights and motl files
-num_motl_batches = length(dir(sprintf('%s_%d_*.em', allmotl_fn_prefix, ...
-                                      iteration)));
+% have an equal number of averages and weights files
 num_avg_batches = length(dir(sprintf('%s_%d_*_subset1.em', avg_fn_prefix, ...
                                      iteration)));
 num_weight_batches = length(dir(sprintf('%s_%d_*_subset1.em', ...
                                         weight_fn_prefix, iteration)));
 
-if ~ (   num_motl_batches == num_avg_batches ...
-      && num_motl_batches == num_weight_batches )
-      error('ERROR: unequal number of motl, avg, or weight files!');
+if num_avg_batches ~= num_weight_batches
+    error('ERROR: unequal number of avg, or weight files!');
 end
 
-num_batches = num_motl_batches;
+num_batches = num_avg_batches;
 clear num_avg_batches num_weight_batches;
 
 % We calculate subsets in powers of two of the data but limit the smallest
@@ -74,10 +70,6 @@ clear num_avg_batches num_weight_batches;
 num_subsets = length(dir(sprintf('%s_%d_1_subset*.em', avg_fn_prefix, ...
                                  iteration)));
 
-% Run the first batch outside of a loop to initialize volumes without having to
-% know the box size of particles and weights
-allmotl = getfield(tom_emread(sprintf('%s_%d_1.em', allmotl_fn_prefix, ...
-                                      iteration)), 'Value')
 avg_sum_cell = {};
 weight_sum_cell = {};
 for subset_idx = 1:num_subsets
@@ -91,10 +83,6 @@ end
 
 % Sum remaining reference files
 for batch_idx = 2:num_batches
-    temp_motl = getfield(tom_emread(sprintf('%s_%d_%d.em', ...
-        allmotl_fn_prefix, iteration, batch_idx)), 'Value');
-    allmotl = [allmotl, temp_motl];
-    clear temp_motl;
     for subset_idx = 1:num_subsets
         avg_sum_cell{subset_idx} =  avg_sum_cell{subset_idx} + ...
             getfield(tom_emread(sprintf('%s_%d_%d_subset%d.em', ...
@@ -107,11 +95,9 @@ for batch_idx = 2:num_batches
 end
 clear batch_idx
 
-% Write out allmotl file
-allmotl_fn = sprintf('%s_%d.em', allmotl_fn_prefix, iteration);
-tom_emwrite(allmotl_fn, allmotl);
-check_em_file(allmotl_fn, allmotl);
-disp(['WROTE MOTIVELIST: ', allmotl_fn]);
+% Wee need to read in the allmotl for the next part
+allmotl = getfield(tom_emread(sprintf('%s_%d.em', allmotl_fn_prefix, ...
+    iteration)), 'Value');
 
 % motl_idx_array is just an array with allmotl indices for counting.
 motl_idx_array = 1:size(allmotl, 2);
@@ -134,14 +120,16 @@ for subset_idx = 1:num_subsets
     % Calculate and write-out the raw subset average from batches
     average = avg_sum_cell{subset_idx} ./ num_good_ptcls;
     average_fn = sprintf('%s_debug_raw_%d_subset%d.em', avg_fn_prefix,...
-                         iteration, subset_idx);
+        iteration, subset_idx);
+
     tom_emwrite(average_fn, average);
     check_em_file(average_fn, average);
 
     % Calculate and write-out the average weight subset from batches
     weight_average = weight_sum_cell{subset_idx} ./ num_good_ptcls;
     weight_average_fn = sprintf('%s_debug_%d_subset%d.em', ...
-                            weight_fn_prefix, iteration, subset_idx);
+        weight_fn_prefix, iteration, subset_idx);
+
     tom_emwrite(weight_average_fn, weight_average);
     check_em_file(weight_average_fn, weight_average);
 
@@ -157,6 +145,7 @@ for subset_idx = 1:num_subsets
 
     weight_average_inverse_fn = sprintf('%s_debug_inv_%d_subset%d.em', ...
         weight_fn_prefix, iteration, subset_idx);
+
     tom_emwrite(weight_average_inverse_fn, weight_average_inverse);
     check_em_file(weight_average_inverse_fn, weight_average_inverse);
 
@@ -173,7 +162,8 @@ for subset_idx = 1:num_subsets
     
     % Write-out the weighted average
     average_fn = sprintf('%s_%d_subset%d.em', avg_fn_prefix, iteration,...
-                         subset_idx);
+        subset_idx);
+
     tom_emwrite(average_fn, average);
     check_em_file(average_fn, average);
     disp(['WROTE AVERAGE: ', average_fn]);

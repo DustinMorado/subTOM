@@ -51,19 +51,19 @@ function lmb_scan_angles_exact(ptcl_start_idx, iteration, ali_batch_size, ...
 %                                 CHECK INPUTS                                 %
 %##############################################################################%
 if (ischar(ptcl_start_idx))
-    ptcl_start_idx=str2double(ptcl_start_idx);
+    ptcl_start_idx = str2double(ptcl_start_idx);
 end
 
 if (ischar(iteration))
-    iteration=str2double(iteration);
+    iteration = str2double(iteration);
 end
 
 if (ischar(ali_batch_size))
-    ali_batch_size=str2double(ali_batch_size);
+    ali_batch_size = str2double(ali_batch_size);
 end
 
 if (ischar(tomo_row))
-    tomo_row=str2double(tomo_row);
+    tomo_row = str2double(tomo_row);
 end
 
 if (ischar(apply_weight))
@@ -71,43 +71,43 @@ if (ischar(apply_weight))
 end
 
 if (ischar(apply_mask))
-    apply_mask=str2double(apply_mask)
+    apply_mask = str2double(apply_mask)
 end
 
 if (ischar(iclass))
-    iclass=str2double(iclass)
+    iclass = str2double(iclass)
 end
 
 if (ischar(threshold))
-    threshold=str2double(threshold)
+    threshold = str2double(threshold)
 end
 
 if (ischar(nfold))
-    nfold=str2double(nfold)
+    nfold = str2double(nfold)
 end
 
 if (ischar(low_pass_fp))
-    low_pass_fp=str2double(low_pass_fp)
+    low_pass_fp = str2double(low_pass_fp)
 end
 
 if (ischar(high_pass_fp))
-    high_pass_fp=str2double(high_pass_fp)
+    high_pass_fp = str2double(high_pass_fp)
 end
 
 if (ischar(psi_angle_shells))
-    psi_angle_shells=str2double(psi_angle_shells)
+    psi_angle_shells = str2double(psi_angle_shells)
 end
 
 if (ischar(psi_angle_step))
-    psi_angle_step=str2double(psi_angle_step)
+    psi_angle_step = str2double(psi_angle_step)
 end
 
 if (ischar(phi_angle_shells))
-    phi_angle_shells=str2double(phi_angle_shells)
+    phi_angle_shells = str2double(phi_angle_shells)
 end
 
 if (ischar(phi_angle_step))
-    phi_angle_step=str2double(phi_angle_step)
+    phi_angle_step = str2double(phi_angle_step)
 end
 
 %##############################################################################%
