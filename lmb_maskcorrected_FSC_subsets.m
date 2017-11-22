@@ -106,7 +106,7 @@ for subset_idx = 1:num_subsets
     refB = refB.Value;
 
     % Size of box
-    boxsize = size(refA,1);
+    boxsize = size(refA, 1);
 
     % Apply symmetry
     if symmetry > 1

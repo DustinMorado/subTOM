@@ -17,17 +17,10 @@
 # maximum per user.
 #
 # This subtomogram averaging script uses three MATLAB compiled scripts below:
-# - will_scan_angles_exact6
-# - will_parallel_create_average3
-# - will_averageref_weighted2
-# WW 02-2016
-################################################################################
-# I do NOT change anything in the MATLAB scripts and only re-compile them with
-# the LMB MATLAB. To let it run on the LMB cluster, the job submitting command
-# is changed from bsub to qsub.
-#
-# K.Q. at the Briggs Lab
-# 01-2017
+# - lmb_scan_angles_exact
+# - lmb_parallel_create_average
+# - lmb_averageref_weighted
+# DRM 11-2017
 ################################################################################
 set -e           # Crash on error
 set -o nounset   # Crash on unset variables
@@ -41,64 +34,47 @@ scratch_dir="${nfs6}/VMV013/20170404/subtomo/bin2/even"
 local_dir="${bstore1}/VMV013/20170404/subtomo/bin2/even/local"
 
 # MRC directory for each job
-mcrcachedir='mcr'
+mcr_cache_dir="${scratch_dir}/mcr"
 
 # A completion file will be written out after each step, so this script can be
 # re-run after a crash and figure out where to start from.
-compdir='complete'
-
-# Directory for scripts
-scriptdir=${bstore1}/software/clusterscripts/
+completion_dir="${scratch_dir}/complete"
 
 # Directory for executables
-execdir=${bstore1}/software/clusterscripts/Matlab_compiled
+exec_dir=${bstore1}/software/lmbtomopipeline/compiled
 
 ################################################################################
 #                                  VARIABLES                                   #
 ################################################################################
 # Alignment executable
-aliexec=${execdir}/will_scan_angles_exact6
+align_exec=${exec_dir}/lmb_scan_angles_exact
 
 # Parallel Averaging executable
-paral_avgexec=${execdir}/will_parallel_create_average3
+paral_avg_exec=${exec_dir}/lmb_parallel_create_average
 
 # Final Averaging executable
-avgexec=${execdir}/will_averageref_weighted2
-# listdir script (???)
-listdir=${scriptdir}/listdir/listdir
+avg_exec=${exec_dir}/lmb_averageref_weighted
 
 ################################################################################
 #                                MEMORY OPTIONS                                #
 ################################################################################
 # The amount of memory your job requires
-memfree_ali='2G'
+mem_free_ali='2G'
 
 # The upper bound on the amount of memory your job is allowed to use
-memmax_ali='3G'
+mem_max_ali='3G'
 
 # The amount of memory your job requires
-memfree_avg='2G'
+mem_free_avg='2G'
 
 # The upper bound on the amount of memory your job is allowed to use
-memmax_avg='3G'
-
-# The amount of memory your job requires
-memfree_other='2G'
-
-# The upper bound on the amount of memory your job is allowed to use
-memmax_other='3G'
+mem_max_avg='3G'
 
 ################################################################################
 #                              OTHER LSF OPTIONS                               #
 ################################################################################
 # BE CAREFUL THAT THE NAME DOESN'T CORRESPOND TO THE BEGINNING OF ANY OTHER FILE
 job_name='vmv013'
-
-# write 'no' if you don't want to receive email notification for errors or for
-# completed job. Otheriwise write the email address you want notifications to be
-# sent. You can filter the emails using their subject starts ERROR: or DONE: and
-# are always sent from your embl account.
-email='no'
 
 # Maximum number of jobs per array
 array_max=1000
@@ -137,60 +113,74 @@ avg_batch_size=100
 ################################################################################
 # Relative path and name of the motivelist of the single particle (e.g.
 # part_n.em will have a motl_n_iter.em , the variable will be written as a
-# string e.g. particlemotlfilename='sub-directory/motl')
-particlemotlfilename='motls/motl'
+# string e.g. ptcl_motl_fn_prefix='sub-directory/motl')
+ptcl_motl_fn_prefix='motls/motl'
 
 # Relative path and name of the concatenated motivelist of all particles (e.g.
 # allmotl_iter.em , the variable will be written as a string e.g.
-# allmotlfilename='sub-directory/allmotl')
-allmotlfilename='combinedmotl/allmotl'
+# all_motl_fn_prefix='sub-directory/allmotl')
+all_motl_fn_prefix='combinedmotl/allmotl'
 
 # Relative path and name of the reference volumes (e.g. ref_iter.em , the
-# variable will be written as a string e.g. refilename='sub-directory/ref')
-refilename='ref/ref'
+# variable will be written as a string e.g. ref_fn_prefix='sub-directory/ref')
+ref_fn_prefix='ref/ref'
 
 # Relative path and name of the subtomograms (e.g. part_n.em , the variable will
-# be written as a string e.g. particlefilename='sub-directory/part')
-particlefilename='subtomograms/subtomo'
+# be written as a string e.g. ptcl_fn_prefix='sub-directory/part')
+ptcl_fn_prefix='subtomograms/subtomo'
 
 # Relative path and name of the alignment mask
-mask='otherinputs/mask128_r52_h52_g3_pos666670.em'
-
-# Apply mask to subtomograms (1=yes, 0=no)
-masksubtomo=1
+align_mask_fn='otherinputs/mask128_r52_h52_g3_pos666670.em'
 
 # Relative path and name of the cross-correlation mask this defines the maximum
 # shifts in each direction
-ccmask='otherinputs/ccmask128_r6.em'
+cc_mask_fn='otherinputs/ccmask128_r6.em'
 
-# Relative path and name of the wedgelist
-wedgelist='otherinputs/wedgelist013.em'
+# Relative path and name of the weight file
+#weight_fn_prefix='../WNG_Wedge_Tests/ampspec_log.em'
+weight_fn_prefix='otherinputs/ampspec'
+
+# Relative path and name of the partial weight files
+weight_sum_fn_prefix='otherinputs/new_test_wei'
 
 ################################################################################
 #                       ALIGNMENT AND AVERAGING OPTIONS                        #
 ################################################################################
+# Which row in the motl file contains the correct tomogram number.
+# Usually row 5 and 7 both correspond to the correct value and can be used
+# interchangeably, but there are instances when 5 contains a sequential ordered
+# value starting from 1, while 7 contains the correct corresponding tomogram.
+tomo_row=5
+
+# Apply weight to subtomograms (1=yes, 0=no)
+apply_weight=1
+
+# Apply mask to subtomograms (1=yes, 0=no)
+apply_mask=1
+
 # Angular increment in degrees, applied during the cone-search, i.e. psi and
-# theta (define as real e.g. angincr=3)
-angincr=2
+# theta (define as real e.g. psi_angle_step=3)
+psi_angle_step=2
 
 # Number of angular iterations, applied to psi and theta  (define as integer
-# e.g. angiter=3)
-angiter=3
+# e.g. psi_angle_shells=3)
+psi_angle_shells=3
 
-# Angular increment for phi in degrees, (define as real e.g. phi_angincr=3)
-phi_angincr=2
+# Angular increment for phi in degrees, (define as real e.g. phi_angle_step=3)
+phi_angle_step=2
 
-# Number of angular iterations for phi, (define as integer e.g. phi_angiter=3)
-phi_angiter=3
+# Number of angular iterations for phi, (define as integer e.g.
+# phi_angle_shells=3)
+phi_angle_shells=3
 
 # High pass filter (in transform units (pixels): calculate as
-# (boxsize*pixelsize)/(resolution_real) (define as integer e.g. hipass=2)
-hipass=1
+# (boxsize*pixelsize)/(resolution_real) (define as integer e.g. high_pass_fp=2)
+high_pass_fp=1
 
 # Low pass filter (in transform units (pixels): calculate as
-# (boxsize*pixelsize)/(resolution_real) (define as integer e.g. hipass=30), has
-# a Gaussian dropoff of ~2 pixels
-lowpass=17
+# (boxsize*pixelsize)/(resolution_real) (define as integer e.g.
+# low_pass_fp=30), has a Gaussian dropoff of ~2 pixels
+low_pass_fp=17
 
 # Symmetry, if no symmetry nfold=1 (define as integer e.g. nfold=3)
 nfold=2
@@ -206,18 +196,25 @@ threshold=0
 iclass=1
 
 ################################################################################
-#                        PARALLEL CHECKJOB FILE OPTIONS                        #
+#                                                                              #
+#                                END OF OPTIONS                                #
+#                                                                              #
 ################################################################################
-# Checkjob name for alignment
-checkfileali='checkjobs/checkfileali'
+# Check that other directories exist and if not, make them
+if [[ ! -d ${local_dir} ]]
+then
+    mkdir -p ${local_dir}
+fi
 
-# Checkjob name for averaging
-checkjobavg='checkjobs/checkjobavg'
+if [[ ! -d ${mcr_cache_dir} ]]
+then
+    mkdir -p ${mcr_cache_dir}
+fi
 
-################################################################################
-# Initialize blank folder
-rm -rf ${scratch_dir}/blank
-mkdir ${scratch_dir}/blank
+if [[ ! -d ${completion_dir} ]]
+then
+    mkdir -p ${completion_dir}
+fi
 
 # Check number of jobs
 num_ali_batch=$(((num_ptcls + ali_batch_size - 1) / ali_batch_size))
@@ -240,22 +237,18 @@ do
 ################################################################################
 #                            SUBTOMOGRAM ALIGNMENT                             #
 ################################################################################
-    if [[ ! -f ${compdir}/subtomo_ali_${iteration} ]]
+    if [[ ! -f ${completion_dir}/subtomo_ali_${iteration} ]]
     then
-        ### Re-initialize checkjobs folder
-        rm -rf ${scratch_dir}/checkjobs
-        mkdir ${scratch_dir}/checkjobs
-
-        ##  Generate and launch array files
+        # Generate and launch array files
         # Calculate number of job scripts needed
         num_ali_jobs=$(((num_ali_batch + array_max - 1) / array_max))
-        array_start=1     # Starting index of array
+        array_start=1
 
         # Generate array files
         for ((job_idx=1; job_idx <= num_ali_jobs; job_idx++))
         do
             # Calculate end job
-            array_end=$((array_start + array_max - 1)) # Ending job of array
+            array_end=$((array_start + array_max - 1))
             if [[ ${array_end} -gt ${num_ali_batch} ]]
             then
                 array_end=${num_ali_batch}
@@ -264,17 +257,16 @@ do
             ### Write out script for each node
             cat > ${job_name}_ali_array_${iteration}_${job_idx} <<-ALIJOB
 #!/bin/bash
-#$ -N ${job_name}_ali_array_${iteration}
+#$ -N ${job_name}_ali_array_${iteration}_${job_idx}
 #$ -S /bin/bash
 #$ -V
 #$ -cwd
-#$ -l mem_free=${memfree_ali},h_vmem=${memmax_ali}
+#$ -l mem_free=${mem_free_ali},h_vmem=${mem_max_ali}
 #$ -o log_${job_name}_ali_array_${iteration}_${job_idx}
 #$ -e error_${job_name}_ali_array_${iteration}_${job_idx}
 #$ -t ${array_start}-${array_end}
 set +o noclobber
 set -e
-
 echo \${HOSTNAME}
 ldpath=/lmb/home/public/matlab/jbriggs/runtime/glnxa64
 ldpath=\${ldpath}:/lmb/home/public/matlab/jbriggs/bin/glnxa64
@@ -283,33 +275,34 @@ ldpath=\${ldpath}:/lmb/home/public/matlab/jbriggs/sys/opengl/lib/glnxa64
 export LD_LIBRARY_PATH=\${ldpath}
 cd ${scratch_dir}
 batch_idx=\${SGE_TASK_ID}
-MCRDIR=${scratch_dir}/${mcrcachedir}
+MCRDIR=${mcr_cache_dir}
 rm -rf \${MCRDIR}/${job_name}_ali_\${batch_idx}
 mkdir \${MCRDIR}/${job_name}_ali_\${batch_idx}
 export MCR_CACHE_ROOT=\${MCRDIR}/${job_name}_ali_\${batch_idx}
-ptcl_start=\$(((${ali_batch_size} * (batch_idx - 1)) + 1))
-time ${aliexec} \\
-    \${ptcl_start} \\
-    ${iteration} \\
-    ${ali_batch_size} \\
-    ${refilename} \\
-    ${allmotlfilename} \\
-    ${particlemotlfilename} \\
-    ${particlefilename} \\
-    ${wedgelist} \\
-    ${mask} \\
-    ${masksubtomo} \\
-    ${ccmask} \\
-    ${checkfileali} \\
-    ${angincr} \\
-    ${angiter} \\
-    ${phi_angincr} \\
-    ${phi_angiter} \\
-    ${hipass} \\
-    ${lowpass} \\
-    ${nfold} \\
-    ${threshold} \\
-    ${iclass}
+ptcl_start_idx=\$(((${ali_batch_size} * (batch_idx - 1)) + 1))
+time ${align_exec} \\
+\${ptcl_start_idx} \\
+${iteration} \\
+${ali_batch_size} \\
+${ref_fn_prefix} \\
+${all_motl_fn_prefix} \\
+${ptcl_motl_fn_prefix} \\
+${ptcl_fn_prefix} \\
+${tomo_row} \\
+${weight_fn_prefix} \\
+${apply_weight} \\
+${align_mask_fn} \\
+${apply_mask} \\
+${cc_mask_fn} \\
+${psi_angle_step} \\
+${psi_angle_shells} \\
+${phi_angle_step} \\
+${phi_angle_shells} \\
+${high_pass_fp} \\
+${low_pass_fp} \\
+${nfold} \\
+${threshold} \\
+${iclass}
 rm -rf \${MCRDIR}/${job_name}_ali_\${batch_idx}
 ALIJOB
 
@@ -331,7 +324,7 @@ ALIJOB
         done
 
         ### Write out completion file
-        touch ${compdir}/subtomo_ali_${iteration}
+        touch ${completion_dir}/subtomo_ali_${iteration}
     fi
 
     ### Remove align scripts
@@ -345,7 +338,7 @@ ALIJOB
 ################################################################################
 #                              PARALLEL AVERAGING                              #
 ################################################################################
-    if [[ ! -f ${compdir}/paral_avg_${iteration} ]]
+    if [[ ! -f ${completion_dir}/paral_avg_${iteration} ]]
     then
         # Generate and launch array files
         # Calculate number of job scripts needed
@@ -367,7 +360,7 @@ ALIJOB
 #$ -S /bin/bash
 #$ -V
 #$ -cwd
-#$ -l mem_free=${memfree_avg},h_vmem=${memmax_avg}
+#$ -l mem_free=${mem_free_avg},h_vmem=${mem_max_avg}
 #$ -o log_${job_name}_paral_avg_array_${iteration}_${job_idx}
 #$ -e error_${job_name}_paral_avg_array_${iteration}_${job_idx}
 #$ -t ${array_start}-${array_end}
@@ -382,20 +375,20 @@ ldpath=\${ldpath}:/lmb/home/public/matlab/jbriggs/sys/opengl/lib/glnxa64
 export LD_LIBRARY_PATH=\${ldpath}
 cd ${scratch_dir}
 batch_idx=\${SGE_TASK_ID}
-MCRDIR=${scratch_dir}/${mcrcachedir}
+MCRDIR=${mcr_cache_dir}
 rm -rf \${MCRDIR}/${job_name}_paral_avg_\${batch_idx}
 mkdir \${MCRDIR}/${job_name}_paral_avg_\${batch_idx}
 export MCR_CACHE_ROOT=\${MCRDIR}/${job_name}_paral_avg_\${batch_idx}
-ptcl_start=\$(((${avg_batch_size} * (batch_idx - 1)) + 1))
-time ${paral_avgexec} \\
-    \${ptcl_start} \\
+ptcl_start_idx=\$(((${avg_batch_size} * (batch_idx - 1)) + 1))
+time ${paral_avg_exec} \\
+    \${ptcl_start_idx} \\
     ${avg_batch_size} \\
     ${num_ptcls} \\
     ${iteration} \\
-    ${particlemotlfilename} \\
-    ${allmotlfilename} \\
-    ${refilename} \\
-    ${particlefilename} \\
+    ${ptcl_motl_fn_prefix} \\
+    ${all_motl_fn_prefix} \\
+    ${ref_fn_prefix} \\
+    ${ptcl_fn_prefix} \\
     ${wedgelist} \\
     ${iclass} \\
     \${batch_idx} \\
@@ -420,7 +413,7 @@ PAVGJOB
         done
 
         ### Write out completion file
-        touch ${compdir}/paral_avg_${iteration}
+        touch ${completion_dir}/paral_avg_${iteration}
     fi
 
     ### Remove scripts
@@ -434,7 +427,7 @@ PAVGJOB
 ################################################################################
 #                                FINAL AVERAGE                                 #
 ################################################################################
-    if [[ ! -f ${compdir}/final_avg_${iteration} ]]
+    if [[ ! -f ${completion_dir}/final_avg_${iteration} ]]
     then
         rm -f ${scratch_dir}/checkjob_aver.txt
 
@@ -444,7 +437,7 @@ PAVGJOB
 #$ -S /bin/bash
 #$ -V
 #$ -cwd
-#$ -l mem_free=${memfree_avg},h_vmem=${memmax_avg}
+#$ -l mem_free=${mem_free_avg},h_vmem=${mem_max_avg}
 #$ -o log_${job_name}_avg_${iteration}
 #$ -e error_${job_name}_avg_${iteration}
 set +o noclobber
@@ -457,13 +450,13 @@ ldpath=\${ldpath}:/lmb/home/public/matlab/jbriggs/sys/os/glnxa64
 ldpath=\${ldpath}:/lmb/home/public/matlab/jbriggs/sys/opengl/lib/glnxa64
 export LD_LIBRARY_PATH=\${ldpath}
 cd ${scratch_dir}
-MCRDIR=${scratch_dir}/${mcrcachedir}/${job_name}_avg_iteration
+MCRDIR=${mcr_cache_dir}/${job_name}_avg_iteration
 rm -rf \${MCRDIR}
 mkdir \${MCRDIR}
 export MCR_CACHE_ROOT=\${MCRDIR}
-time ${avgexec} \\
-    ${refilename} \\
-    ${allmotlfilename} \\
+time ${avg_exec} \\
+    ${ref_fn_prefix} \\
+    ${all_motl_fn_prefix} \\
     ${avg_batch_size} \\
     ${num_ptcls} \\
     ${iteration} \\
@@ -485,31 +478,23 @@ AVGJOB
         done
 
         ### Write out completion file
-        touch ${compdir}/final_avg_${iteration}
+        touch ${completion_dir}/final_avg_${iteration}
 
         ### Copy file to group share
         next_iteration=$((iteration + 1))
-        cp ${scratch_dir}/${allmotlfilename}_${next_iteration}.em \
-            ${local_dir}/${allmotlfilename}_${next_iteration}.em
-        cp ${scratch_dir}/${refilename}_${next_iteration}.em \
-            ${local_dir}/${refilename}_${next_iteration}.em
+        cp ${scratch_dir}/${all_motl_fn_prefix}_${next_iteration}.em \
+            ${local_dir}/${all_motl_fn_prefix}_${next_iteration}.em
+        cp ${scratch_dir}/${ref_fn_prefix}_${next_iteration}.em \
+            ${local_dir}/${ref_fn_prefix}_${next_iteration}.em
     fi
 
     ### Clean up from the iteration
     rm -f ${job_name}_avg_${iteration}
     rm -f ${scratch_dir}/checkjob_aver.txt
-    rm -f ${scratch_dir}/${refilename}_*_*.em
+    rm -f ${scratch_dir}/${ref_fn_prefix}_*_*.em
     rm -f ${scratch_dir}/otherinputs/wei_*_*.em
-    rm -f ${allmotlfilename}_*_*.em
+    rm -f ${all_motl_fn_prefix}_*_*.em
 
     echo "AVERAGE DONE IN ITERATION NUMBER ${iteration}"
 done
-
-if [[ ${email} != 'no' ]]
-then
-    echo " " > ${scratch_dir}/check.log
-    Mail -s 'DONE: job '"${job_name}"' in directory '"${scratch_dir}" \
-        ${email} < ${scratch_dir}/check.log
-    rm -f ${scratch_dir}/check.log
-fi
 exit

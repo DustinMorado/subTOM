@@ -1,16 +1,7 @@
-function lmb_parallel_create_average_subsets(...
-        ptcl_start_idx,...
-        avg_batch_size,...
-        num_ptcls,...
-        iteration,...
-        motl_fn_prefix,...
-        allmotl_fn_prefix,...
-        ref_fn_prefix,...
-        ptcl_fn_prefix,...
-        weight_fn_prefix,...
-        weight_sum_fn_prefix,...
-        iclass,...
-        process_idx)
+function lmb_parallel_create_average_subsets(ptcl_start_idx, avg_batch_size, ...
+    num_ptcls, iteration, motl_fn_prefix, allmotl_fn_prefix, ref_fn_prefix, ...
+    ptcl_fn_prefix, tomo_row, weight_fn_prefix, weight_sum_fn_prefix, iclass,...
+    process_idx)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Info
 % Just starting from one, for averaging but closest to
@@ -27,14 +18,6 @@ if ischar(ptcl_start_idx)
     ptcl_start_idx = str2double(ptcl_start_idx);
 end
 
-if ischar(avg_batch_size)
-    avg_batch_size = str2double(avg_batch_size);
-end
-
-if ischar(num_ptcls)
-    num_ptcls = str2double(num_ptcls);
-end
-
 % Check that start is within bounds of dataset
 % Previously this was a huge if conditional wrapping which seemed
 % unneccessary so I just put it here and we exit right away if we
@@ -43,8 +26,20 @@ if ptcl_start_idx > num_ptcls
     return
 end
 
+if ischar(avg_batch_size)
+    avg_batch_size = str2double(avg_batch_size);
+end
+
+if ischar(num_ptcls)
+    num_ptcls = str2double(num_ptcls);
+end
+
 if ischar(iteration)
     iteration = str2double(iteration);
+end
+
+if ischar(tomo_row)
+    tomo_row = str2double(tomo_row);
 end
 
 if ischar(iclass)
@@ -139,8 +134,8 @@ for motl_idx = good_idxs
     aligned_ptcl = tom_rotate(aligned_ptcl, ptcl_rot);
 
     % Read in weight
-    if current_weight ~= allmotl(5, motl_idx)
-        current_weight = allmotl(5, motl_idx);
+    if current_weight ~= allmotl(tomo_row, motl_idx)
+        current_weight = allmotl(tomo_row, motl_idx);
         weight_fn = sprintf('%s_%d.em', weight_fn_prefix, current_weight);
         weight = tom_emread(weight_fn);
     end

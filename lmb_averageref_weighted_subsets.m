@@ -114,7 +114,7 @@ check_em_file(allmotl_fn, allmotl);
 disp(['WROTE MOTIVELIST: ', allmotl_fn]);
 
 % motl_idx_array is just an array with allmotl indices for counting.
-motl_idx_array = 1:length(allmotl);
+motl_idx_array = 1:size(allmotl, 2);
 for subset_idx = 1:num_subsets
     % Find motls with the good classes and belonging to the proper subset
     % When iclass is 0 we have used all particles regardless of class value
