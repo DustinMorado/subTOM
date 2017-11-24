@@ -219,7 +219,7 @@ for ptcl_idx = ptcl_start_idx:ptcl_end_idx
         ptcl_align_mask = tom_shift(ptcl_align_mask, old_ref_shift);
 
         % Mask subtomogram
-        ptcl = ptcl .* aligned_align_mask;
+        ptcl = ptcl .* ptcl_align_mask;
 
         % Subtract mean of the masked particle under the align mask
         ptcl = subtract_mean_under_mask(ptcl, ptcl_align_mask);
