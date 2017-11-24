@@ -314,13 +314,14 @@ ALIJOB
 ################################################################################
     motl_dir=$(dirname ${scratch_dir}/${ptcl_motl_fn_prefix})
     motl_base=$(basename ${scratch_dir}/${ptcl_motl_fn_prefix})
-    motl_base=${motl_base}_$((iteration + 1))
-    num_complete=$(find ${motl_dir} -name "${motl_base}_*.em" | wc -l)
+    num_complete=$(find ${motl_dir} -name \
+	"${motl_base}_*_$((iteration + 1)).em" | wc -l)
     num_complete_prev=0
     unchanged_count=0
     while [[ ${num_complete} -lt ${num_ptcls} ]]
     do
-        num_complete=$(find ${motl_dir} -name "${motl_base}_*.em" | wc -l)
+        num_complete=$(find ${motl_dir} -name \
+	    "${motl_base}_*_$((iteration + 1)).em" | wc -l)
         echo "${num_complete} aligned out of ${num_ptcls}"
         if [[ ${num_complete} -eq ${num_complete_prev} ]]
         then
@@ -360,7 +361,7 @@ ALIJOB
 
     if [[ -e "error_${job_name}_ali_array_${iteration}_1" ]]
     then
-        mv -f "log_${job_name}_ali_array_${iteration}"_* \
+        mv -f "error_${job_name}_ali_array_${iteration}"_* \
             "${scratch_dir}/ali_${iteration}/."
     fi
 
@@ -399,7 +400,7 @@ export MCR_CACHE_ROOT=\${MCRDIR}
 time ${join_exec} \\
 ${iteration} \\
 ${all_motl_fn_prefix} \\
-${ptcl_motl_fn_prefix} \\
+${ptcl_motl_fn_prefix}
 rm -rf \${MCRDIR}
 JOINJOB
 
@@ -442,14 +443,14 @@ JOINJOB
 
     if [[ -e "error_${job_name}_joinmotl_${iteration}" ]]
     then
-        mv -f "log_${job_name}_joinmotl_${iteration}" \
+        mv -f "error_${job_name}_joinmotl_${iteration}" \
             "${scratch_dir}/ali_${iteration}/."
     fi
 
     ptcl_motl_dir=$(dirname ${scratch_dir}/${ptcl_motl_fn_prefix})
     ptcl_motl_base=$(basename ${scratch_dir}/${ptcl_motl_fn_prefix})
     find ${ptcl_motl_dir} -name \
-        "${ptcl_motl_base}_[0-9]*_$((iteration + 1)).em" -delete
+	"${ptcl_motl_base}_[0-9]*_$((iteration + 1)).em" -delete
 
     echo "FINISHED MOTL Join in Iteration Number: ${iteration}"
 ################################################################################
@@ -515,7 +516,7 @@ ${tomo_row} \\
 ${weight_fn_prefix} \\
 ${weight_sum_fn_prefix} \\
 ${iclass} \\
-\${process_idx} \\
+\${process_idx}
 rm -rf \${MCRDIR}
 PAVGJOB
         qsub ${job_name}_paral_avg_array_${avg_iteration}_${job_idx}
@@ -527,7 +528,7 @@ PAVGJOB
 #                         PARALLEL AVERAGING PROGRESS                          #
 ################################################################################
     ref_dir=$(dirname ${scratch_dir}/${ref_fn_prefix})
-    ref_base=$(basename ${scratch_dir}/${ref_fn_prefix})_${iteration}
+    ref_base=$(basename ${scratch_dir}/${ref_fn_prefix})_${avg_iteration}
     num_complete=$(find ${ref_dir} -name "${ref_base}_*.em" | wc -l)
     num_complete_prev=0
     unchanged_count=0
@@ -554,30 +555,30 @@ PAVGJOB
 ################################################################################
 #                         PARALLEL AVERAGING CLEAN UP                          #
 ################################################################################
-    if [[ ! -d "${scratch_dir}/avg_${iteration}" ]]
+    if [[ ! -d "${scratch_dir}/avg_${avg_iteration}" ]]
     then
-        mkdir "${scratch_dir}/avg_${iteration}"
+        mkdir "${scratch_dir}/avg_${avg_iteration}"
     fi
 
-    if [[ -e "${job_name}_paral_avg_array_${iteration}_1" ]]
+    if [[ -e "${job_name}_paral_avg_array_${avg_iteration}_1" ]]
     then
-        mv -f "${job_name}_paral_avg_array_${iteration}"_* \
-            "${scratch_dir}/avg_${iteration}/."
+        mv -f "${job_name}_paral_avg_array_${avg_iteration}"_* \
+            "${scratch_dir}/avg_${avg_iteration}/."
     fi
 
-    if [[ -e "log_${job_name}_paral_avg_array_${iteration}_1" ]]
+    if [[ -e "log_${job_name}_paral_avg_array_${avg_iteration}_1" ]]
     then
-        mv -f "log_${job_name}_paral_avg_array_${iteration}"_* \
-            "${scratch_dir}/avg_${iteration}/."
+        mv -f "log_${job_name}_paral_avg_array_${avg_iteration}"_* \
+            "${scratch_dir}/avg_${avg_iteration}/."
     fi
 
-    if [[ -e "error_${job_name}_paral_avg_array_${iteration}_1" ]]
+    if [[ -e "error_${job_name}_paral_avg_array_${avg_iteration}_1" ]]
     then
-        mv -f "error_${job_name}_paral_avg_array_${iteration}"_* \
-            "${scratch_dir}/avg_${iteration}/."
+        mv -f "error_${job_name}_paral_avg_array_${avg_iteration}"_* \
+            "${scratch_dir}/avg_${avg_iteration}/."
     fi
 
-    echo "FINISHED Parallel Average in Iteration Number: ${iteration}"
+    echo "FINISHED Parallel Average in Iteration Number: ${avg_iteration}"
 ################################################################################
 #                                FINAL AVERAGE                                 #
 ################################################################################
@@ -625,7 +626,7 @@ AVGJOB
 #                            FINAL AVERAGE PROGRESS                            #
 ################################################################################
     unchanged_count=0
-    while [[ ! -e "${scratch_dir}/${ref_fn_prefix}_${iteration}.em" ]]
+    while [[ ! -e "${scratch_dir}/${ref_fn_prefix}_${avg_iteration}.em" ]]
     do
         unchanged_count=$((unchanged_count + 1))
         if [[ ${unchanged_count} -gt 60 ]]
@@ -640,25 +641,25 @@ AVGJOB
 #                            FINAL AVERAGE CLEAN UP                            #
 ################################################################################
     ### Copy file to group share
-    cp ${scratch_dir}/${ref_fn_prefix}_${iteration}.em \
-        ${local_dir}/${ref_fn_prefix}_${iteration}.em
+    cp ${scratch_dir}/${ref_fn_prefix}_${avg_iteration}.em \
+        ${local_dir}/${ref_fn_prefix}_${avg_iteration}.em
 
-    if [[ -e "${job_name}_avg_${iteration}" ]]
+    if [[ -e "${job_name}_avg_${avg_iteration}" ]]
     then
-        mv ${job_name}_avg_${iteration} \
-            ${scratch_dir}/avg_${iteration}/.
+        mv ${job_name}_avg_${avg_iteration} \
+            ${scratch_dir}/avg_${avg_iteration}/.
     fi
 
-    if [[ -e "log_${job_name}_avg_${iteration}" ]]
+    if [[ -e "log_${job_name}_avg_${avg_iteration}" ]]
     then
-        mv log_${job_name}_avg_${iteration} \
-            ${scratch_dir}/avg_${iteration}/.
+        mv log_${job_name}_avg_${avg_iteration} \
+            ${scratch_dir}/avg_${avg_iteration}/.
     fi
 
-    if [[ -e "error_${job_name}_avg_${iteration}" ]]
+    if [[ -e "error_${job_name}_avg_${avg_iteration}" ]]
     then
-        mv error_${job_name}_avg_${iteration} \
-            ${scratch_dir}/avg_${iteration}/.
+        mv error_${job_name}_avg_${avg_iteration} \
+            ${scratch_dir}/avg_${avg_iteration}/.
     fi
 
     ref_dir=$(dirname ${scratch_dir}/${ref_fn_prefix})
