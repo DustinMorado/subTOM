@@ -18,8 +18,8 @@
 #
 # This subtomogram averaging script uses three MATLAB compiled scripts below:
 # - lmb_scan_angles_exact
-# - lmb_parallel_create_average
-# - lmb_averageref_weighted
+# - lmb_parallel_sums
+# - lmb_weighted_average
 # DRM 11-2017
 ################################################################################
 set -e           # Crash on error
@@ -36,10 +36,6 @@ local_dir="${bstore1}/VMV013/20170404/subtomo/bin2/even/local"
 # MRC directory for each job
 mcr_cache_dir="${scratch_dir}/mcr"
 
-# A completion file will be written out after each step, so this script can be
-# re-run after a crash and figure out where to start from.
-completion_dir="${scratch_dir}/complete"
-
 # Directory for executables
 exec_dir=${bstore1}/software/lmbtomopipeline/compiled
 
@@ -49,11 +45,14 @@ exec_dir=${bstore1}/software/lmbtomopipeline/compiled
 # Alignment executable
 align_exec=${exec_dir}/lmb_scan_angles_exact
 
+# MOTL join executable
+join_exec=${exec_dir}/lmb_joinmotl
+
 # Parallel Averaging executable
-paral_avg_exec=${exec_dir}/lmb_parallel_create_average
+paral_avg_exec=${exec_dir}/lmb_parallel_sums
 
 # Final Averaging executable
-avg_exec=${exec_dir}/lmb_averageref_weighted
+avg_exec=${exec_dir}/lmb_weighted_average
 
 ################################################################################
 #                                MEMORY OPTIONS                                #
@@ -74,7 +73,7 @@ mem_max_avg='3G'
 #                              OTHER LSF OPTIONS                               #
 ################################################################################
 # BE CAREFUL THAT THE NAME DOESN'T CORRESPOND TO THE BEGINNING OF ANY OTHER FILE
-job_name='vmv013'
+job_name='VMV013'
 
 # Maximum number of jobs per array
 array_max=1000
@@ -211,11 +210,6 @@ then
     mkdir -p ${mcr_cache_dir}
 fi
 
-if [[ ! -d ${completion_dir} ]]
-then
-    mkdir -p ${completion_dir}
-fi
-
 # Check number of jobs
 num_ali_batch=$(((num_ptcls + ali_batch_size - 1) / ali_batch_size))
 num_avg_batch=$(((num_ptcls + avg_batch_size - 1) / avg_batch_size))
@@ -237,25 +231,23 @@ do
 ################################################################################
 #                            SUBTOMOGRAM ALIGNMENT                             #
 ################################################################################
-    if [[ ! -f ${completion_dir}/subtomo_ali_${iteration} ]]
-    then
-        # Generate and launch array files
-        # Calculate number of job scripts needed
-        num_ali_jobs=$(((num_ali_batch + array_max - 1) / array_max))
-        array_start=1
+    # Generate and launch array files
+    # Calculate number of job scripts needed
+    num_ali_jobs=$(((num_ali_batch + array_max - 1) / array_max))
+    array_start=1
 
-        # Generate array files
-        for ((job_idx=1; job_idx <= num_ali_jobs; job_idx++))
-        do
-            # Calculate end job
-            array_end=$((array_start + array_max - 1))
-            if [[ ${array_end} -gt ${num_ali_batch} ]]
-            then
-                array_end=${num_ali_batch}
-            fi
+    # Generate array files
+    for ((job_idx=1; job_idx <= num_ali_jobs; job_idx++))
+    do
+        # Calculate end job
+        array_end=$((array_start + array_max - 1))
+        if [[ ${array_end} -gt ${num_ali_batch} ]]
+        then
+            array_end=${num_ali_batch}
+        fi
 
-            ### Write out script for each node
-            cat > ${job_name}_ali_array_${iteration}_${job_idx} <<-ALIJOB
+        ### Write out script for each node
+        cat > ${job_name}_ali_array_${iteration}_${job_idx} <<-ALIJOB
 #!/bin/bash
 #$ -N ${job_name}_ali_array_${iteration}_${job_idx}
 #$ -S /bin/bash
@@ -274,12 +266,18 @@ ldpath=\${ldpath}:/lmb/home/public/matlab/jbriggs/sys/os/glnxa64
 ldpath=\${ldpath}:/lmb/home/public/matlab/jbriggs/sys/opengl/lib/glnxa64
 export LD_LIBRARY_PATH=\${ldpath}
 cd ${scratch_dir}
-batch_idx=\${SGE_TASK_ID}
-MCRDIR=${mcr_cache_dir}
-rm -rf \${MCRDIR}/${job_name}_ali_\${batch_idx}
-mkdir \${MCRDIR}/${job_name}_ali_\${batch_idx}
-export MCR_CACHE_ROOT=\${MCRDIR}/${job_name}_ali_\${batch_idx}
-ptcl_start_idx=\$(((${ali_batch_size} * (batch_idx - 1)) + 1))
+process_idx=\${SGE_TASK_ID}
+check="${all_motl_fn_prefix}_$((iteration + 1)).em"
+if [[ -f "\${check}" ]]
+then
+    echo "\${check} already complete. SKIPPING"
+    exit 0
+fi
+MCRDIR=${mcr_cache_dir}/${job_name}_ali_\${process_idx}
+rm -rf \${MCRDIR}
+mkdir \${MCRDIR}
+export MCR_CACHE_ROOT=\${MCRDIR}
+ptcl_start_idx=\$(((${ali_batch_size} * (process_idx - 1)) + 1))
 time ${align_exec} \\
 \${ptcl_start_idx} \\
 ${iteration} \\
@@ -303,70 +301,190 @@ ${low_pass_fp} \\
 ${nfold} \\
 ${threshold} \\
 ${iclass}
-rm -rf \${MCRDIR}/${job_name}_ali_\${batch_idx}
+rm -rf \${MCRDIR}
 ALIJOB
 
-            qsub ${job_name}_ali_array_${iteration}_${job_idx}
-            array_start=$((array_start + array_max))
-        done
+        qsub ${job_name}_ali_array_${iteration}_${job_idx}
+        array_start=$((array_start + array_max))
+    done
 
-        echo "Aligning subtomograms in iteration number ${iteration}"
+    echo "STARTING Alignment in Iteration Number: ${iteration}"
 ################################################################################
 #                              ALIGNMENT PROGRESS                              #
 ################################################################################
-        num_ali_ptcls=0
-        while [[ ${num_ali_ptcls} -lt ${num_ptcls} ]]
-        do
-            sleep 10s
-            num_ali_ptcls=$(($(${listdir} ./checkjobs/ | wc -l) - 2))
-            echo "Number of subtomograms aligned:"
-            echo "${num_ali_ptcls} out of ${num_ptcls}"
-        done
+    motl_dir=$(dirname ${scratch_dir}/${ptcl_motl_fn_prefix})
+    motl_base=$(basename ${scratch_dir}/${ptcl_motl_fn_prefix})
+    motl_base=${motl_base}_$((iteration + 1))
+    num_complete=$(find ${motl_dir} -name "${motl_base}_*.em" | wc -l)
+    num_complete_prev=0
+    unchanged_count=0
+    while [[ ${num_complete} -lt ${num_ptcls} ]]
+    do
+        num_complete=$(find ${motl_dir} -name "${motl_base}_*.em" | wc -l)
+        echo "${num_complete} aligned out of ${num_ptcls}"
+        if [[ ${num_complete} -eq ${num_complete_prev} ]]
+        then
+            unchanged_count=$((unchanged_count + 1))
+        else
+            unchanged_count=0
+        fi
+        num_complete_prev=${num_complete}
 
-        ### Write out completion file
-        touch ${completion_dir}/subtomo_ali_${iteration}
+        if [[ ${num_complete} - gt 0 && ${unchanged_count} -gt 120 ]]
+        then
+            echo "Alignment has seemed to stall"
+            echo "Please check error logs and resubmit the job if neeeded."
+            exit 1
+        fi  
+        sleep 60s
+    done
+################################################################################
+#                              ALIGNMENT CLEAN UP                              #
+################################################################################
+    if [[ ! -d "${scratch_dir}/ali_${iteration}" ]]
+    then
+        mkdir "${scratch_dir}/ali_${iteration}"
     fi
 
-    ### Remove align scripts
-    #rm -f ${job_name}_ali_array_${iteration}_*
+    if [[ -e "${job_name}_ali_array_${iteration}_1" ]]
+    then
+        mv -f "${job_name}_ali_array_${iteration}"_* \
+            "${scratch_dir}/ali_${iteration}/."
+    fi
 
-    ### Clear checkjobs folder
-    mv ${scratch_dir}/checkjobs \
-        ${scratch_dir}/checkjobs_subtomo_ali_${iteration}
-    mkdir ${scratch_dir}/checkjobs
-    echo "DONE ALIGNMENT in iteration number ${iteration}"
+    if [[ -e "log_${job_name}_ali_array_${iteration}_1" ]]
+    then
+        mv -f "log_${job_name}_ali_array_${iteration}"_* \
+            "${scratch_dir}/ali_${iteration}/."
+    fi
+
+    if [[ -e "error_${job_name}_ali_array_${iteration}_1" ]]
+    then
+        mv -f "log_${job_name}_ali_array_${iteration}"_* \
+            "${scratch_dir}/ali_${iteration}/."
+    fi
+
+    echo "FINISHED Alignment in Iteration Number: ${iteration}"
+################################################################################
+#                           COLLECT & COMBINE MOTLS                            #
+################################################################################
+    cat > ${job_name}_joinmotl_${iteration} <<-JOINJOB
+#!/bin/bash
+#$ -N ${job_name}_joinmotl_${iteration}
+#$ -S /bin/bash
+#$ -V
+#$ -cwd
+#$ -l mem_free=${mem_free_ali},h_vmem=${mem_max_ali}
+#$ -o log_${job_name}_joinmotl_${iteration}
+#$ -e error_${job_name}_joinmotl_${iteration}
+set +o noclobber
+set -e
+echo \${HOSTNAME}
+ldpath=/lmb/home/public/matlab/jbriggs/runtime/glnxa64
+ldpath=\${ldpath}:/lmb/home/public/matlab/jbriggs/bin/glnxa64
+ldpath=\${ldpath}:/lmb/home/public/matlab/jbriggs/sys/os/glnxa64
+ldpath=\${ldpath}:/lmb/home/public/matlab/jbriggs/sys/opengl/lib/glnxa64
+export LD_LIBRARY_PATH=\${ldpath}
+cd ${scratch_dir}
+check="${all_motl_fn_prefix}_$((iteration + 1)).em"
+if [[ -f "\${check}" ]]
+then
+    echo "\${check} already complete. SKIPPING"
+    exit 0
+fi
+MCRDIR=${mcr_cache_dir}/${job_name}_joinmotl
+rm -rf \${MCRDIR}
+mkdir \${MCRDIR}
+export MCR_CACHE_ROOT=\${MCRDIR}
+time ${join_exec} \\
+${iteration} \\
+${all_motl_fn_prefix} \\
+${ptcl_motl_fn_prefix} \\
+rm -rf \${MCRDIR}
+JOINJOB
+
+    qsub ${job_name}_joinmotl_${iteration}
+    echo "STARTING MOTL Join in Iteration Number: ${iteration}"
+################################################################################
+#                              MOTL JOIN PROGRESS                              #
+################################################################################
+    unchanged_count=0
+    while [[ ! -e "${all_motl_fn_prefix}_$((iteration + 1)).em" ]]
+    do
+        unchanged_count=$((unchanged_count + 1))
+        if [[ ${unchanged_count} -gt 60 ]]
+        then
+            echo "MOTL join has seemed to stall"
+            echo "Please check error logs and resubmit the job if neeeded."
+            exit 1
+        fi  
+        sleep 60s
+    done
+################################################################################
+#                              MOTL JOIN CLEAN UP                              #
+################################################################################
+    if [[ ! -d "${scratch_dir}/ali_${iteration}" ]]
+    then
+        mkdir "${scratch_dir}/ali_${iteration}"
+    fi
+
+    if [[ -e "${job_name}_joinmotl_${iteration}" ]]
+    then
+        mv -f "${job_name}_joinmotl_${iteration}" \
+            "${scratch_dir}/ali_${iteration}/."
+    fi
+
+    if [[ -e "log_${job_name}_joinmotl_${iteration}" ]]
+    then
+        mv -f "log_${job_name}_joinmotl_${iteration}" \
+            "${scratch_dir}/ali_${iteration}/."
+    fi
+
+    if [[ -e "error_${job_name}_joinmotl_${iteration}" ]]
+    then
+        mv -f "log_${job_name}_joinmotl_${iteration}" \
+            "${scratch_dir}/ali_${iteration}/."
+    fi
+
+    ptcl_motl_dir=$(dirname ${scratch_dir}/${ptcl_motl_fn_prefix})
+    ptcl_motl_base=$(basename ${scratch_dir}/${ptcl_motl_fn_prefix})
+    find ${ptcl_motl_dir} -name "${ptcl_motl_base}_[0-9]*_${iteration}.em" \
+        -delete
+
+    echo "FINISHED MOTL Join in Iteration Number: ${iteration}"
 ################################################################################
 #                              PARALLEL AVERAGING                              #
 ################################################################################
-    if [[ ! -f ${completion_dir}/paral_avg_${iteration} ]]
-    then
-        # Generate and launch array files
-        # Calculate number of job scripts needed
-        num_avg_jobs=$(((num_avg_batch + array_max - 1) / array_max))
-        array_start=1
+    # Generate and launch array files
+    # Calculate number of job scripts needed
+    num_avg_jobs=$(((num_avg_batch + array_max - 1) / array_max))
+    array_start=1
 
-        ### Loop to generate parallel alignment scripts
-        for ((job_idx=1; job_idx <= num_avg_jobs; job_idx++))
-        do
-            array_end=$((array_start + array_max - 1))
-            if [[ ${array_end} -gt ${num_avg_batch} ]]
-            then
-                array_end=${num_avg_batch}
-            fi
+    # Averaging scripts generate the reference for a given iteration number
+    # since the alignment has output the allmotl for the next iteration we use
+    # the next iteration to pass to the averaging executables
+    avg_iteration=$((iteration + 1))
+    # Loop to generate parallel alignment scripts
+    for ((job_idx=1; job_idx <= num_avg_jobs; job_idx++))
+    do
+        array_end=$((array_start + array_max - 1))
+        if [[ ${array_end} -gt ${num_avg_batch} ]]
+        then
+            array_end=${num_avg_batch}
+        fi
 
-            cat > ${job_name}_paral_avg_array_${iteration}_${job_idx}<<-PAVGJOB
+        cat > ${job_name}_paral_avg_array_${avg_iteration}_${job_idx}<<-PAVGJOB
 #!/bin/bash
-#$ -N ${job_name}_paral_avg_${iteration}
+#$ -N ${job_name}_paral_avg_array_${avg_iteration}_${job_idx}
 #$ -S /bin/bash
 #$ -V
 #$ -cwd
 #$ -l mem_free=${mem_free_avg},h_vmem=${mem_max_avg}
-#$ -o log_${job_name}_paral_avg_array_${iteration}_${job_idx}
-#$ -e error_${job_name}_paral_avg_array_${iteration}_${job_idx}
+#$ -o log_${job_name}_paral_avg_array_${avg_iteration}_${job_idx}
+#$ -e error_${job_name}_paral_avg_array_${avg_iteration}_${job_idx}
 #$ -t ${array_start}-${array_end}
 set +o noclobber
 set -e
-
 echo \${HOSTNAME}
 ldpath=/lmb/home/public/matlab/jbriggs/runtime/glnxa64
 ldpath=\${ldpath}:/lmb/home/public/matlab/jbriggs/bin/glnxa64
@@ -374,72 +492,104 @@ ldpath=\${ldpath}:/lmb/home/public/matlab/jbriggs/sys/os/glnxa64
 ldpath=\${ldpath}:/lmb/home/public/matlab/jbriggs/sys/opengl/lib/glnxa64
 export LD_LIBRARY_PATH=\${ldpath}
 cd ${scratch_dir}
-batch_idx=\${SGE_TASK_ID}
-MCRDIR=${mcr_cache_dir}
-rm -rf \${MCRDIR}/${job_name}_paral_avg_\${batch_idx}
-mkdir \${MCRDIR}/${job_name}_paral_avg_\${batch_idx}
-export MCR_CACHE_ROOT=\${MCRDIR}/${job_name}_paral_avg_\${batch_idx}
-ptcl_start_idx=\$(((${avg_batch_size} * (batch_idx - 1)) + 1))
+process_idx=\${SGE_TASK_ID}
+check="${ref_fn_prefix}_${avg_iteration}_\${process_idx}.em"
+if [[ -f "\${check}" ]]
+then
+    echo "\${check} already complete. SKIPPING"
+    exit 0
+fi
+MCRDIR=${mcr_cache_dir}/${job_name}_paral_avg_\${process_idx}
+rm -rf \${MCRDIR}
+mkdir \${MCRDIR}
+export MCR_CACHE_ROOT=\${MCRDIR}
+ptcl_start_idx=\$(((${avg_batch_size} * (process_idx - 1)) + 1))
 time ${paral_avg_exec} \\
-    \${ptcl_start_idx} \\
-    ${avg_batch_size} \\
-    ${num_ptcls} \\
-    ${iteration} \\
-    ${ptcl_motl_fn_prefix} \\
-    ${all_motl_fn_prefix} \\
-    ${ref_fn_prefix} \\
-    ${ptcl_fn_prefix} \\
-    ${wedgelist} \\
-    ${iclass} \\
-    \${batch_idx} \\
-    ${checkjobavg}
-rm -rf \${MCRDIR}/${job_name}_paral_avg_\${batch_idx}
+\${ptcl_start_idx} \\
+${avg_batch_size} \\
+${avg_iteration} \\
+${all_motl_fn_prefix} \\
+${ref_fn_prefix} \\
+${ptcl_fn_prefix} \\
+${tomo_row} \\
+${weight_fn_prefix} \\
+${weight_sum_fn_prefix} \\
+${iclass} \\
+\${process_idx} \\
+rm -rf \${MCRDIR}
 PAVGJOB
-            qsub ${job_name}_paral_avg_array_${iteration}_${job_idx}
-            array_start=$((array_start + array_max))
-        done
+        qsub ${job_name}_paral_avg_array_${avg_iteration}_${job_idx}
+        array_start=$((array_start + array_max))
+    done
 
-        echo "Parallel average in iteration number ${iteration}"
+    echo "STARTING Parallel Average in Iteration Number: ${avg_iteration}"
 ################################################################################
 #                         PARALLEL AVERAGING PROGRESS                          #
 ################################################################################
-        num_ptcl_avgs=0
-        while [[ ${num_ptcl_avgs} -lt ${num_avg_batch} ]]
-        do
-            sleep 10s
-            num_ptcl_avgs=$(($(${listdir} ./checkjobs/ | wc -l) - 2))
-            echo "Number of parallel averages generated:"
-            echo "${num_ptcl_avgs} out of ${num_avg_batch}"
-        done
-
-        ### Write out completion file
-        touch ${completion_dir}/paral_avg_${iteration}
+    ref_dir=$(dirname ${scratch_dir}/${ref_fn_prefix})
+    ref_base=$(basename ${scratch_dir}/${ref_fn_prefix})_${iteration}
+    num_complete=$(find ${ref_dir} -name "${ref_base}_*.em" | wc -l)
+    num_complete_prev=0
+    unchanged_count=0
+    while [ ${num_complete} -lt ${num_avg_batch} ]
+    do
+        num_complete=$(find ${ref_dir} -name "${ref_base}_*.em" | wc -l)
+        echo "${num_complete} parallel average out of ${num_avg_batch}"
+        if [[ ${num_complete} -eq ${num_complete_prev} ]]
+        then
+            unchanged_count=$((unchanged_count + 1))
+        else
+            unchanged_count=0
+        fi
+        num_complete_prev=${num_complete}
+        
+        if [[ ${num_complete} -gt 0 && ${unchanged_count} -gt 120 ]]
+        then
+            echo "Parallel averaging has seemed to stall"
+            echo "Please check error logs and resubmit the job if neeeded."
+            exit 1
+        fi
+        sleep 60s
+    done
+################################################################################
+#                         PARALLEL AVERAGING CLEAN UP                          #
+################################################################################
+    if [[ ! -d "${scratch_dir}/avg_${iteration}" ]]
+    then
+        mkdir "${scratch_dir}/avg_${iteration}"
     fi
 
-    ### Remove scripts
-    #rm -f ${job_name}_paral_avg_array_${iteration}_*
+    if [[ -e "${job_name}_paral_avg_array_${iteration}_1" ]]
+    then
+        mv -f "${job_name}_paral_avg_array_${iteration}"_* \
+            "${scratch_dir}/avg_${iteration}/."
+    fi
 
-    ### Clear checkjobs folder
-    mv ${scratch_dir}/checkjobs \
-        ${scratch_dir}/checkjobs_paral_avg_${iteration}
-    mkdir ${scratch_dir}/checkjobs
-    echo "DONE PARALLEL AVERAGE in iteration number ${iteration}"
+    if [[ -e "log_${job_name}_paral_avg_array_${iteration}_1" ]]
+    then
+        mv -f "log_${job_name}_paral_avg_array_${iteration}"_* \
+            "${scratch_dir}/avg_${iteration}/."
+    fi
+
+    if [[ -e "error_${job_name}_paral_avg_array_${iteration}_1" ]]
+    then
+        mv -f "error_${job_name}_paral_avg_array_${iteration}"_* \
+            "${scratch_dir}/avg_${iteration}/."
+    fi
+
+    echo "FINISHED Parallel Average in Iteration Number: ${iteration}"
 ################################################################################
 #                                FINAL AVERAGE                                 #
 ################################################################################
-    if [[ ! -f ${completion_dir}/final_avg_${iteration} ]]
-    then
-        rm -f ${scratch_dir}/checkjob_aver.txt
-
-        cat > ${job_name}_avg_${iteration} <<-AVGJOB
+    cat > ${job_name}_avg_${avg_iteration} <<-AVGJOB
 #!/bin/bash
-#$ -N ${job_name}_avg_${iteration}
+#$ -N ${job_name}_avg_${avg_iteration}
 #$ -S /bin/bash
 #$ -V
 #$ -cwd
 #$ -l mem_free=${mem_free_avg},h_vmem=${mem_max_avg}
-#$ -o log_${job_name}_avg_${iteration}
-#$ -e error_${job_name}_avg_${iteration}
+#$ -o log_${job_name}_avg_${avg_iteration}
+#$ -e error_${job_name}_avg_${avg_iteration}
 set +o noclobber
 set -e
 
@@ -450,51 +600,76 @@ ldpath=\${ldpath}:/lmb/home/public/matlab/jbriggs/sys/os/glnxa64
 ldpath=\${ldpath}:/lmb/home/public/matlab/jbriggs/sys/opengl/lib/glnxa64
 export LD_LIBRARY_PATH=\${ldpath}
 cd ${scratch_dir}
-MCRDIR=${mcr_cache_dir}/${job_name}_avg_iteration
+check="${ref_fn_prefix}_${avg_iteration}.em"
+if [[ -f "\${check}" ]]
+then
+    echo "\${check} already complete. SKIPPING"
+    exit 0
+fi
+MCRDIR=${mcr_cache_dir}/${job_name}_avg_${avg_iteration}
 rm -rf \${MCRDIR}
 mkdir \${MCRDIR}
 export MCR_CACHE_ROOT=\${MCRDIR}
 time ${avg_exec} \\
-    ${ref_fn_prefix} \\
-    ${all_motl_fn_prefix} \\
-    ${avg_batch_size} \\
-    ${num_ptcls} \\
-    ${iteration} \\
-    ${iclass}
+${ref_fn_prefix} \\
+${all_motl_fn_prefix} \\
+${weight_sum_fn_prefix} \\
+${avg_iteration} \\
+${iclass}
 rm -rf \${MCRDIR}
 AVGJOB
 
-        qsub ${job_name}_avg_${iteration}
-        echo "Final average in iteration number ${iteration}"
+    qsub ${job_name}_avg_${avg_iteration}
+    echo "STARTING Final Average in Iteration Number ${avg_iteration}"
 ################################################################################
 #                            FINAL AVERAGE PROGRESS                            #
 ################################################################################
-        check_avg=0
-        echo "Waiting for the final average ..."
-        while [[ ${check_avg} -lt 1 ]]
-        do
-            sleep 10s
-            check_avg=$(ls ${scratch_dir}/checkjob_aver.txt 2>/dev/null | wc -l)
-        done
+    unchanged_count=0
+    while [[ ! -e "${scratch_dir}/${ref_fn_prefix}_${iteration}.em" ]]
+    do
+        unchanged_count=$((unchanged_count + 1))
+        if [[ ${unchanged_count} -gt 60 ]]
+        then
+            echo "Final averaging has seemed to stall"
+            echo "Please check error logs and resubmit the job if neeeded."
+            exit 1
+        fi
+        sleep 60s
+    done
+################################################################################
+#                            FINAL AVERAGE CLEAN UP                            #
+################################################################################
+    ### Copy file to group share
+    cp ${scratch_dir}/${ref_fn_prefix}_${iteration}.em \
+        ${local_dir}/${ref_fn_prefix}_${iteration}.em
 
-        ### Write out completion file
-        touch ${completion_dir}/final_avg_${iteration}
-
-        ### Copy file to group share
-        next_iteration=$((iteration + 1))
-        cp ${scratch_dir}/${all_motl_fn_prefix}_${next_iteration}.em \
-            ${local_dir}/${all_motl_fn_prefix}_${next_iteration}.em
-        cp ${scratch_dir}/${ref_fn_prefix}_${next_iteration}.em \
-            ${local_dir}/${ref_fn_prefix}_${next_iteration}.em
+    if [[ -e "${job_name}_avg_${iteration}" ]]
+    then
+        mv ${job_name}_avg_${iteration} \
+            ${scratch_dir}/avg_${iteration}/.
     fi
 
-    ### Clean up from the iteration
-    rm -f ${job_name}_avg_${iteration}
-    rm -f ${scratch_dir}/checkjob_aver.txt
-    rm -f ${scratch_dir}/${ref_fn_prefix}_*_*.em
-    rm -f ${scratch_dir}/otherinputs/wei_*_*.em
-    rm -f ${all_motl_fn_prefix}_*_*.em
+    if [[ -e "log_${job_name}_avg_${iteration}" ]]
+    then
+        mv log_${job_name}_avg_${iteration} \
+            ${scratch_dir}/avg_${iteration}/.
+    fi
 
-    echo "AVERAGE DONE IN ITERATION NUMBER ${iteration}"
+    if [[ -e "error_${job_name}_avg_${iteration}" ]]
+    then
+        mv error_${job_name}_avg_${iteration} \
+            ${scratch_dir}/avg_${iteration}/.
+    fi
+
+    ref_dir=$(dirname ${scratch_dir}/${ref_fn_prefix})
+    ref_base=$(basename ${scratch_dir}/${ref_fn_prefix})_${avg_iteration}
+    weight_sum_dir=$(dirname ${scratch_dir}/${weight_sum_fn_prefix})
+    weight_sum_base=$(basename ${scratch_dir}/${weight_sum_fn_prefix})
+    weight_sum_base=${weight_sum_base}_${avg_iteration}
+    find ${ref_dir} -name "${ref_base}_[0-9]*.em" -delete
+    find ${weight_sum_dir} -name "${weight_sum_base}_[0-9]*.em" -delete
+
+    echo "FINISHED Final Average in Iteration Number: ${avg_iteration}"
+    echo "AVERAGE DONE IN ITERATION NUMBER ${avg_iteration}"
+    next_iteration=$((iteration + 1))
 done
-exit

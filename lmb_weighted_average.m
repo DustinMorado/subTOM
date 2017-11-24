@@ -1,7 +1,7 @@
-function lmb_averageref_weighted(avg_fn_prefix, allmotl_fn_prefix, ...
+function lmb_weighted_average(ref_fn_prefix, allmotl_fn_prefix, ...
     weight_fn_prefix, iteration, iclass)
-% LMB_AVERAGEREF_WEIGHTED joins and weights parallel average subsets.
-%   LMB_AVERAGEREF_WEIGHTED(REF_FN_PREFIX, MOTL_FN_PREFIX, WEGIHT_FN_PREFIX,
+% LMB_WEIGHTED_AVERAGE joins and weights parallel average subsets.
+%   LMB_WEIGHTED_AVERAGE(REF_FN_PREFIX, MOTL_FN_PREFIX, WEGIHT_FN_PREFIX,
 %   ITERATION, ICLASS) takes the parallel average subsets with the name prefix
 %   REF_FN_PREFIX, the allmotl file with name prefix MOTL_FN_PREFIX and
 %   weight volume subsets with the name prefix WEIGHT_FN_PREFIX to generate the
@@ -9,8 +9,8 @@ function lmb_averageref_weighted(avg_fn_prefix, allmotl_fn_prefix, ...
 %   number ITERATION. ICLASS describes which class outside of one is included in
 %   the final average and is used to correctly scale the average and weights.
 %
-% Example: LMB_AVERAGEREF_WEIGHTED('./ref/ref', './combinedmotl/allmotl', ...
-%                                  './otherinputs/wei', 3, 1)
+% Example: LMB_WEIGHTED_AVERAGE('./ref/ref', './combinedmotl/allmotl', ...
+%       './otherinputs/wei', 3, 1)
 %   Would average all average batches './ref/ref_3_*.em', average all weights
 %   './otherinputs/wei_3_*.em', using the particles with class number 1, apply
 %   the inverse averaged weight to the average and write out:
@@ -19,7 +19,7 @@ function lmb_averageref_weighted(avg_fn_prefix, allmotl_fn_prefix, ...
 %       * './otherinputs/wei_debug_3.em' - The average weight volume
 %       * './otherinputs/wei_debug_inv_3.em' - The inverse weight applied
 %
-% See also LMB_PARALLEL_CREATE_AVERAGE
+% See also LMB_PARALLEL_SUMS
 
 % Starting from one, but this version is most closly related to
 % will_averageref_weighted2.
@@ -44,7 +44,7 @@ end
 
 % Calculate the number of batches and also use this opportunity to make sure we
 % have equal number of average and weight files
-num_avg_batches = length(dir(sprintf('%s_%d_*.em', avg_fn_prefix, iteration)));
+num_avg_batches = length(dir(sprintf('%s_%d_*.em', ref_fn_prefix, iteration)));
 num_weight_batches = length(dir(sprintf('%s_%d_*.em', ...
     weight_fn_prefix, iteration)));
 
@@ -57,7 +57,7 @@ clear num_avg_batches num_weight_batches;
 
 % Run the first batch outside of a loop to initialize volumes without having to
 % know the box size of particles and weights
-avg_sum = getfield(tom_emread(sprintf('%s_%d_1.em', avg_fn_prefix, ...
+avg_sum = getfield(tom_emread(sprintf('%s_%d_1.em', ref_fn_prefix, ...
     iteration)), 'Value');
 
 weight_sum = getfield(tom_emread(sprintf('%s_%d_1.em', weight_fn_prefix, ...
@@ -66,7 +66,7 @@ weight_sum = getfield(tom_emread(sprintf('%s_%d_1.em', weight_fn_prefix, ...
 % Sum the remaining batch files
 for batch_idx = 2:num_batches
     avg_sum = avg_sum + getfield(tom_emread(sprintf('%s_%d_%d.em', ...
-        avg_fn_prefix, iteration, batch_idx)), 'Value');
+        ref_fn_prefix, iteration, batch_idx)), 'Value');
 
     weight_sum = weight_sum + getfield(tom_emread(sprintf('%s_%d_%d.em', ...
         weight_fn_prefix, iteration, batch_idx)), 'Value');
@@ -89,7 +89,7 @@ end
 
 % Calculate and write-out the raw average from batches
 average = avg_sum ./ num_good_ptcls;
-average_fn = sprintf('%s_debug_raw_%d.em', avg_fn_prefix, iteration);
+average_fn = sprintf('%s_debug_raw_%d.em', ref_fn_prefix, iteration);
 tom_emwrite(average_fn, average);
 check_em_file(average_fn, average);
 
@@ -128,11 +128,11 @@ average = tom_spheremask(average, spheremask_radius);
 average = real(tom_ifourier(ifftshift(average)));
 
 % Write-out the weighted average
-average_fn = sprintf('%s_%d.em', avg_fn_prefix, iteration);
+average_fn = sprintf('%s_%d.em', ref_fn_prefix, iteration);
 tom_emwrite(average_fn, average);
 check_em_file(average_fn, average);
 disp(['WROTE AVERAGE: ', average_fn]);
-clear average average_fn weight_average_inverse spheremask_radius avg_fn_prefix
+clear average average_fn weight_average_inverse spheremask_radius ref_fn_prefix
 clear iteration
 
 % A function to check that an EM file was correctly written.

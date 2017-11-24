@@ -1,7 +1,7 @@
-function lmb_averageref_weighted_subsets(avg_fn_prefix, allmotl_fn_prefix,...
+function lmb_weighted_average_subsets(avg_fn_prefix, allmotl_fn_prefix,...
     weight_fn_prefix, iteration, class)
-% LMB_AVERAGEREF_WEIGHTED_SUBSETS joins and weights subsets of average subsets.
-%   LMB_AVERAGEREF_WEIGHTED_SUBSETS(REF_FN_PREFIX, MOTL_FN_PREFIX,
+% LMB_WEIGHTED_AVERAGE_SUBSETS joins and weights subsets of average subsets.
+%   LMB_WEIGHTED_AVERAGE_SUBSETS(REF_FN_PREFIX, MOTL_FN_PREFIX,
 %   WEGIHT_FN_PREFIX, ITERATION, ICLASS) takes the parallel average subsets with
 %   the name prefix REF_FN_PREFIX, the allmotl file with name prefix
 %   MOTL_FN_PREFIX and weight volume subsets with the name prefix
@@ -10,14 +10,13 @@ function lmb_averageref_weighted_subsets(avg_fn_prefix, allmotl_fn_prefix,...
 %   outside of one is included in the final average and is used to correctly
 %   scale the average and weights.
 %
-% The difference between this function and LMB_AVERAGEREF_WEIGHTED is that this
+% The difference between this function and LMB_WEIGHTED_AVERAGE is that this
 % function expects there to be a number of subsets of the average subsets, so
 % that smaller and smaller populations of data are averaged, and these subsets
 % can then be used to estimate the B Factor of the structure.
 %
-% Example: LMB_AVERAGEREF_WEIGHTED_SUBSETS('./ref/ref', ...
-%                                          './combinedmotl/allmotl', ...
-%                                          './otherinputs/wei', 3, 1)
+% Example: LMB_WEIGHTED_AVERAGE_SUBSETS('./ref/ref', ...
+%       './combinedmotl/allmotl', './otherinputs/wei', 3, 1)
 %   Would average all average batches './ref/ref_3_*_subset*.em', average all 
 %   weights './otherinputs/wei_3_*_subset*.em', using the particles with class
 %   number 1, apply the inverse averaged weight to the average and write out:
@@ -26,7 +25,7 @@ function lmb_averageref_weighted_subsets(avg_fn_prefix, allmotl_fn_prefix,...
 %       * './otherinputs/wei_debug_3_subset*.em' - The average weight volumes
 %       * './otherinputs/wei_debug_inv_3_subset*.em' - The inverse weights
 %
-% See also LMB_AVERAGEREF_WEIGHTED LMB_PARALLEL_CREATE_AVERAGE_SUBSETS
+% See also LMB_WEIGHTED_AVERAGE LMB_PARALLEL_SUMS_SUBSETS
 
 % Starting from one, but this version is most closly related to
 % will_averageref_weighted2.

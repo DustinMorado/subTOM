@@ -13,8 +13,8 @@
 #
 # This subtomogram parallel averaging script uses two MATLAB compiled scripts
 # below:
-# - dustin_parallel_create_average
-# - dustin_averageref_weighted
+# - lmb_parallel_sums
+# - lmb_weighted_average
 # DRM 09-2017
 ################################################################################
 set -e           # Crash on error
@@ -38,10 +38,10 @@ exec_dir=${bstore1}/software/lmbtomopipeline/compiled
 #                                  VARIABLES                                   #
 ################################################################################
 # Parallel Averaging executable
-paral_avg_exec=${exec_dir}/lmb_parallel_create_average
+paral_avg_exec=${exec_dir}/lmb_parallel_sums
 
 # Final Averaging executable
-avg_exec=${exec_dir}/lmb_averageref_weighted
+avg_exec=${exec_dir}/lmb_weighted_average
 
 ################################################################################
 #                                MEMORY OPTIONS                                #
@@ -163,8 +163,7 @@ do
         array_end=${num_avg_batch}
     fi
 
-    cat > ${job_name}_paral_avg_array_${iteration}_${job_idx} \
-<<-PAVGJOB
+    cat > ${job_name}_paral_avg_array_${iteration}_${job_idx}<<-PAVGJOB
 #!/bin/bash
 #$ -N ${job_name}_paral_avg_array_${iteration}_${job_idx}
 #$ -S /bin/bash
@@ -235,7 +234,7 @@ do
     fi
     num_complete_prev=${num_complete}
     
-    if [[ ${unchanged_count} -gt 5 && ${num_complete} -gt 160 ]]
+    if [[ ${num_complete} -gt 0 && ${unchanged_count} -gt 120 ]]
     then
         echo "Parallel averaging has seemed to stall"
         echo "Please check error logs and resubmit the job if neeeded."
@@ -246,27 +245,27 @@ done
 ################################################################################
 #                         PARALLEL AVERAGING CLEAN UP                          #
 ################################################################################
-if [[ ! -d ${scratch_dir}/avg_${iteration} ]]
+if [[ ! -d "${scratch_dir}/avg_${iteration}" ]]
 then
-    mkdir ${scratch_dir}/avg_${iteration}
+    mkdir "${scratch_dir}/avg_${iteration}"
 fi
 
 if [[ -e "${job_name}_paral_avg_array_${iteration}_1" ]]
 then
-    mv -f ${job_name}_paral_avg_array_${iteration}_* \
-        ${scratch_dir}/avg_${iteration}/.
+    mv -f "${job_name}_paral_avg_array_${iteration}"_* \
+        "${scratch_dir}/avg_${iteration}/."
 fi
 
 if [[ -e "log_${job_name}_paral_avg_array_${iteration}_1" ]]
 then
-    mv -f log_${job_name}_paral_avg_array_${iteration}_* \
-        ${scratch_dir}/avg_${iteration}/.
+    mv -f "log_${job_name}_paral_avg_array_${iteration}"_* \
+        "${scratch_dir}/avg_${iteration}/."
 fi
 
 if [[ -e "error_${job_name}_paral_avg_array_${iteration}_1" ]]
 then
-    mv -f error_${job_name}_paral_avg_array_${iteration}_* \
-        ${scratch_dir}/avg_${iteration}/.
+    mv -f "error_${job_name}_paral_avg_array_${iteration}"_* \
+        "${scratch_dir}/avg_${iteration}/."
 fi
 
 echo "FINISHED Parallel Average in Iteration Number: ${iteration}"
@@ -298,7 +297,7 @@ then
     echo "\${check} already complete. SKIPPING"
     exit 0
 fi
-MCRDIR=${scratch_dir}/${mcr_cache_dir}/${job_name}_avg_iteration
+MCRDIR=${scratch_dir}/${mcr_cache_dir}/${job_name}_avg_${iteration}
 rm -rf \${MCRDIR}
 mkdir \${MCRDIR}
 export MCR_CACHE_ROOT=\${MCRDIR}
@@ -335,25 +334,6 @@ done
 ### Copy file to group share
 cp ${scratch_dir}/${ref_fn_prefix}_${iteration}.em \
     ${local_dir}/${ref_fn_prefix}_${iteration}.em
-
-### Clean up from the iteration
-if [[ -e "${job_name}_paral_avg_array_${iteration}_1" ]]
-then
-    mv -f ${job_name}_paral_avg_array_${iteration}_* \
-        ${scratch_dir}/avg_${iteration}/.
-fi
-
-if [[ -e "log_${job_name}_paral_avg_array_${iteration}_1" ]]
-then
-    mv -f log_${job_name}_paral_avg_array_${iteration}_* \
-        ${scratch_dir}/avg_${iteration}/.
-fi
-
-if [[ -e "error_${job_name}_paral_avg_array_${iteration}_1" ]]
-then
-    mv -f error_${job_name}_paral_avg_array_${iteration}_* \
-        ${scratch_dir}/avg_${iteration}/.
-fi
 
 if [[ -e "${job_name}_avg_${iteration}" ]]
 then

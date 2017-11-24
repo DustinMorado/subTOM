@@ -38,10 +38,10 @@ exec_dir=${bstore1}/software/lmbtomopipeline/compiled
 #                                  VARIABLES                                   #
 ################################################################################
 # Parallel Averaging executable
-paral_avg_exec=${exec_dir}/lmb_parallel_create_average_subsets
+paral_avg_exec=${exec_dir}/lmb_parallel_sums_subsets
 
 # Final Averaging executable
-avg_exec=${exec_dir}/lmb_averageref_weighted_subsets
+avg_exec=${exec_dir}/lmb_weighted_average_subsets
 
 ################################################################################
 #                                MEMORY OPTIONS                                #

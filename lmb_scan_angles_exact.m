@@ -3,49 +3,31 @@ function lmb_scan_angles_exact(ptcl_start_idx, iteration, ali_batch_size, ...
     tomo_row, weight_fn_prefix, apply_weight, align_mask_fn, apply_mask, ...
     cc_mask_fn, psi_angle_step, psi_angle_shells, phi_angle_step, ...
     phi_angle_shells, high_pass_fp, low_pass_fp, nfold, threshold, iclass)
-%% Some general notes on how this works -WW
-% In general, normalization seems to occur by subtracting the mask-weighted
-% mean value from the masked volumes in real space, then dividing by the
-% mean amplitude in Fourier space.
-%
-% The subtomograms are never shifted, only the reference and the alignment
-% mask applied to the subtomogram.
-%
-% v4 is updated with will_find_subpixel_peak for shift and CC determination.
-% WW 01-2016
-%
-% v5 is updated with code to check output motl files.
-%
-% v6 allows for optional masking of the subtomogram.
-%
-% v7 these updates not used...
-%
-% v8 options added for applying a Fourier filter mask to subtomograms and
-% using alternate wedge masks on the references.
-%
-% WW 03-2016
 %##############################################################################%
 %                                    DEBUG                                     %
 %##############################################################################%
-% ptcl_start_idx = 3;
-% iteration = 1;
-% ali_batch_size = 720;
-% ref_fn_prefix = './ref/ref';
-% all_motl_fn_prefix = './combinedmotl/allmotl';
-% ptcl_motl_fn_prefix = './motl/motl';
-% ptcl_fn_prefix = './subtomograms/subtomo';
-% psi_angle_step = 2;
-% psi_angle_shells = 5;
-% phi_angle_step = 2;
-% phi_angle_shells = 5;
-% align_mask_fn = './otherinputs/mask.em';
-% apply_mask = 1;
-% cc_mask_fn = './otherinputs/ccmask.em';
-% high_pass_fp = 1;
-% low_pass_fp = 9;
-% nfold = 1;
-% threshold = 0;
-% iclass = 1;
+%ptcl_start_idx = '1';
+%iteration = '3';
+%ali_batch_size = '100';
+%ref_fn_prefix = './ref/ref';
+%all_motl_fn_prefix = './combinedmotl/allmotl';
+%ptcl_motl_fn_prefix = './motls/motl';
+%ptcl_fn_prefix = './subtomograms/subtomo';
+%tomo_row = '5';
+%weight_fn_prefix = './otherinputs/ampspec';
+%apply_weight = '0';
+%align_mask_fn = './otherinputs/mask192_r85_h80_g3_pos9797108.em';
+%apply_mask = '0';
+%cc_mask_fn = './otherinputs/ccmask192_r5.em';
+%psi_angle_step = '2';
+%psi_angle_shells = '3';
+%phi_angle_step = '2';
+%phi_angle_shells = '4';
+%high_pass_fp = '1';
+%low_pass_fp = '10';
+%nfold = '2';
+%threshold = '0';
+%iclass = '1';
 
 %##############################################################################%
 %                                 CHECK INPUTS                                 %
@@ -71,43 +53,43 @@ if (ischar(apply_weight))
 end
 
 if (ischar(apply_mask))
-    apply_mask = str2double(apply_mask)
+    apply_mask = str2double(apply_mask);
 end
 
 if (ischar(iclass))
-    iclass = str2double(iclass)
+    iclass = str2double(iclass);
 end
 
 if (ischar(threshold))
-    threshold = str2double(threshold)
+    threshold = str2double(threshold);
 end
 
 if (ischar(nfold))
-    nfold = str2double(nfold)
+    nfold = str2double(nfold);
 end
 
 if (ischar(low_pass_fp))
-    low_pass_fp = str2double(low_pass_fp)
+    low_pass_fp = str2double(low_pass_fp);
 end
 
 if (ischar(high_pass_fp))
-    high_pass_fp = str2double(high_pass_fp)
+    high_pass_fp = str2double(high_pass_fp);
 end
 
 if (ischar(psi_angle_shells))
-    psi_angle_shells = str2double(psi_angle_shells)
+    psi_angle_shells = str2double(psi_angle_shells);
 end
 
 if (ischar(psi_angle_step))
-    psi_angle_step = str2double(psi_angle_step)
+    psi_angle_step = str2double(psi_angle_step);
 end
 
 if (ischar(phi_angle_shells))
-    phi_angle_shells = str2double(phi_angle_shells)
+    phi_angle_shells = str2double(phi_angle_shells);
 end
 
 if (ischar(phi_angle_step))
-    phi_angle_step = str2double(phi_angle_step)
+    phi_angle_step = str2double(phi_angle_step);
 end
 
 %##############################################################################%
@@ -126,14 +108,14 @@ box_size = size(align_mask);
 low_pass_mask = tom_spheremask(ones(box_size), low_pass_fp, 3);
 high_pass_mask = tom_spheremask(ones(box_size), high_pass_fp, 2);
 band_pass_mask = low_pass_mask - high_pass_mask;
-clear low_pass_mask, high_pass_mask
+clear low_pass_mask high_pass_mask;
 
 % Mask for box-edges for subtomogram if align mask is not applied
 if ~ apply_mask
     radius = floor(max(box_size) / 2) * 0.8;
     sigma = floor(max(box_size) / 2) * 0.15;
     ptcl_spheremask = tom_spheremask(ones(box_size), radius, sigma);
-    clear radius sigma
+    clear radius sigma;
 end
 
 %##############################################################################%
@@ -164,7 +146,7 @@ allmotl = getfield(tom_emread(sprintf('%s_%d.em', all_motl_fn_prefix, ...
 
 % Calculate last particle index based on size of allmotl
 ptcl_end_idx = ptcl_start_idx + ali_batch_size - 1;
-if ptcl_end_idx > size(allmotl, 2);
+if ptcl_end_idx > size(allmotl, 2)
     ptcl_end_idx = size(allmotl, 2);
 end
 
@@ -186,9 +168,20 @@ box_center = (floor(box_size / 2) + 1);
 %                                  ALIGNMENT                                   %
 %##############################################################################%
 for ptcl_idx = ptcl_start_idx:ptcl_end_idx
+    % Check if particle motl already exists and if so skip it
+    ptcl_motl_fn = sprintf('%s_%d_%d.em', ptcl_motl_fn_prefix, ptcl_idx, ...
+        iteration + 1);
+    if exist(fullfile(pwd(), ptcl_motl_fn), 'file') == 2
+        disp(sprintf('%s already exists. SKIPPING.', ptcl_motl_fn));
+        continue
+    end
+
     % Check if motl should be procesed based on class
     if allmotl(20, ptcl_idx) ~= 1 && ...
             allmotl(20, ptcl_idx) ~= iclass && iclass ~= 0
+        % Write out motl
+        tom_emwrite(ptcl_motl_fn, allmotl(:, ptcl_idx));
+        check_em_file(ptcl_motl_fn, allmotl(:, ptcl_idx));
         continue
     end
 
@@ -204,13 +197,13 @@ for ptcl_idx = ptcl_start_idx:ptcl_end_idx
     % These translations describe the translation of the reference to the
     % particle after rotation has been applied to the reference. In the
     % motl they are ordered: X-axis shift, Y-axis shift, and Z-axis shift.
-    old_ref_shift = allmotl(11:13, allmotl_idx);
+    old_ref_shift = allmotl(11:13, ptcl_idx);
 
     % Parse rotations from motl
     % These rotations describe the rotations of the reference to the
     % particle determined in alignment. In the motl they are ordered;
     % azimuthal rotation, inplane rotation, and zenithal rotation.
-    old_ref_rot = allmotl(17:19, allmotl_idx);
+    old_ref_rot = allmotl(17:19, ptcl_idx);
 
     % Initialize maximum CCC and shift vector
     max_ccc = -100000;
@@ -249,7 +242,7 @@ for ptcl_idx = ptcl_start_idx:ptcl_end_idx
     end
 
     % Normalise the Fourier transform of the particle
-    ptcl_fft = normalise_fft(ptcl_fft);
+    ptcl_fft = normalise_fftn(ptcl_fft);
 
     % Calculate the inplane search range
     min_phi = old_ref_rot(1) - (phi_angle_shells * phi_angle_step);
@@ -258,7 +251,7 @@ for ptcl_idx = ptcl_start_idx:ptcl_end_idx
     if isempty(phi_range)
         phi_range = old_ref_rot(1);
     end
-    clear min_phi, max_phi
+    clear min_phi max_phi;
 
     % Loop over the inplane search angles
     for phi = phi_range
@@ -281,7 +274,7 @@ for ptcl_idx = ptcl_start_idx:ptcl_end_idx
                 % cone search, and then apply the existing previously found
                 % rotations from which we can recalculate the determined
                 % zenithal and azimuthal angles for rotating the reference.
-                psi = psi_idx * phi_delta;
+                psi = psi_idx * psi_delta;
                 old_psi = old_ref_rot(2);
                 theta = theta_idx * psi_angle_step;
                 old_theta = old_ref_rot(3);
@@ -293,7 +286,7 @@ for ptcl_idx = ptcl_start_idx:ptcl_end_idx
                 % z-axis
                 theta = atan2d(sqrt(z_hat(1).^2 + z_hat(2).^2), z_hat(3));
                 psi = atan2(z_hat(2), z_hat(1)) + 90;
-                clear z_hat
+                clear z_hat;
 
                 % Prepare the reference for correlation
                 % Rotate reference
@@ -301,57 +294,57 @@ for ptcl_idx = ptcl_start_idx:ptcl_end_idx
 
                 % Fourier transform reference
                 ref_fft = fftshift(tom_fourier(rot_ref));
-                clear rot_ref
+                clear rot_ref;
 
                 % Apply band-pass filter and inverse FFT shift
                 ref_fft = ifftshift(ref_fft .* weight .* band_pass_mask);
 
                 % Normalise the Fourier transform of the reference
-                ref_fft = normalise_fft(ref_fft);
+                ref_fft = normalise_fftn(ref_fft);
 
                 % Calculate cross correlation and apply rotated ccmask
                 ccf = real(fftshift(tom_ifourier(ptcl_fft .* conj(ref_fft))));
                 ccf = ccf / numel(ccf);
 
                 % Determine max CCC and its location
-                if ~strcmp(cc_mask_fn, 'noshift');
+                if ~strcmp(cc_mask_fn, 'noshift')
                     % Rotate CC mask and mask the CCF
                     rot_cc_mask = tom_rotate(cc_mask, [phi, psi, theta]);
                     masked_ccf = ccf .* rot_cc_mask;
-                    clear rot_cc_mask
+                    clear rot_cc_mask;
 
                     % Find the integral coordinates and value of the peak
                     [peak_value, peak_linear_idx] = max(masked_ccf(:));
                     [x, y, z] = ind2sub(size(masked_ccf), peak_linear_idx);
                     peak_coord = [x, y, z];
-                    clear peak_linear_idx, x, y, z
+                    clear peak_linear_idx x y z;
 
                     % Find the subpixel location and value of the peak
                     [ccc, peak] = get_subpixel_peak(masked_ccf, peak_value, ...
                         peak_coord);
 
-                    clear peak_value, peak_coord
+                    clear peak_value peak_coord;
                 else
                     % Find peak at previous center for no shift
-                    peak_value = ccf(round(old_ref_shift + box_center));
-                    peak_coord = round(old_ref_shift + box_center);
+                    peak_value = ccf(round(old_ref_shift + box_center))
+                    peak_coord = round(old_ref_shift + box_center)
                     [ccc, peak] = get_subpixel_peak(ccf, peak_value, ...
                         peak_coord);
 
-                    clear peak_value, peak_coord
+                    clear peak_value peak_coord;
                 end
 
                 % If current max ccc is greater than the overall maximum, update
                 % the maximum ccc, Euler angles, and shifts
                 if ccc > max_ccc
                     max_ccc = ccc;
-                    new_ref_rot = [phi, psi, theta]
+                    new_ref_rot = [phi, psi, theta];
                     new_ref_shift = peak - box_center;
                 end
             end
         end
     end
-    
+
     % Update motl with new values for max CCC, shifts, rotations and class
     allmotl(1, ptcl_idx) = max_ccc;
     allmotl(11:13, ptcl_idx) = new_ref_shift;
@@ -363,9 +356,6 @@ for ptcl_idx = ptcl_start_idx:ptcl_end_idx
     end
 
     % Write out motl
-    ptcl_motl_fn = sprintf('%s_%d_%d.em', ptcl_motl_fn_prefix, ptcl_idx, ...
-        iteration);
-
     tom_emwrite(ptcl_motl_fn, allmotl(:, ptcl_idx));
     check_em_file(ptcl_motl_fn, allmotl(:, ptcl_idx));
 end
@@ -375,7 +365,7 @@ function output_vol = subtract_mean_under_mask(input_vol, mask)
     masked_mean = sum(input_vol(:)) / sum(mask(:));
     masked_mean_vol = masked_mean * mask;
     output_vol = input_vol - masked_mean_vol;
-    clear masked_mean, masked_mean_vol
+    clear masked_mean masked_mean_vol;
 
 %% Normalise an unshifted Fourier volume
 % Sets the DC component of the spectrum to 0 and then divides by the mean
@@ -383,11 +373,11 @@ function output_vol = subtract_mean_under_mask(input_vol, mask)
 function output_vol = normalise_fftn(input_vol)
     output_vol = input_vol;
     output_vol(1, 1, 1) = 0;
-    
+
     magnitude = output_vol .* conj(output_vol);
     magnitude = sqrt(sum(magnitude(:)));
     output_vol = (numel(output_vol) * output_vol) / magnitude;
-    clear magnitude
+    clear magnitude;
 
 %% Find sub-pixel peak
 % A function to take in a given volume, find the pixel with highest value,
@@ -410,13 +400,16 @@ try
           - ccf(peak_coord(1), peak_coord(2), peak_coord(3) - 1)) / 2;
 
     dxx =   ccf(peak_coord(1) + 1, peak_coord(2), peak_coord(3)) ...
-          + ccf(peak_coord(1) - 1, peak_coord(2), peak_coord(3)) - (2 * peak);
+          + ccf(peak_coord(1) - 1, peak_coord(2), peak_coord(3)) ...
+          - (2 * peak_value);
 
     dyy =   ccf(peak_coord(1), peak_coord(2) + 1, peak_coord(3)) ...
-          + ccf(peak_coord(1), peak_coord(2) - 1, peak_coord(3)) - (2 * peak);
+          + ccf(peak_coord(1), peak_coord(2) - 1, peak_coord(3)) ...
+          - (2 * peak_value);
 
     dzz =   ccf(peak_coord(1), peak_coord(2), peak_coord(3) + 1) ...
-          + ccf(peak_coord(1), peak_coord(2), peak_coord(3) - 1) - (2 * peak);
+          + ccf(peak_coord(1), peak_coord(2), peak_coord(3) - 1) ...
+          - (2 * peak_value);
 
     dxy = (  ccf(peak_coord(1) + 1, peak_coord(2) + 1, peak_coord(3)) ...
            + ccf(peak_coord(1) - 1, peak_coord(2) - 1, peak_coord(3)) ...
@@ -440,25 +433,22 @@ try
     bb = [-dx; -dy; -dz];
 
     det = linsolve(aa, bb);
-    detx = det(1);
-    dety = det(2);
-    detz = det(3);
-    
-    if abs(det(1)) > 1 || abs(det(2)) > 1 || abs(det(3)) > 1 
-        peak = peak_coord
+
+    if abs(det(1)) > 1 || abs(det(2)) > 1 || abs(det(3)) > 1
+        peak = peak_coord;
         value = peak_value;
     else
-        peak_coord = [peak_coord(1) + det(1), ...
-                      peak_coord(2) + det(2), ...
-                      peak_coord(3) + det(3)];
+        peak = [peak_coord(1) + det(1), ...
+                peak_coord(2) + det(2), ...
+                peak_coord(3) + det(3)];
 
-        value =   peak_value + (dx * det(1)) + (dy * det(2)) + (dx * det(3)) ...
+        value =   peak_value + (dx * det(1)) + (dy * det(2)) + (dz * det(3)) ...
                 + (dxx * (det(1)^2) / 2) + (dyy * (det(2)^2) / 2) ...
                 + (dzz * (det(3)^2) / 2) + (det(1) * det(2) * dxy) ...
                 + (det(1) * det(3) * dxz)  + (det(2) * det(3) * dyz);
     end
-catch    
-    peak = peak_coord
+catch
+    peak = peak_coord;
     value = peak_value;
 end
 
@@ -469,8 +459,8 @@ function check_em_file(em_fn, em_data)
         try
             % If this fails, catch command is run
             tom_emread(em_fn);
-            break;
+            break
         catch
-            tom_emwrite(em_fn, em_data)
+            tom_emwrite(em_fn, em_data);
         end
     end

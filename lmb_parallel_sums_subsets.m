@@ -1,8 +1,38 @@
-function lmb_parallel_create_average_subsets(ptcl_start_idx, avg_batch_size, ...
+function lmb_parallel_sums_subsets(ptcl_start_idx, avg_batch_size, ...
     iteration, allmotl_fn_prefix, ref_fn_prefix, ptcl_fn_prefix, tomo_row, ...
     weight_fn_prefix, weight_sum_fn_prefix, iclass, process_idx)
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Info
+% LMB_PARALLEL_SUMS_SUBSETS creates subsets of raw sums and weight sum subsets.
+%   LMB_PARALLEL_SUMS_SUBSETS(PTCL_START_IDX, AVG_BATCH_SIZE, ITERATION,
+%   ALLMOTL_FN_PREFIX, REF_FN_PREFIX, PTCL_FN_PREFIX, TOMO_ROW,
+%   WEIGHT_FN_PREFIX, WEIGHT_SUM_FN_PREFIX, ICLASS, PROCESS_IDX) aligns a subset
+%   of particles using the rotations and shifts in ALLMOTL_FN_PREFIX_ITERATION
+%   starting from PTCL_START_IDX and with a subset size of AVG_BATCH_SIZE to
+%   make a raw particle sum REF_FN_PREFIX_ITERATION_PROCESS_IDX. Fourier weight
+%   volumes with name prefix WEIGHT_FN_PREFIX will also be aligned and summed to
+%   make a weight sum WEIGHT_SUM_FN_PREFIX_ITERATION_PROCESS_IDX. TOMO_ROW
+%   describes which row of the motl file is used to determine the correct
+%   tomogram fourier weight file. ICLASS describes which class outside of one is
+%   included in the averaging. 
+%
+% The difference between this function and LMB_PARALLEL_SUMS is that this
+% function creates a number of subsets of the particle and weight sum subsets,
+% so that smaller and smaller populations of data are summed, and these
+% subsets can then be used to estimate the B Factor of the structure.
+%
+% Example: LMB_PARALLEL_SUMS_SUBSETS(1, 100, 3, 'combinedmotl/allmotl', ...
+%       'ref/ref', 'subtomograms/subtomo', 5, 'otherinputs/ampspec', ...
+%       'otherinputs/wei', 1, 1)
+%   Would sum the first hundred particles, using particles with class number 1,
+%   and the first hundred corresponding weight volumes using the tomogram number
+%   stored in the fifth row of the allmotl file 'combinedmotl/allmotl_3.em'. The
+%   function will write out the follwing files:
+%       * 'ref/ref_3_1_subset*.em' - The subsets of the first subset of sums
+%                                    generated in parallel
+%       * 'otherinputs/wei_3_1_subset*.em' - The subsets of the corresponding
+%                                            subset sum of weights
+%
+% See also LMB_PARALLEL_SUMS LMB_WEIGHTED_AVERAGE_SUBSETS
+
 % Just starting from one, for averaging but closest to
 % will_parallel_create_average4.
 %
@@ -11,8 +41,11 @@ function lmb_parallel_create_average_subsets(ptcl_start_idx, avg_batch_size, ...
 % amplitude spectrum volume of the tomogram the particle was extracted from.
 % There is a script to generate this volume from noise positions in the
 % tomograms.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Initialize numeric inputs
+%
+% DRM 11-2017
+% ==============================================================================
+
+% Evaluate numeric inputs
 if ischar(ptcl_start_idx)
     ptcl_start_idx = str2double(ptcl_start_idx);
 end
