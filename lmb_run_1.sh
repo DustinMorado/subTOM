@@ -330,7 +330,7 @@ ALIJOB
         fi
         num_complete_prev=${num_complete}
 
-        if [[ ${num_complete} - gt 0 && ${unchanged_count} -gt 120 ]]
+        if [[ ${num_complete} -gt 0 && ${unchanged_count} -gt 120 ]]
         then
             echo "Alignment has seemed to stall"
             echo "Please check error logs and resubmit the job if neeeded."
