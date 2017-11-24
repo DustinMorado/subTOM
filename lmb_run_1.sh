@@ -448,8 +448,8 @@ JOINJOB
 
     ptcl_motl_dir=$(dirname ${scratch_dir}/${ptcl_motl_fn_prefix})
     ptcl_motl_base=$(basename ${scratch_dir}/${ptcl_motl_fn_prefix})
-    find ${ptcl_motl_dir} -name "${ptcl_motl_base}_[0-9]*_${iteration}.em" \
-        -delete
+    find ${ptcl_motl_dir} -name \
+        "${ptcl_motl_base}_[0-9]*_$((iteration + 1)).em" -delete
 
     echo "FINISHED MOTL Join in Iteration Number: ${iteration}"
 ################################################################################
