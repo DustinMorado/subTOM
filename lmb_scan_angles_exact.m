@@ -172,7 +172,7 @@ for ptcl_idx = ptcl_start_idx:ptcl_end_idx
     ptcl_motl_fn = sprintf('%s_%d_%d.em', ptcl_motl_fn_prefix, ptcl_idx, ...
         iteration + 1);
     if exist(fullfile(pwd(), ptcl_motl_fn), 'file') == 2
-        disp(sprintf('%s already exists. SKIPPING.', ptcl_motl_fn));
+        fprintf('%s already exists. SKIPPING.', ptcl_motl_fn);
         continue
     end
 
@@ -186,9 +186,9 @@ for ptcl_idx = ptcl_start_idx:ptcl_end_idx
     end
 
     % Check wedge and generated mask if needed
-    if current_weight ~= allmotl(5, ptcl_idx)
+    if current_weight ~= allmotl(tomo_row, ptcl_idx)
         % Set current weight and read in weight volume
-        current_weight = allmotl(5, ptcl_idx);
+        current_weight = allmotl(tomo_row, ptcl_idx);
         weight = getfield(tom_emread(sprintf('%s_%d.em', weight_fn_prefix, ...
             current_weight)), 'Value');
     end
@@ -261,7 +261,7 @@ for ptcl_idx = ptcl_start_idx:ptcl_end_idx
                 psi_range = 0;
             else
                 psi_delta = psi_angle_step / ...
-                    sin(deg2rad(theta_idx * psi_angle_step));
+                    sind(theta_idx * psi_angle_step);
 
                 psi_range = 0:(ceil(360 / psi_delta) - 1);
                 % Make psi_delta equidistant again (from PYTOM)
@@ -285,7 +285,7 @@ for ptcl_idx = ptcl_start_idx:ptcl_end_idx
                 % Determine the spherical coordinates of the reference's new
                 % z-axis
                 theta = atan2d(sqrt(z_hat(1).^2 + z_hat(2).^2), z_hat(3));
-                psi = atan2(z_hat(2), z_hat(1)) + 90;
+                psi = atan2d(z_hat(2), z_hat(1)) + 90;
                 clear z_hat;
 
                 % Prepare the reference for correlation
@@ -326,8 +326,8 @@ for ptcl_idx = ptcl_start_idx:ptcl_end_idx
                     clear peak_value peak_coord;
                 else
                     % Find peak at previous center for no shift
-                    peak_value = ccf(round(old_ref_shift + box_center))
-                    peak_coord = round(old_ref_shift + box_center)
+                    peak_value = ccf(round(old_ref_shift + box_center));
+                    peak_coord = round(old_ref_shift + box_center);
                     [ccc, peak] = get_subpixel_peak(ccf, peak_value, ...
                         peak_coord);
 
