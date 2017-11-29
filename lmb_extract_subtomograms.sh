@@ -1,16 +1,13 @@
 #!/bin/bash
 ################################################################################
-# This script finds and extracts noise particles from tomograms and generates
-# amplitude spectrum volumes for used in Fourier reweighting of particles in the
-# subtomogram alignment and averaging routines.
+# This script takes an input number of cores, and each core extract one tomogram
+# at a time as written in a specified row of the allmotl. Parallelization works
+# by writing a start file upon openinig of a tomo, and a completion file. After
+# tomogram extraction, it moves on to the next tomogram that hasn't been
+# started.
 #
-# It also generates a noise motl file so that the noise positions found in
-# binned tomograms can then be used later on in less or unbinned tomograms and
-# after some positions have been cleaned, which could make it more difficult to
-# pick non-structural noise in the tomogram.
-#
-# This script uses one MATLAB compiled script below:
-# - lmb_extract_noise
+# This script uses  MATLAB compiled script below:
+# - 
 # DRM 11-2017
 ################################################################################
 set -e           # Crash on error
@@ -18,71 +15,66 @@ set -o nounset   # Crash on unset variables
 ################################################################################
 #                                 DIRECTORIES                                  #
 ################################################################################
-# Absolute path to the folder where the tomograms are stored
-tomogram_dir="${bstore1}/VMV013/20170528/data/tomos/bin8"
+# Folders where the tomograms are stored
+tomogram_dir="${bstore1}/VMV013/20170404/data/tomos/bin2"
 
-# Absolute path to the root folder for subtomogram extraction.
-# Other paths are relative to this one.
-scratch_dir="${nfs6}/VMV013/20170528/subtomo/bin8"
+# Root folder for subtomogram extraction. Other paths are relative to this one.
+scratch_dir="${nfs6}/VMV013/20170404/subtomo/bin2/even"
 
-# Absolute path to the MCR directory for each job
+# MCR directory for each job
 mcr_cache_dir="${scratch_dir}/mcr"
 
-# Absolute path to the directory for executables
+# Directory for executables
 exec_dir=${bstore1}/software/lmbtomopipeline/compiled
 
 ################################################################################
 #                                  VARIABLES                                   #
 ################################################################################
-# Noise extraction executable
-noise_extract_exe=${exec_dir}/lmb_extract_noise
+# subtomogram extraction executable
+extract_exe=${exec_dir}/lmb_extract_subtomograms
 
 ################################################################################
 #                                MEMORY OPTIONS                                #
 ################################################################################
 # The amount of memory your job requires
-mem_free='10G'
+memfree='10G'
 
 # The upper bound on the amount of memory your job is allowed to use
-mem_max='15G'
+memmax='15G'
 
 ################################################################################
 #                              OTHER LSF OPTIONS                               #
 ################################################################################
 # BE CAREFUL THAT THE NAME DOESN'T CORRESPOND TO THE BEGINNING OF ANY OTHER FILE
-job_name='VMV013_noise_extract'
+job_name='VMV013_tomo_extract'
 
 ################################################################################
 #                                                                              #
-#                      NOISE EXTRACTION WORKFLOW OPTIONS                       #
+#                    SUBTOMOGRAM EXTRACTION WORKFLOW OPTIONS                   #
 #                                                                              #
 ################################################################################
 #                           PARALLELIZATION OPTIONS                            #
 ################################################################################
-# Number of cores to process on
+## Number of cores to process on
 num_cores=16
 
 ################################################################################
 #                                 FILE OPTIONS                                 #
 ################################################################################
 # Relative path to allmotl file from root folder.
-all_motl_fn="combinedmotl/allmotl_1.em"
+all_motl_fn='combinedmotl/allmotl_1.em'
 
-# Relative path to noisemotl filename. If the file doesn't exist a new one will
-# be written with the determined noise positions. If a previously existing noise
-# motl exists it will be used instead. If the number of noise particles
-# requested has been increased new particles will be found and added and the
-# file will be updated.
-noise_motl_fn="combinedmotl/noisemotl.em"
+# Relative path and filename for output subtomograms
+subtomo_fn_prefix='subtomograms/subtomo'
 
-# Relative path and filename prefix for output amplitude spectrums
-ampspec_fn_prefix="otherinputs/ampspec"
+# Relative path and filename for stats .csv files.
+stats_fn_prefix='subtomo_stats'
 
 # Path and root of starting check file name
-check_start_fn_prefix="complete/noise_checkstart"
+check_start_fn_prefix='complete/checkstart'
 
 # Path and root of completion check file name
-check_done_fn_prefix="complete/noise_checkdone"
+check_done_fn_prefix='complete/checkdone'
 
 ################################################################################
 #                              TOMOGRAM OPTIONS                                #
@@ -103,8 +95,9 @@ num_tomos=16
 # Size of subtomogram in pixels
 subtomogram_size=36
 
-# Number of noise particles to extract
-num_noise=100
+# Leading zeros for subtomograms, for AV3, use 1. Other numbers are useful for
+# DYNAMO.
+subtomo_digits=1
 ################################################################################
 #                                                                              #
 #                                END OF OPTIONS                                #
@@ -135,7 +128,7 @@ then
     rm -f log_${job_name}_array
 fi
 
-if [[ ${mem_free%G} -ge 24 ]]; then
+if [[ ${memfree%G} -ge 24 ]]; then
     dedmem=',dedicated=12'
 else
     dedmem=''
@@ -148,7 +141,7 @@ cat > ${job_name}_array <<-JOBDATA
 #$ -S /bin/bash
 #$ -V
 #$ -cwd
-#$ -l mem_free=${mem_free},h_vmem=${mem_max}${dedmem}
+#$ -l mem_free=${memfree},h_vmem=${memmax}${dedmem}
 #$ -e error_${job_name}_array
 #$ -o log_${job_name}_array
 #$ -t 1-${num_cores}
@@ -162,39 +155,41 @@ ldpath="/lmb/home/public/matlab/jbriggs/bin/glnxa64:\${ldpath}"
 ldpath="/lmb/home/public/matlab/jbriggs/runtime/glnxa64:\${ldpath}"
 export LD_LIBRARY_PATH=\${ldpath}
 cd ${scratch_dir}
-rm -rf ${mcr_cache_dir}/${job_name}_\${SGE_TASK_ID}
-mkdir ${mcr_cache_dir}/${job_name}_\${SGE_TASK_ID}
-export MCR_CACHE_ROOT="${mcr_cache_dir}/${job_name}_\${SGE_TASK_ID}"
-time ${noise_extract_exe} \\
+rm -rf ${scratch_dir}/${mcrcachedir}/${job_name}_\${SGE_TASK_ID}
+mkdir ${scratch_dir}/${mcrcachedir}/${job_name}_\${SGE_TASK_ID}
+export MCR_CACHE_ROOT="${scratch_dir}/${mcrcachedir}/${job_name}_\${SGE_TASK_ID}"
+time ${extract_exe} \\
     ${tomogram_dir} \\
     ${tomo_digits} \\
     ${scratch_dir} \\
     ${tomo_row} \\
-    ${ampspec_fn_prefix} \\
+    ${subtomo_fn_prefix} \\
+    ${subtomo_digits} \\
     ${all_motl_fn} \\
-    ${noise_motl_fn} \\
-    ${subtomogram_size} \\
-    ${num_noise} \\
+    ${subtomosize} \\
+    ${stats_fn_prefix} \\
     ${check_start_fn_prefix} \\
     ${check_done_fn_prefix}
-rm -rf ${mcr_cache_dir}/${job_name}_\${SGE_TASK_ID}
+rm -rf ${scratch_dir}/${mcrcachedir}/${job_name}_\${SGE_TASK_ID}
 JOBDATA
 
 ##### SEND OUT JOB ##########################
 qsub ./${job_name}_array
 
-echo "Parallel noise extraction submitted"
+echo "Parallel tomogram extraction submitted"
 
 # Reset counter
 check_start=0
 check_done=0
+check_start_dir=$(dirname ${scratch_dir}/${check_start_fn_preix})
+check_start_base=$(basename ${scratch_dir}/${check_start_fn_prefix})
+check_done_dir=$(dirname ${scratch_dir}/${check_done_fn_preix})
+check_done_base=$(basename ${scratch_dir}/${check_done_fn_prefix})
 # Wait for jobs to finish
 while [ ${check_done} -lt ${num_cores} ]; do
     sleep 60s
-    check_start=$(ls ${check_start_fn_prefix}_* 2>&1 |\
-                  grep -v '^ls:' | wc -w)
+    check_start=$(find ${check_start_dir} -name "${check_start_base}_*" | wc -l)
     echo "Number of tomograms started ${check_start} out of ${num_tomos}"
-    check_done=$(ls ${check_done_fn_prefix}_* 2>&1 |\
-                 grep -v '^ls:' | wc -w)
+    check_done=$(find ${check_done_dir} -name "${check_done_base}_*" | wc -l)
     echo "Number of tomograms extracted ${check_done} out of ${num_tomos}"
 done
