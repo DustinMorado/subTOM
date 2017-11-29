@@ -149,10 +149,11 @@ for tomo_idx = 1:n_tomos
         end
 
         % Extract the subtomograms for each tomogram
-        noise_ampspec_name = sprintf('%s_%d.em', noisename, tomo_idx);
+        noise_ampspec_name = sprintf('%s_%d.em', noisename, tomo_num);
         noise_ampspec = extract_noise_ampspec(subtomosize, vol.Value,...
                                               tomo_noise_motl);
         tom_emwrite(noise_ampspec_name, noise_ampspec);
+        check_em_file(noise_ampspec_name, noise_ampspec);
         % Cleanup
         clear vol
         system(['touch ', checkdonename, '_', tomo_str]);
@@ -161,6 +162,7 @@ end
 
 if write_noise_motl
     tom_emwrite(noisemotlfilename, noise_motl); 
+    check_em_file(noisemotlfilename, noise_motl); 
 end
 
 function noise_ampspec_avg = extract_noise_ampspec(...
@@ -187,3 +189,16 @@ end
 
 noise_ampspec_avg = noise_ampspec_sum ./ num_noise;
 noise_ampspec_avg = noise_ampspec_avg ./ max(noise_ampspec_avg(:));
+
+%% check_em_file
+% A function to check that an EM file was correctly written.
+function check_em_file(em_fn, em_data)
+    while true
+        try
+            % If this fails, catch command is run
+            tom_emread(em_fn);
+            break
+        catch
+            tom_emwrite(em_fn, em_data);
+        end
+    end
