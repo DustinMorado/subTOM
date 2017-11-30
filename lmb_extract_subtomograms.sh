@@ -181,9 +181,9 @@ echo "Parallel tomogram extraction submitted"
 # Reset counter
 check_start=0
 check_done=0
-check_start_dir=$(dirname ${scratch_dir}/${check_start_fn_preix})
+check_start_dir=$(dirname ${scratch_dir}/${check_start_fn_prefix})
 check_start_base=$(basename ${scratch_dir}/${check_start_fn_prefix})
-check_done_dir=$(dirname ${scratch_dir}/${check_done_fn_preix})
+check_done_dir=$(dirname ${scratch_dir}/${check_done_fn_prefix})
 check_done_base=$(basename ${scratch_dir}/${check_done_fn_prefix})
 # Wait for jobs to finish
 while [ ${check_done} -lt ${num_cores} ]; do

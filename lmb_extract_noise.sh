@@ -188,13 +188,15 @@ echo "Parallel noise extraction submitted"
 # Reset counter
 check_start=0
 check_done=0
+check_start_dir=$(dirname ${scratch_dir}/${check_start_fn_prefix})
+check_start_base=$(basename ${scratch_dir}/${check_start_fn_prefix})
+check_done_dir=$(dirname ${scratch_dir}/${check_done_fn_prefix})
+check_done_base=$(basename ${scratch_dir}/${check_done_fn_prefix})
 # Wait for jobs to finish
 while [ ${check_done} -lt ${num_cores} ]; do
     sleep 60s
-    check_start=$(ls ${check_start_fn_prefix}_* 2>&1 |\
-                  grep -v '^ls:' | wc -w)
+    check_start=$(find ${check_start_dir} -name "${check_start_base}_*" | wc -l)
     echo "Number of tomograms started ${check_start} out of ${num_tomos}"
-    check_done=$(ls ${check_done_fn_prefix}_* 2>&1 |\
-                 grep -v '^ls:' | wc -w)
+    check_done=$(find ${check_done_dir} -name "${check_done_base}_*" | wc -l)
     echo "Number of tomograms extracted ${check_done} out of ${num_tomos}"
 done
