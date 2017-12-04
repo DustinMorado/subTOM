@@ -152,7 +152,7 @@ weight_sum_fn_prefix='otherinputs/new_test_wei'
 tomo_row=5
 
 # Apply weight to subtomograms (1=yes, 0=no)
-apply_weight=1
+apply_weight=0
 
 # Apply mask to subtomograms (1=yes, 0=no)
 apply_mask=1
@@ -208,6 +208,21 @@ fi
 if [[ ! -d ${mcr_cache_dir} ]]
 then
     mkdir -p ${mcr_cache_dir}
+fi
+
+if [[ ! -d $(dirname ${local_dir}/${ref_fn_prefix}) ]]
+then
+    mkdir -p $(dirname ${local_dir}/${ref_fn_prefix})
+fi
+
+if [[ ! -d $(dirname ${local_dir}/${all_motl_fn_prefix}) ]]
+then
+    mkdir -p $(dirname ${local_dir}/${all_motl_fn_prefix})
+fi
+
+if [[ ! -d $(dirname ${local_dir}/${weight_sum_fn_prefix}) ]]
+then
+    mkdir -p $(dirname ${local_dir}/${weight_sum_fn_prefix})
 fi
 
 # Check number of jobs
@@ -315,13 +330,13 @@ ALIJOB
     motl_dir=$(dirname ${scratch_dir}/${ptcl_motl_fn_prefix})
     motl_base=$(basename ${scratch_dir}/${ptcl_motl_fn_prefix})
     num_complete=$(find ${motl_dir} -name \
-	"${motl_base}_*_$((iteration + 1)).em" | wc -l)
+        "${motl_base}_*_$((iteration + 1)).em" | wc -l)
     num_complete_prev=0
     unchanged_count=0
     while [[ ${num_complete} -lt ${num_ptcls} ]]
     do
         num_complete=$(find ${motl_dir} -name \
-	    "${motl_base}_*_$((iteration + 1)).em" | wc -l)
+            "${motl_base}_*_$((iteration + 1)).em" | wc -l)
         echo "${num_complete} aligned out of ${num_ptcls}"
         if [[ ${num_complete} -eq ${num_complete_prev} ]]
         then
@@ -450,7 +465,7 @@ JOINJOB
     ptcl_motl_dir=$(dirname ${scratch_dir}/${ptcl_motl_fn_prefix})
     ptcl_motl_base=$(basename ${scratch_dir}/${ptcl_motl_fn_prefix})
     find ${ptcl_motl_dir} -name \
-	"${ptcl_motl_base}_[0-9]*_$((iteration + 1)).em" -delete
+        "${ptcl_motl_base}_[0-9]*_$((iteration + 1)).em" -delete
 
     echo "FINISHED MOTL Join in Iteration Number: ${iteration}"
 ################################################################################
@@ -643,6 +658,12 @@ AVGJOB
     ### Copy file to group share
     cp ${scratch_dir}/${ref_fn_prefix}_${avg_iteration}.em \
         ${local_dir}/${ref_fn_prefix}_${avg_iteration}.em
+
+    cp ${scratch_dir}/${all_motl_fn_prefix}_${avg_iteration}.em \
+        ${local_dir}/${all_motl_fn_prefix}_${avg_iteration}.em
+
+    cp ${scratch_dir}/${weight_sum_fn_prefix}_debug_${avg_iteration}.em \
+        ${local_dir}/${weight_sum_fn_prefix}_debug_${avg_iteration}.em
 
     if [[ -e "${job_name}_avg_${avg_iteration}" ]]
     then
