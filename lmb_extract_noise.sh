@@ -57,12 +57,6 @@ job_name='VMV013_noise_extract'
 #                      NOISE EXTRACTION WORKFLOW OPTIONS                       #
 #                                                                              #
 ################################################################################
-#                           PARALLELIZATION OPTIONS                            #
-################################################################################
-# Number of cores to process on
-num_cores=16
-
-################################################################################
 #                                 FILE OPTIONS                                 #
 ################################################################################
 # Relative path to allmotl file from root folder.
@@ -73,24 +67,14 @@ all_motl_fn="combinedmotl/allmotl_1.em"
 # motl exists it will be used instead. If the number of noise particles
 # requested has been increased new particles will be found and added and the
 # file will be updated.
-noise_motl_fn="combinedmotl/noisemotl.em"
+noise_motl_fn_prefix="combinedmotl/noisemotl"
 
 # Relative path and filename prefix for output amplitude spectrums
 ampspec_fn_prefix="otherinputs/ampspec"
 
-# Path and root of starting check file name
-check_start_fn_prefix="complete/noise_checkstart"
-
-# Path and root of completion check file name
-check_done_fn_prefix="complete/noise_checkdone"
-
 ################################################################################
 #                              TOMOGRAM OPTIONS                                #
 ################################################################################
-# Number of digits in the tomogram numbers
-# (tomograms should be named tomonumber.rec)
-tomo_digits=2
-
 # Row number of allmotl for tomogram numbers.
 tomo_row=7
 
@@ -103,6 +87,21 @@ num_tomos=16
 # Size of subtomogram in pixels
 subtomogram_size=36
 
+# The amount of overlap to allow between noise particles and subtomograms
+# Numbers greater than 1 will allow for larger than a box size spacing between
+# noise and a particle. Numbers less than 1 will allow for some overlap between
+# noise and a particle. For example 0.5 will allow 50% overlap between the noise
+# and the particle, which can be useful when the boxsize is much larger than the
+# particle.
+ptcl_overlap_factor=1;
+
+# The amount of overlap to allow between noise particles
+# Numbers greater than 1 will allow for larger than a box size spacing between
+# noise. Numbers less than 1 will allow for some overlap between noise. For
+# example 0.25 will allow 75% overlap between the noise, which can be useful when
+# there is not much space for enough noise.
+noise_overlap_factor=1;
+
 # Number of noise particles to extract
 num_noise=100
 ################################################################################
@@ -110,11 +109,6 @@ num_noise=100
 #                                END OF OPTIONS                                #
 #                                                                              #
 ################################################################################
-if [[ ! -d "$(dirname ${scratch_dir}/${check_start_fn_prefix})" ]]
-then
-    mkdir "$(dirname ${scratch_dir}/${check_start_fn_prefix})"
-fi
-
 if [[ ! -d "${mcr_cache_dir}" ]]
 then
     mkdir "${mcr_cache_dir}"
@@ -151,7 +145,7 @@ cat > ${job_name}_array <<-JOBDATA
 #$ -l mem_free=${mem_free},h_vmem=${mem_max}${dedmem}
 #$ -e error_${job_name}_array
 #$ -o log_${job_name}_array
-#$ -t 1-${num_cores}
+#$ -t 1-${num_tomos}
 set +C # Turn off prevention of redirection file overwriting
 set -e # Turn on exit on error
 set -f # Turn off filename expansion (globbing)
@@ -167,16 +161,16 @@ mkdir ${mcr_cache_dir}/${job_name}_\${SGE_TASK_ID}
 export MCR_CACHE_ROOT="${mcr_cache_dir}/${job_name}_\${SGE_TASK_ID}"
 time ${noise_extract_exe} \\
     ${tomogram_dir} \\
-    ${tomo_digits} \\
     ${scratch_dir} \\
     ${tomo_row} \\
     ${ampspec_fn_prefix} \\
     ${all_motl_fn} \\
-    ${noise_motl_fn} \\
+    ${noise_motl_fn_prefix} \\
     ${subtomogram_size} \\
+    ${ptcl_overlap_factor} \\
+    ${noise_overlap_factor} \\
     ${num_noise} \\
-    ${check_start_fn_prefix} \\
-    ${check_done_fn_prefix}
+    \${SGE_TASK_ID}
 rm -rf ${mcr_cache_dir}/${job_name}_\${SGE_TASK_ID}
 JOBDATA
 
@@ -186,17 +180,18 @@ qsub ./${job_name}_array
 echo "Parallel noise extraction submitted"
 
 # Reset counter
-check_start=0
-check_done=0
-check_start_dir=$(dirname ${scratch_dir}/${check_start_fn_prefix})
-check_start_base=$(basename ${scratch_dir}/${check_start_fn_prefix})
-check_done_dir=$(dirname ${scratch_dir}/${check_done_fn_prefix})
-check_done_base=$(basename ${scratch_dir}/${check_done_fn_prefix})
+check_dir=$(dirname ${scratch_dir}/${ampspec_fn_prefix})
+check_base=$(basename ${scratch_dir}/${ampspec_fn_prefix})
+check_count=$(find ${check_dir} -name "${check_base}_*.em" | wc -l)
 # Wait for jobs to finish
-while [ ${check_done} -lt ${num_cores} ]; do
+while [ ${check_count} -lt ${num_tomos} ]; do
+    check_count=$(find ${check_dir} -name "${check_base}_*.em" | wc -l)
+    echo "Number of amplitude spectra complete ${check_count} / ${num_tomos}"
     sleep 60s
-    check_start=$(find ${check_start_dir} -name "${check_start_base}_*" | wc -l)
-    echo "Number of tomograms started ${check_start} out of ${num_tomos}"
-    check_done=$(find ${check_done_dir} -name "${check_done_base}_*" | wc -l)
-    echo "Number of tomograms extracted ${check_done} out of ${num_tomos}"
+done
+
+for pos_idx in "${scratch_dir}/${noise_motl_fn_prefix}"_*.pos
+do
+    point2model -ScatteredPoints -CircleSize 5 -LineWidthIn2D 2 \
+        "${pos_idx}" "${pos_idx/%pos/mod}"
 done
