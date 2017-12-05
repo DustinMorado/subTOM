@@ -63,7 +63,7 @@ all_motl_fn='combinedmotl/allmotl_2_1.em'
 subtomo_fn_prefix='subtomograms/subtomo'
 
 # Relative path and filename for stats .csv files.
-stats_fn_prefix='subtomograms/stats'
+stats_fn_prefix='subtomograms/stats/subtomo_stats'
 
 ################################################################################
 #                              TOMOGRAM OPTIONS                                #
@@ -91,6 +91,11 @@ subtomo_digits=1
 if [[ ! -d "${mcr_cache_dir}" ]]
 then
     mkdir "${mcr_cache_dir}"
+fi
+
+if [[ ! -d $(dirname ${scratch_dir}/${stats_fn_prefix}) ]]
+then
+    mkdir -p $(dirname ${scratch_dir}/${stats_fn_prefix})
 fi
 
 if [[ -f ${job_name}_array ]]
@@ -135,9 +140,9 @@ ldpath="/lmb/home/public/matlab/jbriggs/bin/glnxa64:\${ldpath}"
 ldpath="/lmb/home/public/matlab/jbriggs/runtime/glnxa64:\${ldpath}"
 export LD_LIBRARY_PATH=\${ldpath}
 cd ${scratch_dir}
-rm -rf ${scratch_dir}/${mcrcachedir}/${job_name}_\${SGE_TASK_ID}
-mkdir ${scratch_dir}/${mcrcachedir}/${job_name}_\${SGE_TASK_ID}
-export MCR_CACHE_ROOT="${scratch_dir}/${mcrcachedir}/${job_name}_\${SGE_TASK_ID}"
+rm -rf ${mcr_cache_dir}/${job_name}_\${SGE_TASK_ID}
+mkdir ${mcr_cache_dir}/${job_name}_\${SGE_TASK_ID}
+export MCR_CACHE_ROOT="${mcr_cache_dir}/${job_name}_\${SGE_TASK_ID}"
 time ${extract_exe} \\
     ${tomogram_dir} \\
     ${scratch_dir} \\
@@ -145,10 +150,10 @@ time ${extract_exe} \\
     ${subtomo_fn_prefix} \\
     ${subtomo_digits} \\
     ${all_motl_fn} \\
-    ${subtomosize} \\
+    ${subtomogram_size} \\
     ${stats_fn_prefix} \\
     \${SGE_TASK_ID}
-rm -rf ${scratch_dir}/${mcrcachedir}/${job_name}_\${SGE_TASK_ID}
+rm -rf ${mcr_cache_dir}/${job_name}_\${SGE_TASK_ID}
 JOBDATA
 
 ##### SEND OUT JOB ##########################

@@ -84,7 +84,7 @@ for subtomo_idx = 1:size(motl, 2)
     stats(subtomo_idx, 6) = stats(subtomo_idx, 5)^2;
 
     % Write out subtomogram
-    subtomo_fn = sprintf(sprintf('%s_%%0%dd', subtomo_fn_prefix, ...
+    subtomo_fn = sprintf(sprintf('%s_%%0%dd.em', subtomo_fn_prefix, ...
         subtomo_digits), motl(4, subtomo_idx));
 
     tom_emwrite(subtomo_fn, subtomo);
