@@ -87,6 +87,11 @@ num_tomos=16
 # Size of subtomogram in pixels
 subtomogram_size=36
 
+# If you already have noise MOTL lists calculated which may contain less than the
+# total number of requested noise, but just want the code to do the extraction
+# then you can set just_extract to 1. Otherwise set it to 0.
+just_extract=0
+
 # The amount of overlap to allow between noise particles and subtomograms
 # Numbers greater than 1 will allow for larger than a box size spacing between
 # noise and a particle. Numbers less than 1 will allow for some overlap between
@@ -104,6 +109,11 @@ noise_overlap_factor=1;
 
 # Number of noise particles to extract
 num_noise=100
+
+# Set reextract to 1 if you want to force the program to re-extract amplitude
+# spectra even if the amplitude spectrum file already exists. 
+reextract=1
+
 ################################################################################
 #                                                                              #
 #                                END OF OPTIONS                                #
@@ -167,10 +177,12 @@ time ${noise_extract_exe} \\
     ${all_motl_fn} \\
     ${noise_motl_fn_prefix} \\
     ${subtomogram_size} \\
+    ${just_extract} \\
     ${ptcl_overlap_factor} \\
     ${noise_overlap_factor} \\
     ${num_noise} \\
-    \${SGE_TASK_ID}
+    \${SGE_TASK_ID} \\
+    ${reextract}
 rm -rf ${mcr_cache_dir}/${job_name}_\${SGE_TASK_ID}
 JOBDATA
 

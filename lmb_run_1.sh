@@ -95,7 +95,7 @@ start_iteration=1
 
 # Number iterations (big loop) to run: final output will be
 # reference_startindx+iterations.em and motilvelist_startindx+iterations.em
-iterations=1
+iterations=5
 
 # Total number of particles
 num_ptcls=26870
@@ -129,11 +129,23 @@ ref_fn_prefix='ref/ref'
 ptcl_fn_prefix='subtomograms/subtomo'
 
 # Relative path and name of the alignment mask
-align_mask_fn='otherinputs/mask128_r52_h52_g3_pos666670.em'
+# Leave the parentheses and if the number of values is less than the number of
+# iterations the last value will be repeated to the correct length
+align_mask_fn=('otherinputs/mask128_r52_h52_g3_pos666670.em' \
+               'otherinputs/mask128_r52_h52_g3_pos666670.em' \
+               'otherinputs/mask128_r52_h52_g3_pos666670.em' \
+               'otherinputs/mask128_r52_h52_g3_pos666670.em' \
+               'otherinputs/mask128_r52_h52_g3_pos666670.em')
 
 # Relative path and name of the cross-correlation mask this defines the maximum
 # shifts in each direction
-cc_mask_fn='otherinputs/ccmask128_r6.em'
+# Leave the parentheses and if the number of values is less than the number of
+# iterations the last value will be repeated to the correct length
+cc_mask_fn=('otherinputs/ccmask128_r6.em' \
+            'otherinputs/ccmask128_r6.em' \
+            'otherinputs/ccmask128_r6.em' \
+            'otherinputs/ccmask128_r6.em' \
+            'otherinputs/ccmask128_r6.em')
 
 # Relative path and name of the weight file
 #weight_fn_prefix='../WNG_Wedge_Tests/ampspec_log.em'
@@ -152,34 +164,46 @@ weight_sum_fn_prefix='otherinputs/new_test_wei'
 tomo_row=5
 
 # Apply weight to subtomograms (1=yes, 0=no)
-apply_weight=0
+apply_weight=1
 
 # Apply mask to subtomograms (1=yes, 0=no)
 apply_mask=1
 
 # Angular increment in degrees, applied during the cone-search, i.e. psi and
 # theta (define as real e.g. psi_angle_step=3)
-psi_angle_step=2
+# Leave the parentheses and if the number of values is less than the number of
+# iterations the last value will be repeated to the correct length
+psi_angle_step=(2 2 2 2 2)
 
 # Number of angular iterations, applied to psi and theta  (define as integer
 # e.g. psi_angle_shells=3)
-psi_angle_shells=3
+# Leave the parentheses and if the number of values is less than the number of
+# iterations the last value will be repeated to the correct length
+psi_angle_shells=(3 3 3 3 3)
 
 # Angular increment for phi in degrees, (define as real e.g. phi_angle_step=3)
-phi_angle_step=2
+# Leave the parentheses and if the number of values is less than the number of
+# iterations the last value will be repeated to the correct length
+phi_angle_step=(2 2 2 2 2)
 
 # Number of angular iterations for phi, (define as integer e.g.
 # phi_angle_shells=3)
-phi_angle_shells=3
+# Leave the parentheses and if the number of values is less than the number of
+# iterations the last value will be repeated to the correct length
+phi_angle_shells=(3 3 3 3 3)
 
 # High pass filter (in transform units (pixels): calculate as
 # (boxsize*pixelsize)/(resolution_real) (define as integer e.g. high_pass_fp=2)
-high_pass_fp=1
+# Leave the parentheses and if the number of values is less than the number of
+# iterations the last value will be repeated to the correct length
+high_pass_fp=(1 1 1 1 1)
 
 # Low pass filter (in transform units (pixels): calculate as
 # (boxsize*pixelsize)/(resolution_real) (define as integer e.g.
 # low_pass_fp=30), has a Gaussian dropoff of ~2 pixels
-low_pass_fp=17
+# Leave the parentheses and if the number of values is less than the number of
+# iterations the last value will be repeated to the correct length
+low_pass_fp=(17 20 23 26 28)
 
 # Symmetry, if no symmetry nfold=1 (define as integer e.g. nfold=3)
 nfold=2
@@ -234,11 +258,68 @@ then
     exit 1
 fi
 
+# Check that number of iterations is inline with the arrays of parameters
+while [[ ${#align_mask_fn[@]} -lt ${iterations} ]]
+do
+    idx=${#align_mask_fn[@]}
+    val=${align_mask_fn[$((idx - 1))]}
+    align_mask_fn[${idx}]=${val}
+done
+
+while [[ ${#cc_mask_fn[@]} -lt ${iterations} ]]
+do
+    idx=${#cc_mask_fn[@]}
+    val=${cc_mask_fn[$((idx - 1))]}
+    cc_mask_fn[${idx}]=${val}
+done
+
+while [[ ${#psi_angle_step[@]} -lt ${iterations} ]]
+do
+    idx=${#psi_angle_step[@]}
+    val=${psi_angle_step[$((idx - 1))]}
+    psi_angle_step[${idx}]=${val}
+done
+
+while [[ ${#psi_angle_shells[@]} -lt ${iterations} ]]
+do
+    idx=${#psi_angle_shells[@]}
+    val=${psi_angle_shells[$((idx - 1))]}
+    psi_angle_shells[${idx}]=${val}
+done
+
+while [[ ${#phi_angle_step[@]} -lt ${iterations} ]]
+do
+    idx=${#phi_angle_step[@]}
+    val=${phi_angle_step[$((idx - 1))]}
+    phi_angle_step[${idx}]=${val}
+done
+
+while [[ ${#phi_angle_shells[@]} -lt ${iterations} ]]
+do
+    idx=${#phi_angle_shells[@]}
+    val=${phi_angle_shells[$((idx - 1))]}
+    phi_angle_shells[${idx}]=${val}
+done
+
+while [[ ${#high_pass_fp[@]} -lt ${iterations} ]]
+do
+    idx=${#high_pass_fp[@]}
+    val=${high_pass_fp[$((idx - 1))]}
+    high_pass_fp[${idx}]=${val}
+done
+
+while [[ ${#low_pass_fp[@]} -lt ${iterations} ]]
+do
+    idx=${#low_pass_fp[@]}
+    val=${low_pass_fp[$((idx - 1))]}
+    low_pass_fp[${idx}]=${val}
+done
 ################################################################################
 #                                                                              #
 #                        SUBTOMOGRAM AVERAGING WORKFLOW                        #
 #                                                                              #
 ################################################################################
+array_idx=0
 end_iteration=$((start_iteration + iterations - 1))
 for ((iteration=start_iteration; iteration <= end_iteration; iteration++))
 do
@@ -304,15 +385,15 @@ ${ptcl_fn_prefix} \\
 ${tomo_row} \\
 ${weight_fn_prefix} \\
 ${apply_weight} \\
-${align_mask_fn} \\
+${align_mask_fn[${array_idx}]} \\
 ${apply_mask} \\
-${cc_mask_fn} \\
-${psi_angle_step} \\
-${psi_angle_shells} \\
-${phi_angle_step} \\
-${phi_angle_shells} \\
-${high_pass_fp} \\
-${low_pass_fp} \\
+${cc_mask_fn[${array_idx}]} \\
+${psi_angle_step[${array_idx}]} \\
+${psi_angle_shells[${array_idx}]} \\
+${phi_angle_step[${array_idx}]} \\
+${phi_angle_shells[${array_idx}]} \\
+${high_pass_fp[${array_idx}]} \\
+${low_pass_fp[${array_idx}]} \\
 ${nfold} \\
 ${threshold} \\
 ${iclass}
@@ -694,4 +775,5 @@ AVGJOB
     echo "FINISHED Final Average in Iteration Number: ${avg_iteration}"
     echo "AVERAGE DONE IN ITERATION NUMBER ${avg_iteration}"
     next_iteration=$((iteration + 1))
+    array_idx=$((array_idx + 1))
 done

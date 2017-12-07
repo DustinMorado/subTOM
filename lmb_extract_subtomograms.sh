@@ -83,6 +83,14 @@ subtomogram_size=72
 # Leading zeros for subtomograms, for AV3, use 1. Other numbers are useful for
 # DYNAMO.
 subtomo_digits=1
+
+# Set reextract to 1 if you want to force the program to re-extract subtomograms
+# even if the stats file and the subtomograms already exist. If the stats file
+# for the tomogram exists and is the correct size the whole tomogram will be
+# skipped. If the subtomogram exists it will also be skipped, unless this option
+# is true.
+reextract=1
+
 ################################################################################
 #                                                                              #
 #                                END OF OPTIONS                                #
@@ -152,7 +160,8 @@ time ${extract_exe} \\
     ${all_motl_fn} \\
     ${subtomogram_size} \\
     ${stats_fn_prefix} \\
-    \${SGE_TASK_ID}
+    \${SGE_TASK_ID} \\
+    ${reextract}
 rm -rf ${mcr_cache_dir}/${job_name}_\${SGE_TASK_ID}
 JOBDATA
 

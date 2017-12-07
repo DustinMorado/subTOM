@@ -1,10 +1,10 @@
 function lmb_extract_subtomograms(tomogram_dir, scratch_dir, tomo_row, ...
     subtomo_fn_prefix, subtomo_digits, all_motl_fn, subtomosize, ...
-    stats_fn_prefix, process_idx) 
+    stats_fn_prefix, process_idx, reextract)
 % LMB_EXTRACT_SUBTOMOGRAMS extract subtomograms on the cluster.
 % LMB_EXTRACT_SUBTOMOGRAMS(TOMOGRAM_DIR, SCRATCH_DIR, TOMO_ROW,
 %     SUBTOMO_FN_PREFIX, SUBTOMO_DIGITS, ALL_MOTL_FN, SUBTOMOSIZE,
-%     STATS_FN_PREFIX, PROCESS_IDX)
+%     STATS_FN_PREFIX, PROCESS_IDX, REEXTRACT)
 %
 % See also LMB_EXTRACT_NOISE
 
@@ -28,34 +28,50 @@ if ischar(process_idx)
     process_idx = str2double(process_idx);
 end
 
-% Figure out what tomogram we are processing
-% Get a list of all tomograms in the tomogram directory
-tomograms = dir(fullfile(tomogram_dir, '*.rec'));
+if ischar(reextract)
+    reextract = str2double(reextract);
+end
 
-% Get the tomogram name from the dir list and process index
-tomogram_fn = tomograms(process_idx).name;
-clear tomograms
-
-% Tomograms have the form 'X-zero-padded-number.rec', i.e. '002.rec'
-% The following gets us the '002' by stripping off the .rec suffix
-tomogram_base = regexprep(tomogram_fn, '\.rec', '');
-
-% Convert the above format string number back to a number for checking in the
-% MOTL list
-tomogram_number = str2double(tomogram_base);
-
-% Finally we get the full path of the tomogram
-tomogram_fn = fullfile(tomogram_dir, tomogram_fn);
+reextract = logical(reextract);
 
 % Read in allmotl
 allmotl = getfield(tom_emread(all_motl_fn), 'Value');
 
+% Get a list of all tomograms in the allmotl
+tomograms = unique(allmotl(tomo_row, :));
+
+% Identify our tomogram number for processing
+tomogram_number = tomograms(process_idx);
+
+% Find zero-padding of tomogram numbers in filenames using Aaron's method
+max_tomogram_number = max(tomograms(:));
+max_tomogram_string = num2str(max_tomogram_number);
+tomogram_digits = length(max_tomogram_string);
+
+% Finally we get the full path of the tomogram
+tomogram_fn = sprintf(sprintf('%%0%dd.rec', tomogram_digits), tomogram_number);
+tomogram_fn = fullfile(tomogram_dir, tomogram_fn);
+
 % Get tomogram motl
 motl = allmotl(:, allmotl(tomo_row, :) == tomogram_number);
-clear allmotl
+
+clear allmotl tomograms max_tomogram_number max_tomogram_string tomogram_digits
 
 % Go to root folder
 cd(scratch_dir);
+
+% Check if we have already finished the processing for this tomogram
+stats_fn = sprintf('%s_%d.csv', stats_fn_prefix, tomogram_number);
+if ~reextract && exist(fullfile(pwd(), stats_fn), 'file') == 2
+    stats = csvread(stats_fn);
+    if size(stats, 1) == size(motl, 2)
+        fprintf('Found stats file with all %d subvolumes. SKIPPING.\n', ...
+            size(motl, 2));
+
+        fprintf('Turn on reextract if you want to re-extract particles.\n');
+        return
+    end
+end
 
 % Create the array to hold the subtomogram statistics
 stats = zeros(size(motl, 2), 6);
@@ -65,6 +81,16 @@ tomogram = getfield(tom_mrcread(tomogram_fn), 'Value');
 
 delprog = '';
 for subtomo_idx = 1:size(motl, 2)
+    % First check if the subtomogram already exists
+    subtomo_fn = sprintf(sprintf('%s_%%0%dd.em', subtomo_fn_prefix, ...
+        subtomo_digits), motl(4, subtomo_idx));
+
+    if ~reextract && exist(fullfile(pwd(), subtomo_fn), 'file') == 2
+        fprintf('Found particle: %s. SKIPPING.\n', subtomo_fn);
+        fprintf('Turn on reextract if you want to re-extract particles.\n');
+        continue
+    end
+
     subtomo_position = motl(8:10, subtomo_idx);
     subtomo_start = round(subtomo_position - (subtomosize / 2));
     subtomo = double(tom_red(tomogram, subtomo_start, ...
@@ -84,9 +110,6 @@ for subtomo_idx = 1:size(motl, 2)
     stats(subtomo_idx, 6) = stats(subtomo_idx, 5)^2;
 
     % Write out subtomogram
-    subtomo_fn = sprintf(sprintf('%s_%%0%dd.em', subtomo_fn_prefix, ...
-        subtomo_digits), motl(4, subtomo_idx));
-
     tom_emwrite(subtomo_fn, subtomo);
     check_em_file(subtomo_fn, subtomo);
 
@@ -96,7 +119,7 @@ for subtomo_idx = 1:size(motl, 2)
 end
 
 % Write out stats file
-csvwrite(sprintf('%s_%d.csv', stats_fn_prefix, tomogram_number), stats);
+csvwrite(stats_fn, stats);
 
 % Cleanup
 clear tomogram
