@@ -269,6 +269,11 @@ masked_FSC = real(masked_CCF_array) ./ ...
 %% Calculate initial steps of Randomized FSC calculation
 randomization_cutoff = find(unmasked_FSC < rand_threshold, 1, 'first');
 
+% Handle the case when the curve never falls below the threshold
+if isempty(randomization_cutoff)
+    randomization_cutoff = n_shells;
+end
+
 % Sometimes there is a one pixel shift of the unmasked reweighted
 % references that really throws off the calculations and so this is a small
 % work around to make sure we don't use this artifact as the cutoff.

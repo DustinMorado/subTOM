@@ -320,7 +320,7 @@ unchanged_count=0
 while [[ ! -e "${scratch_dir}/${ref_fn_prefix}_${iteration}.em" ]]
 do
     unchanged_count=$((unchanged_count + 1))
-    if [[ ${unchanged_count} -gt 5 ]]
+    if [[ ${unchanged_count} -gt 120 ]]
     then
         echo "Final averaging has seemed to stall"
         echo "Please check error logs and resubmit the job if neeeded."

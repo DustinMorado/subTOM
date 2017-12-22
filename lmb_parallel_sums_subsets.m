@@ -122,7 +122,7 @@ clear temp_vol
 %% Rotate and sum particles
 % Loop through each subtomogram
 for ptcl_idx = ptcl_start_idx:ptcl_end_idx
-    if allmotl(20, ptcl_idx) ~= 1 && allmotl(20, ptcl_idx) ~= iclass &&
+    if allmotl(20, ptcl_idx) ~= 1 && allmotl(20, ptcl_idx) ~= iclass && ...
             iclass ~= 0
         continue
     end

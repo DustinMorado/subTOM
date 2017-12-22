@@ -26,7 +26,7 @@ set -o nounset   # Crash on unset variables
 scratch_dir="${nfs6}/VMV013/20170528/subtomo/bin1/even"
 
 # Folder on group shares
-local_dir="${bstore1}/VMV013/20170528/subtomo/bin1/even/local"
+local_dir="${bstore1}/VMV013/20170528/subtomo/bin1/even"
 
 # MRC directory for each job
 mcr_cache_dir='mcr'
@@ -79,24 +79,19 @@ iteration=3
 num_ptcls=32986
 
 # Number of particles in each parallel subtomogram averaging job
-avg_batch_size=150
+avg_batch_size=50
 
 ################################################################################
 #                                 FILE OPTIONS                                 #
 ################################################################################
-# Relative path and name of the motivelist of the single particle (e.g.
-# part_n.em will have a motl_n_iter.em , the variable will be written as a
-# string e.g. ptcl_motl_fn_prefix='sub-directory/motl')
-ptcl_motl_fn_prefix='motls/motl'
-
 # Relative path and name of the concatenated motivelist of all particles (e.g.
 # allmotl_iter.em , the variable will be written as a string e.g.
 # all_motl_fn_prefix='sub-directory/allmotl')
-all_motl_fn_prefix='combinedmotl/new_test_allmotl'
+all_motl_fn_prefix='combinedmotl/allmotl_2'
 
 # Relative path and name of the reference volumes (e.g. ref_iter.em , the
 # variable will be written as a string e.g. ref_fn_prefix='sub-directory/ref')
-ref_fn_prefix='ref/new_test_ref'
+ref_fn_prefix='ref/ref_2_subsets'
 
 # Relative path and name of the subtomograms (e.g. part_n.em , the variable will
 # be written as a string e.g. ptcl_fn_prefix='sub-directory/part')
@@ -107,7 +102,7 @@ ptcl_fn_prefix='subtomograms/subtomo'
 weight_fn_prefix='otherinputs/ampspec'
 
 # Relative path and name of the partial weight files
-weight_sum_fn_prefix='otherinputs/new_test_wei'
+weight_sum_fn_prefix='otherinputs/wei_2'
 
 ################################################################################
 #                              AVERAGING OPTIONS                               #
@@ -136,6 +131,16 @@ then
     exit 1
 fi
 
+# Check that the appropriate directories exist
+if [[ ! -d ${local_dir} ]]
+then
+    mkdir -p ${local_dir}
+fi
+
+if [[ ! -d $(dirname ${local_dir}/${ref_fn_prefix}) ]]
+then
+    mkdir -p $(dirname ${local_dir}/${ref_fn_prefix})
+fi
 ################################################################################
 #                                                                              #
 #                        SUBTOMOGRAM AVERAGING WORKFLOW                        #
@@ -158,16 +163,15 @@ do
         array_end=${num_avg_batch}
     fi
 
-    cat > ${job_name}_paral_avg_array_${iteration}_${job_idx} \
-<<-PAVGJOB
+    cat > ${job_name}_paral_avg_subsets_array_${iteration}_${job_idx}<<-PAVGJOB
 #!/bin/bash
-#$ -N ${job_name}_paral_avg_array_${iteration}_${job_idx}
+#$ -N ${job_name}_paral_avg_subsets_array_${iteration}_${job_idx}
 #$ -S /bin/bash
 #$ -V
 #$ -cwd
 #$ -l mem_free=${mem_free_avg},h_vmem=${mem_max_avg}
-#$ -o log_${job_name}_paral_avg_array_${iteration}_${job_idx}
-#$ -e error_${job_name}_paral_avg_array_${iteration}_${job_idx}
+#$ -o log_${job_name}_paral_avg_subsets_array_${iteration}_${job_idx}
+#$ -e error_${job_name}_paral_avg_subsets_array_${iteration}_${job_idx}
 #$ -t ${array_start}-${array_end}
 set +o noclobber
 set -e
@@ -178,24 +182,22 @@ ldpath=\${ldpath}:/lmb/home/public/matlab/jbriggs/sys/os/glnxa64
 ldpath=\${ldpath}:/lmb/home/public/matlab/jbriggs/sys/opengl/lib/glnxa64
 export LD_LIBRARY_PATH=\${ldpath}
 cd ${scratch_dir}
-batch_idx=\${SGE_TASK_ID}
-check="${all_motl_fn_prefix}_${iteration}_\${batch_idx}.em"
+process_idx=\${SGE_TASK_ID}
+check="${all_motl_fn_prefix}_${iteration}_\${process_idx}.em"
 if [[ -f "\${check}" ]]
 then
     echo "\${check} already complete. SKIPPING"
     exit 0
 fi
 MCRDIR=${scratch_dir}/${mcr_cache_dir}
-rm -rf \${MCRDIR}/${job_name}_paral_avg_\${batch_idx}
-mkdir \${MCRDIR}/${job_name}_paral_avg_\${batch_idx}
-export MCR_CACHE_ROOT=\${MCRDIR}/${job_name}_paral_avg_\${batch_idx}
-ptcl_start_idx=\$(((${avg_batch_size} * (batch_idx - 1)) + 1))
+rm -rf \${MCRDIR}/${job_name}_paral_avg_subsets_\${process_idx}
+mkdir \${MCRDIR}/${job_name}_paral_avg_subsets_\${process_idx}
+export MCR_CACHE_ROOT=\${MCRDIR}/${job_name}_paral_avg_subsets_\${process_idx}
+ptcl_start_idx=\$(((${avg_batch_size} * (process_idx - 1)) + 1))
 time ${paral_avg_exec} \\
 \${ptcl_start_idx} \\
 ${avg_batch_size} \\
-${num_ptcls} \\
 ${iteration} \\
-${ptcl_motl_fn_prefix} \\
 ${all_motl_fn_prefix} \\
 ${ref_fn_prefix} \\
 ${ptcl_fn_prefix} \\
@@ -203,11 +205,11 @@ ${tomo_row} \\
 ${weight_fn_prefix} \\
 ${weight_sum_fn_prefix} \\
 ${iclass} \\
-\${batch_idx}
-rm -rf \${MCRDIR}/${job_name}_paral_avg_\${batch_idx}
+\${process_idx}
+rm -rf \${MCRDIR}/${job_name}_paral_avg_subsets_\${process_idx}
 PAVGJOB
 
-    qsub ${job_name}_paral_avg_array_${iteration}_${job_idx}
+    qsub ${job_name}_paral_avg_subsets_array_${iteration}_${job_idx}
     array_start=$((array_start + array_max))
 done
 
@@ -215,14 +217,14 @@ echo "STARTING Parallel Average in Iteration Number: ${iteration}"
 ################################################################################
 #                         PARALLEL AVERAGING PROGRESS                          #
 ################################################################################
-all_motl_dir=$(dirname ${scratch_dir}/${all_motl_fn_prefix})
-all_motl_base=$(basename ${scratch_dir}/${all_motl_fn_prefix})_${iteration}
-num_complete=$(find ${all_motl_dir} -name "${all_motl_base}_*.em" | wc -l)
+ref_dir=$(dirname ${scratch_dir}/${ref_fn_prefix})
+ref_base=$(basename ${scratch_dir}/${ref_fn_prefix})_${iteration}
+num_complete=$(find ${ref_dir} -name "${ref_base}_*_subset1.em" | wc -l)
 num_complete_prev=0
 unchanged_count=0
 while [ ${num_complete} -lt ${num_avg_batch} ]
 do
-    num_complete=$(find ${all_motl_dir} -name "${all_motl_base}_*.em" | wc -l)
+    num_complete=$(find ${ref_dir} -name "${ref_base}_*_subset1.em" | wc -l)
     echo "${num_complete} parallel average out of ${num_avg_batch}"
     if [[ ${num_complete} -eq ${num_complete_prev} ]]
     then
@@ -232,7 +234,7 @@ do
     fi
     num_complete_prev=${num_complete}
     
-    if [[ ${unchanged_count} -gt 5 && ${num_complete} -gt 160 ]]
+    if [[ ${unchanged_count} -gt 0 && ${unchanged_count} -gt 120 ]]
     then
         echo "Parallel averaging has seemed to stall"
         echo "Please check error logs and resubmit the job if neeeded."
@@ -243,42 +245,42 @@ done
 ################################################################################
 #                         PARALLEL AVERAGING CLEAN UP                          #
 ################################################################################
-if [[ ! -d ${scratch_dir}/avg_${iteration} ]]
+if [[ ! -d ${scratch_dir}/avg_subsets_${iteration} ]]
 then
-    mkdir ${scratch_dir}/avg_${iteration}
+    mkdir ${scratch_dir}/avg_subsets_${iteration}
 fi
 
-if [[ -e "${job_name}_paral_avg_array_${iteration}_1" ]]
+if [[ -e "${job_name}_paral_avg_subsets_array_${iteration}_1" ]]
 then
-    mv -f ${job_name}_paral_avg_array_${iteration}_* \
-        ${scratch_dir}/avg_${iteration}/.
+    mv -f ${job_name}_paral_avg_subsets_array_${iteration}_* \
+        ${scratch_dir}/avg_subsets_${iteration}/.
 fi
 
-if [[ -e "log_${job_name}_paral_avg_array_${iteration}_1" ]]
+if [[ -e "log_${job_name}_paral_avg_subsets_array_${iteration}_1" ]]
 then
-    mv -f log_${job_name}_paral_avg_array_${iteration}_* \
-        ${scratch_dir}/avg_${iteration}/.
+    mv -f log_${job_name}_paral_avg_subsets_array_${iteration}_* \
+        ${scratch_dir}/avg_subsets_${iteration}/.
 fi
 
-if [[ -e "error_${job_name}_paral_avg_array_${iteration}_1" ]]
+if [[ -e "error_${job_name}_paral_avg_subsets_array_${iteration}_1" ]]
 then
-    mv -f error_${job_name}_paral_avg_array_${iteration}_* \
-        ${scratch_dir}/avg_${iteration}/.
+    mv -f error_${job_name}_paral_avg_subsets_array_${iteration}_* \
+        ${scratch_dir}/avg_subsets_${iteration}/.
 fi
 
 echo "FINISHED Parallel Average in Iteration Number: ${iteration}"
 ################################################################################
 #                                FINAL AVERAGE                                 #
 ################################################################################
-cat > ${job_name}_avg_${iteration} <<-AVGJOB
+cat > ${job_name}_avg_subsets_${iteration} <<-AVGJOB
 #!/bin/bash
-#$ -N ${job_name}_avg_${iteration}
+#$ -N ${job_name}_avg_subsets_${iteration}
 #$ -S /bin/bash
 #$ -V
 #$ -cwd
 #$ -l mem_free=${mem_free_avg},h_vmem=${mem_max_avg}
-#$ -o log_${job_name}_avg_${iteration}
-#$ -e error_${job_name}_avg_${iteration}
+#$ -o log_${job_name}_avg_subsets_${iteration}
+#$ -e error_${job_name}_avg_subsets_${iteration}
 set +o noclobber
 set -e
 
@@ -295,7 +297,7 @@ then
     echo "\${check} already complete. SKIPPING"
     exit 0
 fi
-MCRDIR=${scratch_dir}/${mcr_cache_dir}/${job_name}_avg_iteration
+MCRDIR=${scratch_dir}/${mcr_cache_dir}/${job_name}_avg_subsets_iteration
 rm -rf \${MCRDIR}
 mkdir \${MCRDIR}
 export MCR_CACHE_ROOT=\${MCRDIR}
@@ -308,17 +310,17 @@ ${iclass}
 rm -rf \${MCRDIR}
 AVGJOB
 
-qsub ${job_name}_avg_${iteration}
+qsub ${job_name}_avg_subsets_${iteration}
 echo "STARTING Final Average in Iteration Number: ${iteration}"
 ################################################################################
 #                            FINAL AVERAGE PROGRESS                            #
 ################################################################################
 echo "Waiting for the final average ..."
 unchanged_count=0
-while [[ ! -e "${scratch_dir}/${ref_fn_prefix}_${iteration}.em" ]]
+while [[ ! -e "${scratch_dir}/${ref_fn_prefix}_${iteration}_subset1.em" ]]
 do
     unchanged_count=$((unchanged_count + 1))
-    if [[ ${unchanged_count} -gt 5 ]]
+    if [[ ${unchanged_count} -gt 120 ]]
     then
         echo "Final averaging has seemed to stall"
         echo "Please check error logs and resubmit the job if neeeded."
@@ -326,61 +328,40 @@ do
     fi
     sleep 60s
 done
+echo "Found the first subset average ..."
+echo "Waiting a few minutes for the others to finish as well ..."
+sleep 300s
 ################################################################################
 #                            FINAL AVERAGE CLEAN UP                            #
 ################################################################################
 ### Copy file to group share
-cp ${scratch_dir}/${all_motl_fn_prefix}_${iteration}.em \
-    ${local_dir}/${all_motl_fn_prefix}_${iteration}.em
-cp ${scratch_dir}/${ref_fn_prefix}_${iteration}.em \
-    ${local_dir}/${ref_fn_prefix}_${iteration}.em
+cp ${scratch_dir}/${ref_fn_prefix}_${iteration}_subset*.em \
+    ${local_dir}/.
 
-### Clean up from the iteration
-if [[ -e "${job_name}_paral_avg_array_${iteration}_1" ]]
+if [[ -e "${job_name}_avg_subsets_${iteration}" ]]
 then
-    mv -f ${job_name}_paral_avg_array_${iteration}_* \
-        ${scratch_dir}/avg_${iteration}/.
+    mv ${job_name}_avg_subsets_${iteration} \
+        ${scratch_dir}/avg_subsets_${iteration}/.
 fi
 
-if [[ -e "log_${job_name}_paral_avg_array_${iteration}_1" ]]
+if [[ -e "log_${job_name}_avg_subsets_${iteration}" ]]
 then
-    mv -f log_${job_name}_paral_avg_array_${iteration}_* \
-        ${scratch_dir}/avg_${iteration}/.
+    mv log_${job_name}_avg_subsets_${iteration} \
+        ${scratch_dir}/avg_subsets_${iteration}/.
 fi
 
-if [[ -e "error_${job_name}_paral_avg_array_${iteration}_1" ]]
+if [[ -e "error_${job_name}_avg_subsets_${iteration}" ]]
 then
-    mv -f error_${job_name}_paral_avg_array_${iteration}_* \
-        ${scratch_dir}/avg_${iteration}/.
-fi
-
-if [[ -e "${job_name}_avg_${iteration}" ]]
-then
-    mv ${job_name}_avg_${iteration} \
-        ${scratch_dir}/avg_${iteration}/.
-fi
-
-if [[ -e "log_${job_name}_avg_${iteration}" ]]
-then
-    mv log_${job_name}_avg_${iteration} \
-        ${scratch_dir}/avg_${iteration}/.
-fi
-
-if [[ -e "error_${job_name}_avg_${iteration}" ]]
-then
-    mv error_${job_name}_avg_${iteration} \
-        ${scratch_dir}/avg_${iteration}/.
+    mv error_${job_name}_avg_subsets_${iteration} \
+        ${scratch_dir}/avg_subsets_${iteration}/.
 fi
 
 ref_dir=$(dirname ${scratch_dir}/${ref_fn_prefix})
 ref_base=$(basename ${scratch_dir}/${ref_fn_prefix})_${iteration}
 weight_sum_dir=$(dirname ${scratch_dir}/${weight_sum_fn_prefix})
 weight_sum_base=$(basename ${scratch_dir}/${weight_sum_fn_prefix})_${iteration}
-all_motl_dir=$(dirname ${scratch_dir}/${all_motl_fn_prefix})
-all_motl_base=$(basename ${scratch_dir}/${all_motl_fn_prefix})_${iteration}
 find ${ref_dir} -name "${ref_base}_[0-9]*.em" -delete
 find ${weight_sum_dir} -name "${weight_sum_base}_[0-9]*.em" -delete
-find ${all_motl_dir} -name "${all_motl_base}_[0-9]*.em" -delete
 
 echo "FINISHED Final Average in Iteration Number: ${iteration}"
 echo "AVERAGE DONE IN ITERATION NUMBER ${iteration}"
