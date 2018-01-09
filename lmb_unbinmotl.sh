@@ -64,12 +64,12 @@ ldpath=${ldpath}:/lmb/home/public/matlab/jbriggs/bin/glnxa64
 ldpath=${ldpath}:/lmb/home/public/matlab/jbriggs/sys/os/glnxa64
 ldpath=${ldpath}:/lmb/home/public/matlab/jbriggs/sys/opengl/lib/glnxa64
 export LD_LIBRARY_PATH=${ldpath}
-MCRDIR=${PWD}/${mcr_cache_dir}/lmb_maskcorrected_FSC
+MCRDIR=${PWD}/${mcr_cache_dir}/unbinmotl
 rm -rf ${MCRDIR}
 mkdir ${MCRDIR}
 export MCR_CACHE_ROOT=${MCRDIR}
 time ${unbinmotl_exec} \
     ${input_motl_fn} \
     ${output_motl_fn} \
-    ${unbin_factor} \
+    ${unbin_factor}
 rm -rf ${MCRDIR}

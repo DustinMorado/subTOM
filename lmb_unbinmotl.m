@@ -1,6 +1,6 @@
 function lmb_unbinmotl(input_motl_fn, output_motl_fn, unbin_factor)
 if ischar(unbin_factor)
-    unbin_factor = str2double(unbin_factor)
+    unbin_factor = str2double(unbin_factor);
 end
 
 input_motl = getfield(tom_emread(input_motl_fn), 'Value');

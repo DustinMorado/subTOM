@@ -414,7 +414,8 @@ ALIJOB
         "${motl_base}_*_$((iteration + 1)).em" | wc -l)
     num_complete_prev=0
     unchanged_count=0
-    while [[ ${num_complete} -lt ${num_ptcls} ]]
+    all_motl_fn="${all_motl_fn_prefix}_$((iteration + 1)).em"
+    while [[ ${num_complete} -lt ${num_ptcls} && ! -e "${all_motl_fn}"]]
     do
         num_complete=$(find ${motl_dir} -name \
             "${motl_base}_*_$((iteration + 1)).em" | wc -l)
@@ -506,7 +507,7 @@ JOINJOB
 #                              MOTL JOIN PROGRESS                              #
 ################################################################################
     unchanged_count=0
-    while [[ ! -e "${all_motl_fn_prefix}_$((iteration + 1)).em" ]]
+    while [[ ! -e "${all_motl_fn}" ]]
     do
         unchanged_count=$((unchanged_count + 1))
         if [[ ${unchanged_count} -gt 60 ]]
@@ -590,10 +591,16 @@ ldpath=\${ldpath}:/lmb/home/public/matlab/jbriggs/sys/opengl/lib/glnxa64
 export LD_LIBRARY_PATH=\${ldpath}
 cd ${scratch_dir}
 process_idx=\${SGE_TASK_ID}
-check="${ref_fn_prefix}_${avg_iteration}_\${process_idx}.em"
-if [[ -f "\${check}" ]]
+check_avg="${ref_fn_prefix}_${avg_iteration}.em"
+check_process="${ref_fn_prefix}_${avg_iteration}_\${process_idx}.em"
+if [[ -f "\${check_avg}" ]]
 then
-    echo "\${check} already complete. SKIPPING"
+    echo "\${check_avg} already complete. SKIPPING"
+    exit 0
+fi
+if [[ -f "\${check_process}" ]]
+then
+    echo "\${check_process} already complete. SKIPPING"
     exit 0
 fi
 MCRDIR=${mcr_cache_dir}/${job_name}_paral_avg_\${process_idx}
@@ -628,7 +635,8 @@ PAVGJOB
     num_complete=$(find ${ref_dir} -name "${ref_base}_*.em" | wc -l)
     num_complete_prev=0
     unchanged_count=0
-    while [ ${num_complete} -lt ${num_avg_batch} ]
+    ref_fn="${ref_fn_prefix}_${avg_iteration}.em"
+    while [[ ${num_complete} -lt ${num_avg_batch} && ! -e "${ref_fn}" ]]
     do
         num_complete=$(find ${ref_dir} -name "${ref_base}_*.em" | wc -l)
         echo "${num_complete} parallel average out of ${num_avg_batch}"

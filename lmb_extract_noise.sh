@@ -202,8 +202,14 @@ while [ ${check_count} -lt ${num_tomos} ]; do
     sleep 60s
 done
 
-for pos_idx in "${scratch_dir}/${noise_motl_fn_prefix}"_*.pos
-do
-    point2model -ScatteredPoints -CircleSize 5 -LineWidthIn2D 2 \
-        "${pos_idx}" "${pos_idx/%pos/mod}"
-done
+pos_dir=$(dirname ${scratch_dir}/${noise_motl_fn_prefix})
+pos_base=$(basename ${scratch_dir}/${noise_motl_fn_prefix})
+pos_count=$(find ${pos_dir} -name "${pos_base}_*.pos" | wc -l)
+if [[ ${pos_count} -gt 0 ]]
+then
+    for pos_idx in "${scratch_dir}/${noise_motl_fn_prefix}"_*.pos
+    do
+        point2model -ScatteredPoints -CircleSize 5 -LineWidthIn2D 2 \
+            "${pos_idx}" "${pos_idx/%pos/mod}"
+    done
+fi

@@ -1,68 +1,70 @@
 #!/bin/bash
-args=("$@")
+################################################################################
+# This is a run script for the standard AV3 subtomogram averaging scripts. The
+# MATLAB executables for this script were compiled in MATLAB-8.5. The other
+# difference is that these scripts have been edited to make sure that the output
+# files from each step is readable.
+#
+# This script is meant to run anywhere.
+#
+# Also, the run script and all the launch scripts are written in bash. This is
+# mainly because the behaviour of bash is a bit more predictable.
+#
+# This MOTL manipulation script uses one MATLAB compiled scripts below:
+# - lmb_splitmotl
 
-# Parse inputs
-if [ "$#" -ne "3" ]; then
-    cat <<-USAGE
-	
-	Error: Command takes exactly 3 arguments!
-	Usage: Command.sh  IterationNumber  AllmotlFilename  NumberOfCores
-	Example: ./command.sh 1 combinedmotl/allmotl 3
-	
-	USAGE
-    exit 1
+# DRM 01-2018
+################################################################################
+set -e           # Crash on error
+set -o nounset   # Crash on unset variables
+################################################################################
+#                                 DIRECTORIES                                  #
+################################################################################
+# MCR directory for the processing
+mcr_cache_dir="mcr"
+
+# Directory for executables
+exec_dir=${bstore1}/software/lmbtomopipeline/compiled
+
+################################################################################
+#                                 FILE OPTIONS                                 #
+################################################################################
+# Relative or absolute path and name of the input MOTL file to be split.
+input_motl_fn=bin8/combinedmotl/allmotl_1.em
+
+# Relative or absolute path and name of the even output MOTL file.
+even_motl_fn=bin4/even/combinedmotl/allmotl_bin8_1.em
+
+# Relative or absolute path and name of the odd output MOTL file.
+odd_motl_fn=bin4/odd/combinedmotl/allmotl_bin8_1.em
+
+################################################################################
+#                                  VARIABLES                                   #
+################################################################################
+# unbinmotl executable
+splitmotl_exec=${exec_dir}/lmb_splitmotl
+
+################################################################################
+#                                                                              #
+#                                END OF OPTIONS                                #
+#                                                                              #
+################################################################################
+if [[ ! -d ${mcr_cache_dir} ]]
+then
+    mkdir -p ${mcr_cache_dir}
 fi
 
-iteration=${args[0]}
-allmotlname=${args[1]}
-num_cores=${args[2]}
-motls="motls/motl"
-checkjobs="checkjobs/checksplitmotl"
-rootdir=$(pwd)
-job_name="VMV013_splitmotl"
-
-if [[ "$num_cores" -le "0" ]]; then
-    rm -rf ${checkjobs}* ${job_name}_array
-    exit 0
-fi
-
-# remove previous job scripts
-rm -f ${job_name}_array
-### Generate array script
-cat > ${job_name}_array <<-JOBDATA
-#!/bin/bash
-#$ -N ${job_name}
-#$ -S /bin/bash
-#$ -V
-#$ -cwd
-#$ -l mem_free=2G,h_vmem=4G
-#$ -e error_splitmotl
-#$ -o log_splitmotl
-#$ -t 1-${num_cores}
-set +C # Turn off prevention of redirection file overwriting
-set -e # Turn on exit on error
-set -f # Turn off filename expansion (globbing)
-echo \${HOSTNAME}
-execdir="${bstore1}/software/clusterscripts/Matlab_compiled"
-ldpath="/lmb/home/public/matlab/jbriggs/sys/opengl/lib/glnxa64"
-ldpath="/lmb/home/public/matlab/jbriggs/sys/os/glnxa64:\${ldpath}"
-ldpath="/lmb/home/public/matlab/jbriggs/bin/glnxa64:\${ldpath}"
-ldpath="/lmb/home/public/matlab/jbriggs/runtime/glnxa64:\${ldpath}"
-export LD_LIBRARY_PATH=\${ldpath}
-cd ${rootdir}
-\${execdir}/will_lsf_splitmotl_parallel \\
-    $iteration $allmotlname $motls \\
-    $num_cores \${SGE_TASK_ID} $checkjobs
-JOBDATA
-
-qsub ${job_name}_array
-
-echo "Parallel split motl job submitted!"
-check=0
-while [ $check -lt $num_cores ]; do
-    sleep 10s
-    check=$(ls ./checkjobs/ | wc -l)
-    echo "$check jobs out of $num_cores completed..."
-done
-echo "Parallel split motl job done!"
-rm -rf ${checkjobs}*
+ldpath=/lmb/home/public/matlab/jbriggs/runtime/glnxa64
+ldpath=${ldpath}:/lmb/home/public/matlab/jbriggs/bin/glnxa64
+ldpath=${ldpath}:/lmb/home/public/matlab/jbriggs/sys/os/glnxa64
+ldpath=${ldpath}:/lmb/home/public/matlab/jbriggs/sys/opengl/lib/glnxa64
+export LD_LIBRARY_PATH=${ldpath}
+MCRDIR=${PWD}/${mcr_cache_dir}/splitmotl
+rm -rf ${MCRDIR}
+mkdir ${MCRDIR}
+export MCR_CACHE_ROOT=${MCRDIR}
+time ${splitmotl_exec} \
+    ${input_motl_fn} \
+    ${even_motl_fn} \
+    ${odd_motl_fn}
+rm -rf ${MCRDIR}
