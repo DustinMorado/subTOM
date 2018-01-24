@@ -5,7 +5,9 @@ end
 
 input_motl = getfield(tom_emread(input_motl_fn), 'Value');
 output_motl = input_motl;
-output_motl(11:13, :) = (input_motl(8:10, :) + input_motl(11:13, :)) .* 2;
+output_motl(11:13, :) = (input_motl(8:10, :) + input_motl(11:13, :)) ...
+    .* unbin_factor;
+
 output_motl(8:10, :) = floor(output_motl(11:13, :));
 output_motl(11:13, :) = output_motl(11:13, :) - output_motl(8:10, :);
 
