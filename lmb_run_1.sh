@@ -415,7 +415,7 @@ ALIJOB
     num_complete_prev=0
     unchanged_count=0
     all_motl_fn="${all_motl_fn_prefix}_$((iteration + 1)).em"
-    while [[ ${num_complete} -lt ${num_ptcls} && ! -e "${all_motl_fn}"]]
+    while [[ ${num_complete} -lt ${num_ptcls} && ! -e "${all_motl_fn}" ]]
     do
         num_complete=$(find ${motl_dir} -name \
             "${motl_base}_*_$((iteration + 1)).em" | wc -l)
