@@ -28,10 +28,10 @@ set -o nounset   # Crash on unset variables
 #                                 DIRECTORIES                                  #
 ################################################################################
 # Root folder on the scratch
-scratch_dir="${nfs6}/VMV013/20170404/subtomo/bin2/even"
+scratch_dir="<SCRATCH_DIR>"
 
 # Folder on group shares
-local_dir="${bstore1}/VMV013/20170404/subtomo/bin2/even/local"
+local_dir="<LOCAL_DIR>"
 
 # MRC directory for each job
 mcr_cache_dir="${scratch_dir}/mcr"
@@ -73,7 +73,7 @@ mem_max_avg='3G'
 #                              OTHER LSF OPTIONS                               #
 ################################################################################
 # BE CAREFUL THAT THE NAME DOESN'T CORRESPOND TO THE BEGINNING OF ANY OTHER FILE
-job_name='VMV013'
+job_name='<JOB_NAME>'
 
 # Maximum number of jobs per array
 array_max=1000
@@ -91,6 +91,18 @@ max_jobs=4000
 # The index of the reference to start from : input will be
 # reference_startindx.em and motilvelist_startindx.em (define as integer e.g.
 # start_iteration=3)
+#
+# More on iterations since they're confusing and it is slightly different here
+# than from previous iterations.
+#
+# The start_iteration is the beginning for the iteration variable used
+# throughout this script. Iteration refers to iteration that is used for
+# subtomogram alignment. So if start_iteration is 1, then subtomogram alignment
+# will work using allmotl_1.em and ref_1.em. The output from alignment will be
+# particle motls for the next iteration. This in the script is avg_iteration
+# variable. The particle motls will be joined to form allmotl_2.em and then the
+# parallel averaging will form ref_2.em and then the loop is done and iteration
+# will become 2 and avg_iteration will become 3.
 start_iteration=1
 
 # Number iterations (big loop) to run: final output will be
@@ -98,7 +110,7 @@ start_iteration=1
 iterations=5
 
 # Total number of particles
-num_ptcls=26870
+num_ptcls=1000000
 
 # Number of particles in each parallel subtomogram alignment job (define as
 # integer e.g. batchnumberofparticles=3)
@@ -131,28 +143,28 @@ ptcl_fn_prefix='subtomograms/subtomo'
 # Relative path and name of the alignment mask
 # Leave the parentheses and if the number of values is less than the number of
 # iterations the last value will be repeated to the correct length
-align_mask_fn=('otherinputs/mask128_r52_h52_g3_pos666670.em' \
-               'otherinputs/mask128_r52_h52_g3_pos666670.em' \
-               'otherinputs/mask128_r52_h52_g3_pos666670.em' \
-               'otherinputs/mask128_r52_h52_g3_pos666670.em' \
-               'otherinputs/mask128_r52_h52_g3_pos666670.em')
+align_mask_fn=('otherinputs/align_mask_1.em' \
+               'otherinputs/align_mask_2.em' \
+               'otherinputs/align_mask_3.em' \
+               'otherinputs/align_mask_4.em' \
+               'otherinputs/align_mask_5.em')
 
 # Relative path and name of the cross-correlation mask this defines the maximum
 # shifts in each direction
 # Leave the parentheses and if the number of values is less than the number of
 # iterations the last value will be repeated to the correct length
-cc_mask_fn=('otherinputs/ccmask128_r6.em' \
-            'otherinputs/ccmask128_r6.em' \
-            'otherinputs/ccmask128_r6.em' \
-            'otherinputs/ccmask128_r6.em' \
-            'otherinputs/ccmask128_r6.em')
+cc_mask_fn=('otherinputs/cc_mask_1.em' \
+            'otherinputs/cc_mask_2.em' \
+            'otherinputs/cc_mask_3.em' \
+            'otherinputs/cc_mask_4.em' \
+            'otherinputs/cc_mask_5.em')
 
 # Relative path and name of the weight file
 #weight_fn_prefix='../WNG_Wedge_Tests/ampspec_log.em'
 weight_fn_prefix='otherinputs/ampspec'
 
 # Relative path and name of the partial weight files
-weight_sum_fn_prefix='otherinputs/new_test_wei'
+weight_sum_fn_prefix='otherinputs/wei'
 
 ################################################################################
 #                       ALIGNMENT AND AVERAGING OPTIONS                        #
@@ -164,7 +176,7 @@ weight_sum_fn_prefix='otherinputs/new_test_wei'
 tomo_row=5
 
 # Apply weight to subtomograms (1=yes, 0=no)
-apply_weight=1
+apply_weight=0
 
 # Apply mask to subtomograms (1=yes, 0=no)
 apply_mask=1
@@ -173,7 +185,7 @@ apply_mask=1
 # theta (define as real e.g. psi_angle_step=3)
 # Leave the parentheses and if the number of values is less than the number of
 # iterations the last value will be repeated to the correct length
-psi_angle_step=(2 2 2 2 2)
+psi_angle_step=(10 5 2.5 1 1)
 
 # Number of angular iterations, applied to psi and theta  (define as integer
 # e.g. psi_angle_shells=3)
@@ -184,7 +196,7 @@ psi_angle_shells=(3 3 3 3 3)
 # Angular increment for phi in degrees, (define as real e.g. phi_angle_step=3)
 # Leave the parentheses and if the number of values is less than the number of
 # iterations the last value will be repeated to the correct length
-phi_angle_step=(2 2 2 2 2)
+phi_angle_step=(10 5 2.5 1 1)
 
 # Number of angular iterations for phi, (define as integer e.g.
 # phi_angle_shells=3)
@@ -196,17 +208,17 @@ phi_angle_shells=(3 3 3 3 3)
 # (boxsize*pixelsize)/(resolution_real) (define as integer e.g. high_pass_fp=2)
 # Leave the parentheses and if the number of values is less than the number of
 # iterations the last value will be repeated to the correct length
-high_pass_fp=(1 1 1 1 1)
+high_pass_fp=(1 1 2 3 3)
 
 # Low pass filter (in transform units (pixels): calculate as
 # (boxsize*pixelsize)/(resolution_real) (define as integer e.g.
 # low_pass_fp=30), has a Gaussian dropoff of ~2 pixels
 # Leave the parentheses and if the number of values is less than the number of
 # iterations the last value will be repeated to the correct length
-low_pass_fp=(17 20 23 26 28)
+low_pass_fp=(10 20 25 30 35)
 
 # Symmetry, if no symmetry nfold=1 (define as integer e.g. nfold=3)
-nfold=2
+nfold=1
 
 # Threshold for cross correlation coefficient. Only particles with ccc_new >
 # threshold will be added to new average (define as real e.g. threshold=0.5).
@@ -257,6 +269,10 @@ then
     echo " TOO MANY JOBS!!!!!  I QUIT!!!"
     exit 1
 fi
+
+# Calculate the number of array subset jobs we will submit
+num_ali_jobs=$(((num_ali_batch + array_max - 1) / array_max))
+num_avg_jobs=$(((num_avg_batch + array_max - 1) / array_max))
 
 # Check that number of iterations is inline with the arrays of parameters
 while [[ ${#align_mask_fn[@]} -lt ${iterations} ]]
@@ -314,26 +330,39 @@ do
     val=${low_pass_fp[$((idx - 1))]}
     low_pass_fp[${idx}]=${val}
 done
+
+# Calculate the final iteration
+end_iteration=$((start_iteration + iterations - 1))
 ################################################################################
 #                                                                              #
 #                        SUBTOMOGRAM AVERAGING WORKFLOW                        #
 #                                                                              #
 ################################################################################
-array_idx=0
-end_iteration=$((start_iteration + iterations - 1))
-for ((iteration=start_iteration; iteration <= end_iteration; iteration++))
+for ((iteration = start_iteration, array_idx = 0; \
+      iteration <= end_iteration; \
+      iteration++, array_idx++))
 do
+    # The 
+    avg_iteration=$((iteration + 1))
+    all_motl_fn="${scratch_dir}/${all_motl_fn_prefix}_${avg_iteration}.em"
+    motl_dir=$(dirname ${scratch_dir}/${ptcl_motl_fn_prefix})
+    motl_base=$(basename ${scratch_dir}/${ptcl_motl_fn_prefix})
+    ptcl_motl_dir=$(dirname ${scratch_dir}/${ptcl_motl_fn_prefix})
+    ptcl_motl_base=$(basename ${scratch_dir}/${ptcl_motl_fn_prefix})
+    ref_fn="${scratch_dir}/${ref_fn_prefix}_${avg_iteration}.em"
+    ref_dir=$(dirname ${scratch_dir}/${ref_fn_prefix})
+    ref_base=$(basename ${scratch_dir}/${ref_fn_prefix})_${avg_iteration}
+    weight_sum_dir=$(dirname ${scratch_dir}/${weight_sum_fn_prefix})
+    weight_sum_base=$(basename ${scratch_dir}/${weight_sum_fn_prefix})
+    weight_sum_base=${weight_sum_base}_${avg_iteration}
     echo "            ITERATION number ${iteration}"
 ################################################################################
 #                            SUBTOMOGRAM ALIGNMENT                             #
 ################################################################################
     # Generate and launch array files
-    # Calculate number of job scripts needed
-    num_ali_jobs=$(((num_ali_batch + array_max - 1) / array_max))
-    array_start=1
-
-    # Generate array files
-    for ((job_idx=1; job_idx <= num_ali_jobs; job_idx++))
+    for ((job_idx = 1, array_start = 1; \
+          job_idx <= num_ali_jobs; \
+          job_idx++, array_start += array_max))
     do
         # Calculate end job
         array_end=$((array_start + array_max - 1))
@@ -363,10 +392,9 @@ ldpath=\${ldpath}:/lmb/home/public/matlab/jbriggs/sys/opengl/lib/glnxa64
 export LD_LIBRARY_PATH=\${ldpath}
 cd ${scratch_dir}
 process_idx=\${SGE_TASK_ID}
-check="${all_motl_fn_prefix}_$((iteration + 1)).em"
-if [[ -f "\${check}" ]]
+if [[ -f "${all_motl_fn}" ]]
 then
-    echo "\${check} already complete. SKIPPING"
+    echo "${all_motl_fn} already complete. SKIPPING"
     exit 0
 fi
 MCRDIR=${mcr_cache_dir}/${job_name}_ali_\${process_idx}
@@ -399,26 +427,24 @@ ${threshold} \\
 ${iclass}
 rm -rf \${MCRDIR}
 ALIJOB
-
-        qsub ${job_name}_ali_array_${iteration}_${job_idx}
-        array_start=$((array_start + array_max))
+        if [[ ! -e "${all_motl_fn}" ]]
+        then
+            qsub ${job_name}_ali_array_${iteration}_${job_idx}
+        fi
     done
 
     echo "STARTING Alignment in Iteration Number: ${iteration}"
 ################################################################################
 #                              ALIGNMENT PROGRESS                              #
 ################################################################################
-    motl_dir=$(dirname ${scratch_dir}/${ptcl_motl_fn_prefix})
-    motl_base=$(basename ${scratch_dir}/${ptcl_motl_fn_prefix})
     num_complete=$(find ${motl_dir} -name \
-        "${motl_base}_*_$((iteration + 1)).em" | wc -l)
+        "${motl_base}_*_${avg_iteration}.em" | wc -l)
     num_complete_prev=0
     unchanged_count=0
-    all_motl_fn="${all_motl_fn_prefix}_$((iteration + 1)).em"
     while [[ ${num_complete} -lt ${num_ptcls} && ! -e "${all_motl_fn}" ]]
     do
         num_complete=$(find ${motl_dir} -name \
-            "${motl_base}_*_$((iteration + 1)).em" | wc -l)
+            "${motl_base}_*_${avg_iteration}.em" | wc -l)
         echo "${num_complete} aligned out of ${num_ptcls}"
         if [[ ${num_complete} -eq ${num_complete_prev} ]]
         then
@@ -484,10 +510,9 @@ ldpath=\${ldpath}:/lmb/home/public/matlab/jbriggs/sys/os/glnxa64
 ldpath=\${ldpath}:/lmb/home/public/matlab/jbriggs/sys/opengl/lib/glnxa64
 export LD_LIBRARY_PATH=\${ldpath}
 cd ${scratch_dir}
-check="${all_motl_fn_prefix}_$((iteration + 1)).em"
-if [[ -f "\${check}" ]]
+if [[ -f "${all_motl_fn}" ]]
 then
-    echo "\${check} already complete. SKIPPING"
+    echo "${all_motl_fn} already complete. SKIPPING"
     exit 0
 fi
 MCRDIR=${mcr_cache_dir}/${job_name}_joinmotl
@@ -501,7 +526,10 @@ ${ptcl_motl_fn_prefix}
 rm -rf \${MCRDIR}
 JOINJOB
 
-    qsub ${job_name}_joinmotl_${iteration}
+    if [[ ! -e "${all_motl_fn}" ]]
+    then
+        qsub ${job_name}_joinmotl_${iteration}
+    fi
     echo "STARTING MOTL Join in Iteration Number: ${iteration}"
 ################################################################################
 #                              MOTL JOIN PROGRESS                              #
@@ -544,26 +572,20 @@ JOINJOB
             "${scratch_dir}/ali_${iteration}/."
     fi
 
-    ptcl_motl_dir=$(dirname ${scratch_dir}/${ptcl_motl_fn_prefix})
-    ptcl_motl_base=$(basename ${scratch_dir}/${ptcl_motl_fn_prefix})
     find ${ptcl_motl_dir} -name \
-        "${ptcl_motl_base}_[0-9]*_$((iteration + 1)).em" -delete
+        "${ptcl_motl_base}_[0-9]*_${avg_iteration}.em" -delete
 
     echo "FINISHED MOTL Join in Iteration Number: ${iteration}"
 ################################################################################
 #                              PARALLEL AVERAGING                              #
 ################################################################################
-    # Generate and launch array files
-    # Calculate number of job scripts needed
-    num_avg_jobs=$(((num_avg_batch + array_max - 1) / array_max))
-    array_start=1
-
     # Averaging scripts generate the reference for a given iteration number
     # since the alignment has output the allmotl for the next iteration we use
     # the next iteration to pass to the averaging executables
-    avg_iteration=$((iteration + 1))
     # Loop to generate parallel alignment scripts
-    for ((job_idx=1; job_idx <= num_avg_jobs; job_idx++))
+    for ((job_idx = 1, array_start = 1; \
+          job_idx <= num_avg_jobs; \
+          job_idx++, array_start += array_max))
     do
         array_end=$((array_start + array_max - 1))
         if [[ ${array_end} -gt ${num_avg_batch} ]]
@@ -591,13 +613,12 @@ ldpath=\${ldpath}:/lmb/home/public/matlab/jbriggs/sys/opengl/lib/glnxa64
 export LD_LIBRARY_PATH=\${ldpath}
 cd ${scratch_dir}
 process_idx=\${SGE_TASK_ID}
-check_avg="${ref_fn_prefix}_${avg_iteration}.em"
-check_process="${ref_fn_prefix}_${avg_iteration}_\${process_idx}.em"
-if [[ -f "\${check_avg}" ]]
+if [[ -f "${ref_fn}" ]]
 then
-    echo "\${check_avg} already complete. SKIPPING"
+    echo "${ref_fn} already complete. SKIPPING"
     exit 0
 fi
+check_process="${ref_fn_prefix}_${avg_iteration}_\${process_idx}.em"
 if [[ -f "\${check_process}" ]]
 then
     echo "\${check_process} already complete. SKIPPING"
@@ -622,20 +643,19 @@ ${iclass} \\
 \${process_idx}
 rm -rf \${MCRDIR}
 PAVGJOB
-        qsub ${job_name}_paral_avg_array_${avg_iteration}_${job_idx}
-        array_start=$((array_start + array_max))
+        if [[ ! -e "${ref_fn}" ]]
+        then
+            qsub ${job_name}_paral_avg_array_${avg_iteration}_${job_idx}
+        fi
     done
 
     echo "STARTING Parallel Average in Iteration Number: ${avg_iteration}"
 ################################################################################
 #                         PARALLEL AVERAGING PROGRESS                          #
 ################################################################################
-    ref_dir=$(dirname ${scratch_dir}/${ref_fn_prefix})
-    ref_base=$(basename ${scratch_dir}/${ref_fn_prefix})_${avg_iteration}
     num_complete=$(find ${ref_dir} -name "${ref_base}_*.em" | wc -l)
     num_complete_prev=0
     unchanged_count=0
-    ref_fn="${ref_fn_prefix}_${avg_iteration}.em"
     while [[ ${num_complete} -lt ${num_avg_batch} && ! -e "${ref_fn}" ]]
     do
         num_complete=$(find ${ref_dir} -name "${ref_base}_*.em" | wc -l)
@@ -646,8 +666,8 @@ PAVGJOB
         else
             unchanged_count=0
         fi
-        num_complete_prev=${num_complete}
         
+        num_complete_prev=${num_complete}
         if [[ ${num_complete} -gt 0 && ${unchanged_count} -gt 120 ]]
         then
             echo "Parallel averaging has seemed to stall"
@@ -724,13 +744,17 @@ ${iclass}
 rm -rf \${MCRDIR}
 AVGJOB
 
-    qsub ${job_name}_avg_${avg_iteration}
+    if [[ ! -e "${ref_fn}" ]]
+    then
+        qsub ${job_name}_avg_${avg_iteration}
+    fi
+
     echo "STARTING Final Average in Iteration Number ${avg_iteration}"
 ################################################################################
 #                            FINAL AVERAGE PROGRESS                            #
 ################################################################################
     unchanged_count=0
-    while [[ ! -e "${scratch_dir}/${ref_fn_prefix}_${avg_iteration}.em" ]]
+    while [[ ! -e "${ref_fn}" ]]
     do
         unchanged_count=$((unchanged_count + 1))
         if [[ ${unchanged_count} -gt 60 ]]
@@ -772,16 +796,9 @@ AVGJOB
             ${scratch_dir}/avg_${avg_iteration}/.
     fi
 
-    ref_dir=$(dirname ${scratch_dir}/${ref_fn_prefix})
-    ref_base=$(basename ${scratch_dir}/${ref_fn_prefix})_${avg_iteration}
-    weight_sum_dir=$(dirname ${scratch_dir}/${weight_sum_fn_prefix})
-    weight_sum_base=$(basename ${scratch_dir}/${weight_sum_fn_prefix})
-    weight_sum_base=${weight_sum_base}_${avg_iteration}
     find ${ref_dir} -name "${ref_base}_[0-9]*.em" -delete
     find ${weight_sum_dir} -name "${weight_sum_base}_[0-9]*.em" -delete
 
     echo "FINISHED Final Average in Iteration Number: ${avg_iteration}"
     echo "AVERAGE DONE IN ITERATION NUMBER ${avg_iteration}"
-    next_iteration=$((iteration + 1))
-    array_idx=$((array_idx + 1))
 done
