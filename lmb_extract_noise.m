@@ -353,6 +353,12 @@ for idx = 1:num_noise
     % dimensions. The extact the volume and convert to double.
     noise_vol = tom_red(vol, noise_start, noise_size);
     noise_vol = double(noise_vol);
+
+    % Normalize the volume by mean subtraction and division by SD
+    noise_mean = mean(noise_vol(:));
+    noise_stddev = std(noise_vol(:));
+    noise_vol = (noise_vol - noise_mean) / noise_stddev;
+
     noise_ampspec = fftshift(tom_fourier(noise_vol));
     noise_ampspec = sqrt(noise_ampspec .* conj(noise_ampspec));
     noise_ampspec_sum = noise_ampspec_sum + noise_ampspec;
