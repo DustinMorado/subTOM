@@ -42,7 +42,7 @@ diff_output_fn=combinedmotl/allmotl_1_2_diff.csv
 #                                  VARIABLES                                   #
 ################################################################################
 # Comparison MOTL executable
-comparemotl_exec=${exec_dir}/lmb_compare_motls
+compare_motls_exec=${exec_dir}/lmb_compare_motls
 
 # Set the following to true to write out the differences, or false to skip
 write_diffs='true'
@@ -61,11 +61,11 @@ ldpath=${ldpath}:/lmb/home/public/matlab/jbriggs/bin/glnxa64
 ldpath=${ldpath}:/lmb/home/public/matlab/jbriggs/sys/os/glnxa64
 ldpath=${ldpath}:/lmb/home/public/matlab/jbriggs/sys/opengl/lib/glnxa64
 export LD_LIBRARY_PATH=${ldpath}
-MCRDIR=${PWD}/${mcr_cache_dir}/comparemotl
+MCRDIR=${PWD}/${mcr_cache_dir}/compare_motls
 rm -rf ${MCRDIR}
 mkdir ${MCRDIR}
 export MCR_CACHE_ROOT=${MCRDIR}
-time ${comparemotl_exec} \
+time ${compare_motls_exec} \
     ${motl_A_fn} \
     ${motl_B_fn} \
     ${write_diffs} \

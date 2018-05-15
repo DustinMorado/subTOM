@@ -52,6 +52,8 @@ mem_max='15G'
 # BE CAREFUL THAT THE NAME DOESN'T CORRESPOND TO THE BEGINNING OF ANY OTHER FILE
 job_name='VMV013_noise_extract'
 
+# If you want to skip the cluster and run the job locally set this to 1.
+run_local=0
 ################################################################################
 #                                                                              #
 #                      NOISE EXTRACTION WORKFLOW OPTIONS                       #
@@ -145,7 +147,11 @@ else
     dedmem=''
 fi
 
-### Initialize parallel job array
+################################################################################
+#                                                                              #
+#                          TOMOGRAM NOISE EXTRACTION                           #
+#                                                                              #
+################################################################################
 cat > ${job_name}_array <<-JOBDATA
 #!/bin/bash
 #$ -N ${job_name}
@@ -166,6 +172,7 @@ ldpath="/lmb/home/public/matlab/jbriggs/bin/glnxa64:\${ldpath}"
 ldpath="/lmb/home/public/matlab/jbriggs/runtime/glnxa64:\${ldpath}"
 export LD_LIBRARY_PATH=\${ldpath}
 cd ${scratch_dir}
+###for SGE_TASK_ID in {1..${num_tomos}}; do
 rm -rf ${mcr_cache_dir}/${job_name}_\${SGE_TASK_ID}
 mkdir ${mcr_cache_dir}/${job_name}_\${SGE_TASK_ID}
 export MCR_CACHE_ROOT="${mcr_cache_dir}/${job_name}_\${SGE_TASK_ID}"
@@ -184,14 +191,24 @@ time ${noise_extract_exe} \\
     \${SGE_TASK_ID} \\
     ${reextract}
 rm -rf ${mcr_cache_dir}/${job_name}_\${SGE_TASK_ID}
+###done 2> error_${job_name}_array > log_${job_name}_array
 JOBDATA
 
-##### SEND OUT JOB ##########################
-qsub ./${job_name}_array
+if [[ ${run_local} -eq 1 ]]
+then
+    mv ${job_name}_array temp_array
+    sed 's/\#\#\#//' temp_array > ${job_name}_array
+    rm temp_array
+    chmod u+x ${job_name}_array
+    ./${job_name}_array &
+else
+    qsub ./${job_name}_array
+fi
 
 echo "Parallel noise extraction submitted"
-
-# Reset counter
+################################################################################
+#                          NOISE EXTRACTION PROGRESS                           #
+################################################################################
 check_dir=$(dirname ${scratch_dir}/${ampspec_fn_prefix})
 check_base=$(basename ${scratch_dir}/${ampspec_fn_prefix})
 check_count=$(find ${check_dir} -name "${check_base}_*.em" | wc -l)
@@ -212,4 +229,26 @@ then
         point2model -ScatteredPoints -CircleSize 5 -LineWidthIn2D 2 \
             "${pos_idx}" "${pos_idx/%pos/mod}"
     done
+fi
+################################################################################
+#                          NOISE EXTRACTION CLEAN UP                           #
+################################################################################
+if [[ ! -d extract_noise ]]
+then
+    mkdir extract_noise
+fi
+
+if [[ -f ${job_name}_array ]]
+then
+    mv ${job_name}_array extract_noise/.
+fi
+
+if [[ -f log_${job_name}_array ]]
+then
+    mv log_${job_name}_array extract_noise/.
+fi
+
+if [[ -f error_${job_name}_array ]]
+then
+    mv error_${job_name}_array extract_noise/.
 fi

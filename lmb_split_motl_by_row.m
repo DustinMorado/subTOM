@@ -1,10 +1,10 @@
-function lmb_splitmotl_by_row(input_motl_fn, motl_row, output_motl_fn_prfx)
-% LMB_SPLITMOTL_BY_ROW split a MOTL file by a given row.
-% LMB_SPLITMOTL_BY_ROW(INPUT_MOTL_FN, MOTL_ROW, OUTPUT_MOTL_FN_PRFX) takes
+function lmb_split_motl_by_row(input_motl_fn, motl_row, output_motl_fn_prfx)
+% LMB_SPLIT_MOTL_BY_ROW split a MOTL file by a given row.
+% LMB_SPLIT_MOTL_BY_ROW(INPUT_MOTL_FN, MOTL_ROW, OUTPUT_MOTL_FN_PRFX) takes
 %    the MOTL file specified by INPUT_MOTL_FN and writes out a seperate MOTL
 %    file with OUTPUT_MOTL_FN_PRFX as the prefix where each output file
 %    corresponds to a unique value of the row MOTL_ROW in INPUT_MOTL_FN.
-% See also LMB_SPLITMOTL, LMB_UNBINMOTL
+% See also LMB_SPLIT_MOTL, LMB_SCALE_MOTL
 
 % DRM 05-2018
 % ==============================================================================

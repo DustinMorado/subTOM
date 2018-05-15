@@ -1,4 +1,4 @@
-function lmb_splitmotl(input_motl_fn, even_motl_fn, odd_motl_fn)
+function lmb_split_motl(input_motl_fn, even_motl_fn, odd_motl_fn)
     input_motl = getfield(tom_emread(input_motl_fn), 'Value');
     even_motl = input_motl(:, 2:2:end);
     odd_motl = input_motl(:, 1:2:end);

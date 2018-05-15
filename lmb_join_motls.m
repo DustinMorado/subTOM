@@ -1,4 +1,4 @@
-function lmb_joinmotl(iteration, all_motl_fn_prefix, ptcl_motl_fn_prefix)
+function lmb_join_motls(iteration, all_motl_fn_prefix, ptcl_motl_fn_prefix)
 if (ischar(iteration))
     iteration = str2double(iteration);
 end

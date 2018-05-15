@@ -39,7 +39,7 @@ output_motl_fn_prfx=bin8/combinedmotl/allmotl_1_tomo
 #                                  VARIABLES                                   #
 ################################################################################
 # unbinmotl executable
-splitmotl_by_row_exec=${exec_dir}/lmb_splitmotl_by_row
+split_motl_by_row_exec=${exec_dir}/lmb_split_motl_by_row
 
 # Which row to split the input MOTL file by
 motl_row=7
@@ -59,11 +59,11 @@ ldpath=${ldpath}:/lmb/home/public/matlab/jbriggs/bin/glnxa64
 ldpath=${ldpath}:/lmb/home/public/matlab/jbriggs/sys/os/glnxa64
 ldpath=${ldpath}:/lmb/home/public/matlab/jbriggs/sys/opengl/lib/glnxa64
 export LD_LIBRARY_PATH=${ldpath}
-MCRDIR=${PWD}/${mcr_cache_dir}/splitmotl_by_row
+MCRDIR=${PWD}/${mcr_cache_dir}/split_motl_by_row
 rm -rf ${MCRDIR}
 mkdir ${MCRDIR}
 export MCR_CACHE_ROOT=${MCRDIR}
-time ${splitmotl_by_row_exec} \
+time ${split_motl_by_row_exec} \
     ${input_motl_fn} \
     ${motl_row} \
     ${output_motl_fn_prfx}

@@ -46,13 +46,16 @@ exec_dir=${bstore1}/software/lmbtomopipeline/compiled
 align_exec=${exec_dir}/lmb_scan_angles_exact
 
 # MOTL join executable
-join_exec=${exec_dir}/lmb_joinmotl
+join_exec=${exec_dir}/lmb_join_motls
 
 # Parallel Averaging executable
 paral_avg_exec=${exec_dir}/lmb_parallel_sums
 
 # Final Averaging executable
 avg_exec=${exec_dir}/lmb_weighted_average
+
+# Compare MOTLs executable
+compare_exec=${exec_dir}/lmb_compare_motls
 
 ################################################################################
 #                                MEMORY OPTIONS                                #
@@ -81,6 +84,11 @@ array_max=1000
 # Maximum number of jobs per user
 max_jobs=4000
 
+# If you want to skip the cluster and run the job locally set this to 1.
+run_local=0
+
+# If you want to skip the copying of data to local_dir set this to 1.
+skip_local_copy=1
 ################################################################################
 #                                                                              #
 #                    SUBTOMOGRAM AVERAGING WORKFLOW OPTIONS                    #
@@ -236,29 +244,32 @@ iclass=1
 #                                                                              #
 ################################################################################
 # Check that other directories exist and if not, make them
-if [[ ! -d ${local_dir} ]]
+if [[ ${skip_local_copy} -ne 1 ]]
 then
-    mkdir -p ${local_dir}
+    if [[ ! -d ${local_dir} ]]
+    then
+        mkdir -p ${local_dir}
+    fi
+
+    if [[ ! -d $(dirname ${local_dir}/${ref_fn_prefix}) ]]
+    then
+        mkdir -p $(dirname ${local_dir}/${ref_fn_prefix})
+    fi
+
+    if [[ ! -d $(dirname ${local_dir}/${all_motl_fn_prefix}) ]]
+    then
+        mkdir -p $(dirname ${local_dir}/${all_motl_fn_prefix})
+    fi
+
+    if [[ ! -d $(dirname ${local_dir}/${weight_sum_fn_prefix}) ]]
+    then
+        mkdir -p $(dirname ${local_dir}/${weight_sum_fn_prefix})
+    fi
 fi
 
 if [[ ! -d ${mcr_cache_dir} ]]
 then
     mkdir -p ${mcr_cache_dir}
-fi
-
-if [[ ! -d $(dirname ${local_dir}/${ref_fn_prefix}) ]]
-then
-    mkdir -p $(dirname ${local_dir}/${ref_fn_prefix})
-fi
-
-if [[ ! -d $(dirname ${local_dir}/${all_motl_fn_prefix}) ]]
-then
-    mkdir -p $(dirname ${local_dir}/${all_motl_fn_prefix})
-fi
-
-if [[ ! -d $(dirname ${local_dir}/${weight_sum_fn_prefix}) ]]
-then
-    mkdir -p $(dirname ${local_dir}/${weight_sum_fn_prefix})
 fi
 
 # Check number of jobs
@@ -342,7 +353,6 @@ for ((iteration = start_iteration, array_idx = 0; \
       iteration <= end_iteration; \
       iteration++, array_idx++))
 do
-    # The 
     avg_iteration=$((iteration + 1))
     all_motl_fn="${scratch_dir}/${all_motl_fn_prefix}_${avg_iteration}.em"
     motl_dir=$(dirname ${scratch_dir}/${ptcl_motl_fn_prefix})
@@ -355,6 +365,8 @@ do
     weight_sum_dir=$(dirname ${scratch_dir}/${weight_sum_fn_prefix})
     weight_sum_base=$(basename ${scratch_dir}/${weight_sum_fn_prefix})
     weight_sum_base=${weight_sum_base}_${avg_iteration}
+    comparison_fn="${scratch_dir}/${all_motl_fn_prefix}_${iteration}"
+    comparison_fn="${comparison_fn}_${avg_iteration}_diff.csv"
     echo "            ITERATION number ${iteration}"
 ################################################################################
 #                            SUBTOMOGRAM ALIGNMENT                             #
@@ -391,6 +403,7 @@ ldpath=\${ldpath}:/lmb/home/public/matlab/jbriggs/sys/os/glnxa64
 ldpath=\${ldpath}:/lmb/home/public/matlab/jbriggs/sys/opengl/lib/glnxa64
 export LD_LIBRARY_PATH=\${ldpath}
 cd ${scratch_dir}
+###for SGE_TASK_ID in {${array_start}..${array_end}}; do
 process_idx=\${SGE_TASK_ID}
 if [[ -f "${all_motl_fn}" ]]
 then
@@ -426,10 +439,22 @@ ${nfold} \\
 ${threshold} \\
 ${iclass}
 rm -rf \${MCRDIR}
+###done 2> error_${job_name}_ali_array_${iteration}_${job_idx} >\
+###log_${job_name}_ali_array_${iteration}_${job_idx}
 ALIJOB
         if [[ ! -e "${all_motl_fn}" ]]
         then
-            qsub ${job_name}_ali_array_${iteration}_${job_idx}
+            if [[ ${run_local} -eq 1 ]]
+            then
+                mv ${job_name}_ali_array_${iteration}_${job_idx} temp_array
+                sed 's/\#\#\#//' temp_array > \
+                    ${job_name}_ali_array_${iteration}_${job_idx}
+                rm temp_array
+                chmod u+x ${job_name}_ali_array_${iteration}_${job_idx}
+                ./${job_name}_ali_array_${iteration}_${job_idx} &
+            else
+                qsub ${job_name}_ali_array_${iteration}_${job_idx}
+            fi
         fi
     done
 
@@ -492,15 +517,15 @@ ALIJOB
 ################################################################################
 #                           COLLECT & COMBINE MOTLS                            #
 ################################################################################
-    cat > ${job_name}_joinmotl_${iteration} <<-JOINJOB
+    cat > ${job_name}_join_motl_${iteration} <<-JOINJOB
 #!/bin/bash
-#$ -N ${job_name}_joinmotl_${iteration}
+#$ -N ${job_name}_join_motl_${iteration}
 #$ -S /bin/bash
 #$ -V
 #$ -cwd
 #$ -l mem_free=${mem_free_ali},h_vmem=${mem_max_ali}
-#$ -o log_${job_name}_joinmotl_${iteration}
-#$ -e error_${job_name}_joinmotl_${iteration}
+#$ -o log_${job_name}_join_motl_${iteration}
+#$ -e error_${job_name}_join_motl_${iteration}
 set +o noclobber
 set -e
 echo \${HOSTNAME}
@@ -515,7 +540,7 @@ then
     echo "${all_motl_fn} already complete. SKIPPING"
     exit 0
 fi
-MCRDIR=${mcr_cache_dir}/${job_name}_joinmotl
+MCRDIR=${mcr_cache_dir}/${job_name}_join_motl
 rm -rf \${MCRDIR}
 mkdir \${MCRDIR}
 export MCR_CACHE_ROOT=\${MCRDIR}
@@ -528,7 +553,13 @@ JOINJOB
 
     if [[ ! -e "${all_motl_fn}" ]]
     then
-        qsub ${job_name}_joinmotl_${iteration}
+        if [[ ${run_local} -eq 1 ]]
+        then
+            chmod u+x ./${job_name}_join_motl_${iteration}
+            ./${job_name}_join_motl_${iteration} &
+        else
+            qsub ${job_name}_join_motl_${iteration}
+        fi
     fi
     echo "STARTING MOTL Join in Iteration Number: ${iteration}"
 ################################################################################
@@ -554,21 +585,21 @@ JOINJOB
         mkdir "${scratch_dir}/ali_${iteration}"
     fi
 
-    if [[ -e "${job_name}_joinmotl_${iteration}" ]]
+    if [[ -e "${job_name}_join_motl_${iteration}" ]]
     then
-        mv -f "${job_name}_joinmotl_${iteration}" \
+        mv -f "${job_name}_join_motl_${iteration}" \
             "${scratch_dir}/ali_${iteration}/."
     fi
 
-    if [[ -e "log_${job_name}_joinmotl_${iteration}" ]]
+    if [[ -e "log_${job_name}_join_motl_${iteration}" ]]
     then
-        mv -f "log_${job_name}_joinmotl_${iteration}" \
+        mv -f "log_${job_name}_join_motl_${iteration}" \
             "${scratch_dir}/ali_${iteration}/."
     fi
 
-    if [[ -e "error_${job_name}_joinmotl_${iteration}" ]]
+    if [[ -e "error_${job_name}_join_motl_${iteration}" ]]
     then
-        mv -f "error_${job_name}_joinmotl_${iteration}" \
+        mv -f "error_${job_name}_join_motl_${iteration}" \
             "${scratch_dir}/ali_${iteration}/."
     fi
 
@@ -612,6 +643,7 @@ ldpath=\${ldpath}:/lmb/home/public/matlab/jbriggs/sys/os/glnxa64
 ldpath=\${ldpath}:/lmb/home/public/matlab/jbriggs/sys/opengl/lib/glnxa64
 export LD_LIBRARY_PATH=\${ldpath}
 cd ${scratch_dir}
+###for SGE_TASK_ID in {${array_start}..${array_end}}; do
 process_idx=\${SGE_TASK_ID}
 if [[ -f "${ref_fn}" ]]
 then
@@ -642,10 +674,24 @@ ${weight_sum_fn_prefix} \\
 ${iclass} \\
 \${process_idx}
 rm -rf \${MCRDIR}
+###done 2> error_${job_name}_paral_avg_array_${avg_iteration}_${job_idx} >\
+###log_${job_name}_paral_avg_array_${avg_iteration}_${job_idx}
 PAVGJOB
         if [[ ! -e "${ref_fn}" ]]
         then
-            qsub ${job_name}_paral_avg_array_${avg_iteration}_${job_idx}
+            if [[ ${run_local} -eq 1 ]]
+            then
+                mv ${job_name}_paral_avg_array_${avg_iteration}_${job_idx} \
+                    temp_array
+                sed 's/\#\#\#//' temp_array >
+                    ${job_name}_paral_avg_array_${avg_iteration}_${job_idx}
+                rm temp_array
+                chmod u+x \
+                    ${job_name}_paral_avg_array_${avg_iteration}_${job_idx}
+                ./${job_name}_paral_avg_array_${avg_iteration}_${job_idx} &
+            else
+                qsub ${job_name}_paral_avg_array_${avg_iteration}_${job_idx}
+            fi
         fi
     done
 
@@ -746,7 +792,13 @@ AVGJOB
 
     if [[ ! -e "${ref_fn}" ]]
     then
-        qsub ${job_name}_avg_${avg_iteration}
+        if [[ ${run_local} -eq 1 ]]
+        then
+            chmod u+x ${job_name}_avg_${avg_iteration}
+            ./${job_name}_avg_${avg_iteration} &
+        else
+            qsub ${job_name}_avg_${avg_iteration}
+        fi
     fi
 
     echo "STARTING Final Average in Iteration Number ${avg_iteration}"
@@ -769,14 +821,21 @@ AVGJOB
 #                            FINAL AVERAGE CLEAN UP                            #
 ################################################################################
     ### Copy file to group share
-    cp ${scratch_dir}/${ref_fn_prefix}_${avg_iteration}.em \
-        ${local_dir}/${ref_fn_prefix}_${avg_iteration}.em
+    if [[ ${skip_local_copy} -ne 1 ]]
+    then
+        cp ${scratch_dir}/${ref_fn_prefix}_${avg_iteration}.em \
+            ${local_dir}/${ref_fn_prefix}_${avg_iteration}.em
 
-    cp ${scratch_dir}/${all_motl_fn_prefix}_${avg_iteration}.em \
-        ${local_dir}/${all_motl_fn_prefix}_${avg_iteration}.em
+        cp ${scratch_dir}/${all_motl_fn_prefix}_${avg_iteration}.em \
+            ${local_dir}/${all_motl_fn_prefix}_${avg_iteration}.em
 
-    cp ${scratch_dir}/${weight_sum_fn_prefix}_debug_${avg_iteration}.em \
-        ${local_dir}/${weight_sum_fn_prefix}_debug_${avg_iteration}.em
+        cp ${scratch_dir}/${weight_sum_fn_prefix}_debug_${avg_iteration}.em \
+            ${local_dir}/${weight_sum_fn_prefix}_debug_${avg_iteration}.em
+
+        cp \
+          ${scratch_dir}/${weight_sum_fn_prefix}_debug_inv_${avg_iteration}.em \
+            ${local_dir}/${weight_sum_fn_prefix}_debug_${avg_iteration}.em
+    fi
 
     if [[ -e "${job_name}_avg_${avg_iteration}" ]]
     then
@@ -801,4 +860,32 @@ AVGJOB
 
     echo "FINISHED Final Average in Iteration Number: ${avg_iteration}"
     echo "AVERAGE DONE IN ITERATION NUMBER ${avg_iteration}"
+################################################################################
+#                        COMPARE CHANGES OVER ITERATION                        #
+################################################################################
+    cat > ${job_name}_compare_motl_${iteration} <<-COMPAREJOB
+#!/bin/bash
+set +o noclobber
+set -e
+echo \${HOSTNAME}
+ldpath=/lmb/home/public/matlab/jbriggs/runtime/glnxa64
+ldpath=\${ldpath}:/lmb/home/public/matlab/jbriggs/bin/glnxa64
+ldpath=\${ldpath}:/lmb/home/public/matlab/jbriggs/sys/os/glnxa64
+ldpath=\${ldpath}:/lmb/home/public/matlab/jbriggs/sys/opengl/lib/glnxa64
+export LD_LIBRARY_PATH=\${ldpath}
+cd ${scratch_dir}
+MCRDIR=${mcr_cache_dir}/${job_name}_compare_motl
+rm -rf \${MCRDIR}
+mkdir \${MCRDIR}
+export MCR_CACHE_ROOT=\${MCRDIR}
+${compare_exec} \\
+${all_motl_fn_prefix}_${iteration}.em \\
+${all_motl_fn_prefix}_${avg_iteration}.em \\
+1 \\
+${compare_fn}
+rm -rf \${MCRDIR}
+COMPAREJOB
+    chmod u+x ./${job_name}_compare_motl_${iteration}
+    ./${job_name}_compare_motl_${iteration} &
+    rm ./${job_name}_compare_motl_${iteration}
 done

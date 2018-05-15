@@ -38,8 +38,8 @@ output_motl_fn=bin4/even/combinedmotl/allmotl_1.em
 ################################################################################
 #                                  VARIABLES                                   #
 ################################################################################
-# unbinmotl executable
-unbinmotl_exec=${exec_dir}/lmb_unbinmotl
+# scale_motl executable
+scale_motl_exec=${exec_dir}/lmb_scale_motl
 
 ################################################################################
 #                               UNBINNING OPTION                               #
@@ -47,7 +47,7 @@ unbinmotl_exec=${exec_dir}/lmb_unbinmotl
 # How much to scale up the tomogram coordinate extraction positions (rows 8
 # through 10 in the MOTL) and the particle shifts (rows 11 through 13).
 # e.g. To scale from bin8 to bin4 the factor would be 2.
-unbin_factor=2
+scale_factor=2
 
 ################################################################################
 #                                                                              #
@@ -64,12 +64,12 @@ ldpath=${ldpath}:/lmb/home/public/matlab/jbriggs/bin/glnxa64
 ldpath=${ldpath}:/lmb/home/public/matlab/jbriggs/sys/os/glnxa64
 ldpath=${ldpath}:/lmb/home/public/matlab/jbriggs/sys/opengl/lib/glnxa64
 export LD_LIBRARY_PATH=${ldpath}
-MCRDIR=${PWD}/${mcr_cache_dir}/unbinmotl
+MCRDIR=${PWD}/${mcr_cache_dir}/scale_motl
 rm -rf ${MCRDIR}
 mkdir ${MCRDIR}
 export MCR_CACHE_ROOT=${MCRDIR}
-time ${unbinmotl_exec} \
+time ${scale_motl_exec} \
     ${input_motl_fn} \
     ${output_motl_fn} \
-    ${unbin_factor}
+    ${scale_factor}
 rm -rf ${MCRDIR}

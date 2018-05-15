@@ -48,6 +48,8 @@ memmax='15G'
 # BE CAREFUL THAT THE NAME DOESN'T CORRESPOND TO THE BEGINNING OF ANY OTHER FILE
 job_name='VMV013_tomo_extract'
 
+# If you want to skip the cluster and run the job locally set this to 1.
+run_local=0
 ################################################################################
 #                                                                              #
 #                    SUBTOMOGRAM EXTRACTION WORKFLOW OPTIONS                   #
@@ -127,6 +129,11 @@ else
     dedmem=''
 fi
 
+################################################################################
+#                                                                              #
+#                            SUBTOMOGRAM EXTRACTION                            #
+#                                                                              #
+################################################################################
 ### Initialize parallel job array
 cat > ${job_name}_array <<-JOBDATA
 #!/bin/bash
@@ -148,6 +155,7 @@ ldpath="/lmb/home/public/matlab/jbriggs/bin/glnxa64:\${ldpath}"
 ldpath="/lmb/home/public/matlab/jbriggs/runtime/glnxa64:\${ldpath}"
 export LD_LIBRARY_PATH=\${ldpath}
 cd ${scratch_dir}
+###for SGE_TASK_ID in {1..${num_tomos}}; do
 rm -rf ${mcr_cache_dir}/${job_name}_\${SGE_TASK_ID}
 mkdir ${mcr_cache_dir}/${job_name}_\${SGE_TASK_ID}
 export MCR_CACHE_ROOT="${mcr_cache_dir}/${job_name}_\${SGE_TASK_ID}"
@@ -163,14 +171,24 @@ time ${extract_exe} \\
     \${SGE_TASK_ID} \\
     ${reextract}
 rm -rf ${mcr_cache_dir}/${job_name}_\${SGE_TASK_ID}
+###done 2> error_${job_name}_array > log_${job_name}_array
 JOBDATA
 
-##### SEND OUT JOB ##########################
-qsub ./${job_name}_array
+if [[ ${run_local} -eq 1 ]]
+then
+    mv ${job_name}_array temp_array
+    sed 's/\#\#\#//' temp_array > ${job_name}_array
+    rm temp_array
+    chmod u+x ${job_name}_array
+    ./${job_name}_array &
+else
+    qsub ./${job_name}_array
+fi
 
 echo "Parallel tomogram extraction submitted"
-
-# Reset counter
+################################################################################
+#                       SUBTOMOGRAM EXTRACTION PROGRESS                        #
+################################################################################
 check_dir=$(dirname "${scratch_dir}/${stats_fn_prefix}")
 check_base=$(basename "${scratch_dir}/${stats_fn_prefix}")
 check_count=$(find "${check_dir}" -name "${check_base}_*.csv" | wc -l)
@@ -180,3 +198,25 @@ while [ ${check_count} -lt ${num_tomos} ]; do
     check_count=$(find "${check_dir}" -name "${check_base}_*.csv" | wc -l)
     echo "Number of tomograms extracted ${check_count} out of ${num_tomos}"
 done
+################################################################################
+#                       SUBTOMOGRAM EXTRACTION CLEAN UP                        #
+################################################################################
+if [[ ! -d extract_tomo ]]
+then
+    mkdir extract_tomo
+fi
+
+if [[ -f ${job_name}_array ]]
+then
+    mv ${job_name}_array extract_tomo/.
+fi
+
+if [[ -f log_${job_name}_array ]]
+then
+    mv log_${job_name}_array extract_tomo/.
+fi
+
+if [[ -f error_${job_name}_array ]]
+then
+    mv error_${job_name}_array extract_tomo/.
+fi

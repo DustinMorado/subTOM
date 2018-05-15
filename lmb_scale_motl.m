@@ -1,12 +1,12 @@
-function lmb_unbinmotl(input_motl_fn, output_motl_fn, unbin_factor)
-if ischar(unbin_factor)
-    unbin_factor = str2double(unbin_factor);
+function lmb_scale_motl(input_motl_fn, output_motl_fn, scale_factor)
+if ischar(scale_factor)
+    scale_factor = str2double(scale_factor);
 end
 
 input_motl = getfield(tom_emread(input_motl_fn), 'Value');
 output_motl = input_motl;
 output_motl(11:13, :) = (input_motl(8:10, :) + input_motl(11:13, :)) ...
-    .* unbin_factor;
+    .* scale_factor;
 
 output_motl(8:10, :) = floor(output_motl(11:13, :));
 output_motl(11:13, :) = output_motl(11:13, :) - output_motl(8:10, :);

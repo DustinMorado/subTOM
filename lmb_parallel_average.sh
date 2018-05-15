@@ -23,10 +23,10 @@ set -o nounset   # Crash on unset variables
 #                                 DIRECTORIES                                  #
 ################################################################################
 # Root folder on the scratch
-scratch_dir="${nfs6}/VMV013/20170528/subtomo/bin1/even"
+scratch_dir="SCRATCH_DIR"
 
 # Folder on group shares
-local_dir="${bstore1}/VMV013/20170528/subtomo/bin1/even/local"
+local_dir="LOCAL_DIR"
 
 # MCR directory for each job
 mcr_cache_dir='mcr'
@@ -56,7 +56,7 @@ mem_max_avg='16G'
 #                              OTHER LSF OPTIONS                               #
 ################################################################################
 # BE CAREFUL THAT THE NAME DOESN'T CORRESPOND TO THE BEGINNING OF ANY OTHER FILE
-job_name='VMV013'
+job_name='JOB_NAME'
 
 # Maximum number of jobs per array
 array_max=1000
@@ -64,6 +64,11 @@ array_max=1000
 # Maximum number of jobs per user
 max_jobs=4000
 
+# If you want to skip the cluster and run the job locally set this to 1.
+run_local=0
+
+# If you want to skip the copying of data to local_dir set this to 1.
+skip_local_copy=1
 ################################################################################
 #                                                                              #
 #                    SUBTOMOGRAM AVERAGING WORKFLOW OPTIONS                    #
@@ -73,13 +78,13 @@ max_jobs=4000
 ################################################################################
 # The index of the reference to generate : input will be
 # all_motl_fn_prefix_iteration.em (define as integer e.g. iteration=1)
-iteration=3
+iteration=1
 
 # Total number of particles
-num_ptcls=32986
+num_ptcls=1000000
 
 # Number of particles in each parallel subtomogram averaging job
-avg_batch_size=150
+avg_batch_size=100
 
 ################################################################################
 #                                 FILE OPTIONS                                 #
@@ -87,22 +92,21 @@ avg_batch_size=150
 # Relative path and name of the concatenated motivelist of all particles (e.g.
 # allmotl_iter.em , the variable will be written as a string e.g.
 # all_motl_fn_prefix='sub-directory/allmotl')
-all_motl_fn_prefix='combinedmotl/new_test_allmotl'
+all_motl_fn_prefix='combinedmotl/allmotl'
 
 # Relative path and name of the reference volumes (e.g. ref_iter.em , the
 # variable will be written as a string e.g. ref_fn_prefix='sub-directory/ref')
-ref_fn_prefix='ref/new_test_ref'
+ref_fn_prefix='ref/ref'
 
 # Relative path and name of the subtomograms (e.g. part_n.em , the variable will
 # be written as a string e.g. ptcl_fn_prefix='sub-directory/part')
 ptcl_fn_prefix='subtomograms/subtomo'
 
 # Relative path and name of the weight file
-#weight_fn_prefix='../WNG_Wedge_Tests/ampspec_log.em'
 weight_fn_prefix='otherinputs/ampspec'
 
 # Relative path and name of the partial weight files
-weight_sum_fn_prefix='otherinputs/new_test_wei'
+weight_sum_fn_prefix='otherinputs/wei'
 
 ################################################################################
 #                              AVERAGING OPTIONS                               #
@@ -111,7 +115,7 @@ weight_sum_fn_prefix='otherinputs/new_test_wei'
 # Usually row 5 and 7 both correspond to the correct value and can be used
 # interchangeably, but there are instances when 5 contains a sequential ordered
 # value starting from 1, while 7 contains the correct corresponding tomogram.
-tomo_row=5
+tomo_row=7
 
 # Particles with that number in position 20 of motivelist will be added to new
 # average (define as integer e.g. iclass=1). NOTES: Class 1 is ALWAYS added.
@@ -132,14 +136,27 @@ then
 fi
 
 # Check that the appropriate directories exist
-if [[ ! -d ${local_dir} ]]
+if [[ ${skip_local_copy} -ne 1 ]]
 then
-    mkdir -p ${local_dir}
+    if [[ ! -d ${local_dir} ]]
+    then
+        mkdir -p ${local_dir}
+    fi
+
+    if [[ ! -d $(dirname ${local_dir}/${ref_fn_prefix}) ]]
+    then
+        mkdir -p $(dirname ${local_dir}/${ref_fn_prefix})
+    fi
+
+    if [[ ! -d $(dirname ${local_dir}/${weight_sum_fn_prefix}) ]]
+    then
+        mkdir -p $(dirname ${local_dir}/${weight_sum_fn_prefix})
+    fi
 fi
 
-if [[ ! -d $(dirname ${local_dir}/${ref_fn_prefix}) ]]
+if [[ ! -d ${mcr_cache_dir} ]]
 then
-    mkdir -p $(dirname ${local_dir}/${ref_fn_prefix})
+    mkdir -p ${mcr_cache_dir}
 fi
 ################################################################################
 #                                                                              #
@@ -152,10 +169,12 @@ fi
 # Generate and launch array files
 # Calculate number of job scripts needed
 num_avg_jobs=$(((num_avg_batch + array_max - 1) / array_max))
-array_start=1
+ref_fn="${scratch_dir}/${ref_fn_prefix}_${iteration}.em"
 
 # Loop to generate parallel alignment scripts
-for ((job_idx=1; job_idx <= num_avg_jobs; job_idx++))
+for ((job_idx = 1; array_start = 1; \
+      job_idx <= num_avg_jobs; \
+      job_idx++, array_start += array_max))
 do
     array_end=$((array_start + array_max - 1))
     if [[ ${array_end} -gt ${num_avg_batch} ]]
@@ -182,6 +201,7 @@ ldpath=\${ldpath}:/lmb/home/public/matlab/jbriggs/sys/os/glnxa64
 ldpath=\${ldpath}:/lmb/home/public/matlab/jbriggs/sys/opengl/lib/glnxa64
 export LD_LIBRARY_PATH=\${ldpath}
 cd ${scratch_dir}
+###for SGE_TASK_ID in {${array_start}..${array_end}}; do
 process_idx=\${SGE_TASK_ID}
 check="${ref_fn_prefix}_${iteration}_\${process_idx}.em"
 if [[ -f "\${check}" ]]
@@ -207,10 +227,23 @@ ${weight_sum_fn_prefix} \\
 ${iclass} \\
 \${process_idx}
 rm -rf \${MCRDIR}/${job_name}_paral_avg_\${process_idx}
+###done 2> error_${job_name}_paral_avg_array_${iteration}_${job_idx} >\
+###log_${job_name}_paral_avg_array_${iteration}_${job_idx}
 PAVGJOB
-
-    qsub ${job_name}_paral_avg_array_${iteration}_${job_idx}
-    array_start=$((array_start + array_max))
+    if [[ ! -e "${ref_fn}" ]]
+    then
+        if [[ ${run_local} -eq 1]]
+        then
+            mv ${job_name}_paral_avg_array_${iteration}_${job_idx} temp_array
+            sed 's/\#\#\#//' temp_array > \
+                ${job_name}_paral_avg_array_${iteration}_${job_idx}
+            rm temp_array
+            chmod u+x ${job_name}_paral_avg_array_${iteration}_${job_idx}
+            ./${job_name}_paral_avg_array_${iteration}_${job_idx} &
+        else
+            qsub ${job_name}_paral_avg_array_${iteration}_${job_idx}
+        fi
+    fi
 done
 
 echo "STARTING Parallel Average in Iteration Number: ${iteration}"
@@ -222,7 +255,8 @@ ref_base=$(basename ${scratch_dir}/${ref_fn_prefix})_${iteration}
 num_complete=$(find ${ref_dir} -name "${ref_base}_*.em" | wc -l)
 num_complete_prev=0
 unchanged_count=0
-while [ ${num_complete} -lt ${num_avg_batch} ]
+
+while [[ ${num_complete} -lt ${num_avg_batch} && ! -e "${ref_fn}" ]]
 do
     num_complete=$(find ${ref_dir} -name "${ref_base}_*.em" | wc -l)
     echo "${num_complete} parallel average out of ${num_avg_batch}"
@@ -291,10 +325,9 @@ ldpath=\${ldpath}:/lmb/home/public/matlab/jbriggs/sys/os/glnxa64
 ldpath=\${ldpath}:/lmb/home/public/matlab/jbriggs/sys/opengl/lib/glnxa64
 export LD_LIBRARY_PATH=\${ldpath}
 cd ${scratch_dir}
-check="${ref_fn_prefix}_${iteration}.em"
-if [[ -f "\${check}" ]]
+if [[ -f "${ref_fn}" ]]
 then
-    echo "\${check} already complete. SKIPPING"
+    echo "${ref_fn} already complete. SKIPPING"
     exit 0
 fi
 MCRDIR=${scratch_dir}/${mcr_cache_dir}/${job_name}_avg_${iteration}
@@ -309,15 +342,23 @@ ${iteration} \\
 ${iclass}
 rm -rf \${MCRDIR}
 AVGJOB
-
-qsub ${job_name}_avg_${iteration}
+if [[ ! -e "${ref_fn}" ]]
+then
+    if [[ ${run_local} -eq 1 ]]
+    then
+        chmod u+x ${job_name}_avg_${iteration}
+        ./${job_name}_avg_${iteration} &
+    else
+        qsub ${job_name}_avg_${iteration}
+    fi
+fi
 echo "STARTING Final Average in Iteration Number: ${iteration}"
 ################################################################################
 #                            FINAL AVERAGE PROGRESS                            #
 ################################################################################
 echo "Waiting for the final average ..."
 unchanged_count=0
-while [[ ! -e "${scratch_dir}/${ref_fn_prefix}_${iteration}.em" ]]
+while [[ ! -e "${ref_fn}" ]]
 do
     unchanged_count=$((unchanged_count + 1))
     if [[ ${unchanged_count} -gt 120 ]]
@@ -332,8 +373,15 @@ done
 #                            FINAL AVERAGE CLEAN UP                            #
 ################################################################################
 ### Copy file to group share
-cp ${scratch_dir}/${ref_fn_prefix}_${iteration}.em \
-    ${local_dir}/${ref_fn_prefix}_${iteration}.em
+if [[ ${skip_local_copy} -ne 1 ]]
+then
+    cp ${scratch_dir}/${ref_fn_prefix}_${iteration}.em \
+        ${local_dir}/${ref_fn_prefix}_${iteration}.em
+    cp ${scratch_dir}/${weight_sum_fn_prefix}_debug_${iteration}.em \
+        ${local_dir}/${weight_sum_fn_prefix}_debug_${iteration}.em 
+    cp ${scratch_dir}/${weight_sum_fn_prefix}_debug_inv_${iteration}.em \
+        ${local_dir}/${weight_sum_fn_prefix}_debug_inv_${iteration}.em 
+fi
 
 if [[ -e "${job_name}_avg_${iteration}" ]]
 then

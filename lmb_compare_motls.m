@@ -58,6 +58,12 @@ function lmb_compare_motls(motl_A_fn, motl_B_fn, write_diffs, diffs_output_fn)
     disp(sprintf('\nMean Angular Difference\t\t:\t%f', mean_angular_diff));
     disp(sprintf('Median Angular Difference\t:\t%f', median_angular_diff));
     disp(sprintf('Angular Std. Dev.\t\t:\t%f\n',std_angular_diff));
+    disp(sprintf('\nMean CCC for %s\t:\t%f', motl_A_fn, mean(motl_A(1, :))));
+    disp(sprintf('Median CCC for %s\t:\t%f', motl_A_fn, median(motl_A(1, :))));
+    disp(sprintf('Std. Dev. CCC for %s\t:\t%f', motl_A_fn, std(motl_A(1, :))));
+    disp(sprintf('Mean CCC for %s\t:\t%f', motl_B_fn, mean(motl_B(1, :))));
+    disp(sprintf('Median CCC for %s\t:\t%f', motl_B_fn, median(motl_B(1, :))));
+    disp(sprintf('Std. Dev. CCC for %s\t:\t%f', motl_B_fn, std(motl_B(1, :))));
 
     if write_diffs
         diffs = zeros(2, n_idxs);
