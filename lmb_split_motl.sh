@@ -30,19 +30,19 @@ exec_dir=${bstore1}/software/lmbtomopipeline/compiled
 #                                 FILE OPTIONS                                 #
 ################################################################################
 # Relative or absolute path and name of the input MOTL file to be split.
-input_motl_fn=bin8/combinedmotl/allmotl_1.em
+input_motl_fn="<INPUT_MOTL_FN>"
 
 # Relative or absolute path and name of the even output MOTL file.
-even_motl_fn=bin4/even/combinedmotl/allmotl_bin8_1.em
+even_motl_fn="<EVEN_MOTL_FN>"
 
 # Relative or absolute path and name of the odd output MOTL file.
-odd_motl_fn=bin4/odd/combinedmotl/allmotl_bin8_1.em
+odd_motl_fn="<ODD_MOTL_FN>"
 
 ################################################################################
 #                                  VARIABLES                                   #
 ################################################################################
 # unbinmotl executable
-splitmotl_exec=${exec_dir}/lmb_splitmotl
+splitmotl_exec=${exec_dir}/lmb_split_motl
 
 ################################################################################
 #                                                                              #
