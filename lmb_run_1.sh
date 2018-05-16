@@ -439,7 +439,7 @@ ${nfold} \\
 ${threshold} \\
 ${iclass}
 rm -rf \${MCRDIR}
-###done 2> error_${job_name}_ali_array_${iteration}_${job_idx} >\
+###done 2> error_${job_name}_ali_array_${iteration}_${job_idx} >\\
 ###log_${job_name}_ali_array_${iteration}_${job_idx}
 ALIJOB
         if [[ ! -e "${all_motl_fn}" ]]
@@ -674,7 +674,7 @@ ${weight_sum_fn_prefix} \\
 ${iclass} \\
 \${process_idx}
 rm -rf \${MCRDIR}
-###done 2> error_${job_name}_paral_avg_array_${avg_iteration}_${job_idx} >\
+###done 2> error_${job_name}_paral_avg_array_${avg_iteration}_${job_idx} >\\
 ###log_${job_name}_paral_avg_array_${avg_iteration}_${job_idx}
 PAVGJOB
         if [[ ! -e "${ref_fn}" ]]
@@ -683,7 +683,7 @@ PAVGJOB
             then
                 mv ${job_name}_paral_avg_array_${avg_iteration}_${job_idx} \
                     temp_array
-                sed 's/\#\#\#//' temp_array >
+                sed 's/\#\#\#//' temp_array > \
                     ${job_name}_paral_avg_array_${avg_iteration}_${job_idx}
                 rm temp_array
                 chmod u+x \
@@ -882,10 +882,10 @@ ${compare_exec} \\
 ${all_motl_fn_prefix}_${iteration}.em \\
 ${all_motl_fn_prefix}_${avg_iteration}.em \\
 1 \\
-${compare_fn}
+${comparison_fn}
 rm -rf \${MCRDIR}
 COMPAREJOB
     chmod u+x ./${job_name}_compare_motl_${iteration}
-    ./${job_name}_compare_motl_${iteration} &
+    ./${job_name}_compare_motl_${iteration}
     rm ./${job_name}_compare_motl_${iteration}
 done

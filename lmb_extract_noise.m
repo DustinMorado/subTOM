@@ -1,16 +1,34 @@
 function lmb_extract_noise(tomogram_dir, scratch_dir, tomo_row, ...
-    ampspec_fn_prefix, all_motl_fn, noise_motl_fn_prefix, boxsize, ...
-    just_extract, ptcl_overlap_factor, noise_overlap_factor, num_noise, ...
-    process_idx, reextract)
+    ampspec_fn_prefix, binary_fn_prefix, all_motl_fn, noise_motl_fn_prefix, ...
+    boxsize, just_extract, ptcl_overlap_factor, noise_overlap_factor, ...
+    num_noise, process_idx, reextract)
 % LMB_EXTRACT_NOISE extract noise amplitude spectra on the cluster.
 % LMB_EXTRACT_NOISE(TOMOGRAM_DIR, SCRATCH_DIR, TOMO_ROW,
-%    AMPSPEC_FN_PREFIX, ALL_MOTL_FN, NOISE_MOTL_FN_PREFIX, BOXSIZE,
-%    JUST_EXTRACT, PTCL_OVERLAP_FACTOR, NOISE_OVERLAP_FACTOR, NUM_NOISE,
-%    PROCESS_IDX, REEXTRACT)
+%    AMPSPEC_FN_PREFIX, BINARY_FN_PREFIX, ALL_MOTL_FN, NOISE_MOTL_FN_PREFIX,
+%    BOXSIZE, JUST_EXTRACT, PTCL_OVERLAP_FACTOR, NOISE_OVERLAP_FACTOR,
+%    NUM_NOISE, PROCESS_IDX, REEXTRACT)
 % See also LMB_EXTRACT_SUBTOMOGRAMS
 
 % DRM 11-2017
 % ==============================================================================
+%##############################################################################%
+%                                    DEBUG                                     %
+%##############################################################################%
+%tomogram_dir = 'tomogram_dir';
+%scratch_dir = 'scratch_dir';
+%tomo_row = 7;
+%ampspec_fn_prefix = 'otherinputs/ampspec';
+%binary_fn_prefix = 'otherinputs/binary';
+%all_motl_fn = 'combinedmotl/allmotl_1.em';
+%noise_motl_fn_prefix = 'combinedmotl/noisemotl';
+%boxsize = 128;
+%just_extract = 0;
+%ptcl_overlap_factor = 1;
+%noise_overlap_factor = 1;
+%num_noise = 100;
+%process_idx = 1;
+%reextract = 0
+%##############################################################################%
 
 % Evaluate numeric inputs
 if ischar(tomo_row)
@@ -75,7 +93,9 @@ cd(scratch_dir);
 
 % Check if we have already finished the processing for this tomogram
 noise_ampspec_fn = sprintf('%s_%d.em', ampspec_fn_prefix, tomogram_number);
-if ~reextract && exist(fullfile(pwd(), noise_ampspec_fn), 'file') == 2
+binary_wedge_fn = sprintf('%s_%d.em', binary_fn_prefix, tomogram_number);
+ampspec_exist = exist(fullfile(pwd(), noise_ampspec_fn), 'file') == 2;
+if ampspec_exist && ~reextract
     fprintf('Found noise amplitude spectrum: %s. SKIPPING.\n', ...
         noise_ampspec_fn);
 
@@ -89,38 +109,47 @@ noise_motl_fn = sprintf('%s_%d.em', noise_motl_fn_prefix, tomogram_number);
 if exist(fullfile(pwd(), noise_motl_fn), 'file') == 2
     noise_motl = getfield(tom_emread(noise_motl_fn), 'Value');
     noise_count = size(noise_motl, 2);
-    if noise_count < num_noise && ~just_extract
-        noise_motl = [noise_motl, zeros(20, num_noise - noise_count)];
-        write_noise_motl = 1;
-    else
+    if just_extract
         num_noise = noise_count;
-        write_noise_motl = 0;
     end
 else
     noise_motl = zeros(20, num_noise);
     noise_count = 0;
-    write_noise_motl = 1;
 end
 
 % If we already have enough noise positions or selected just extract, do that.
-if write_noise_motl == 0
+if noise_count >= num_noise
     % Extract the subtomograms for each tomogram
     tomogram = getfield(tom_mrcread(tomogram_fn), 'Value');
     noise_ampspec = extract_noise_ampspec(boxsize, tomogram, noise_motl);
     tom_emwrite(noise_ampspec_fn, noise_ampspec);
     check_em_file(noise_ampspec_fn, noise_ampspec);
-    clear tomogram
+    binary_wedge = binary_from_ampspec(noise_ampspec);
+    tom_emwrite(binary_wedge_fn, binary_wedge);
+    check_em_file(binary_wedge_fn, binary_wedge);
     return
 end
 
 % Read in the tomogram to get its dimension
-tomogram_size = getfield(getfield(tom_mrcread(tomogram_fn), 'Header'), 'Size');
+tomogram_size = getfield(getfield(tom_readmrcheader(tomogram_fn), ...
+    'Header'), 'Size');
+if max(tomogram_size) <= 500
+    bin_factor = 1;
+elseif max(tomogram_size ./ 2) <= 500
+    bin_factor = 2;
+elseif max(tomogram_size ./ 4) <= 500
+    bin_factor = 4;
+else
+    bin_factor = 8;
+end
 
 % Create a mask volume that will hold possible positions for noise
-noise_mask = ones(tomogram_size);
+noise_mask = ones(round(tomogram_size ./ bin_factor));
 clear tomogram_size
 
 % Noise absolute minimum tomogram limits
+extract_boxsize = boxsize;
+boxsize = max(round(boxsize / bin_factor), 1);
 noise_mask(1:boxsize, :, :) = 0;
 noise_mask(:, 1:boxsize, :) = 0;
 noise_mask(:, :, 1:boxsize) = 0;
@@ -134,14 +163,14 @@ noise_mask(:, :, size(noise_mask, 3) - (boxsize - 1):end) = 0;
 % overlap we allow between particles and noise particles. Values greater that
 % one will create extra padding between particles, while values less than one
 % will allow some overlap
-ptcl_masksize = round(boxsize * ptcl_overlap_factor);
-noise_masksize = round(boxsize * noise_overlap_factor);
+ptcl_masksize = max(round(boxsize * ptcl_overlap_factor), 1);
+noise_masksize = max(round(boxsize * noise_overlap_factor), 1);
 
 % For each particle we clear out the mask around the particle
 for ptcl_idx = 1:size(motl, 2)
     % Get the particles position in the tomogram
-    ptcl_pos = round([motl(8, ptcl_idx), motl(9, ptcl_idx), ...
-        motl(10, ptcl_idx)]);
+    ptcl_pos = round((motl(8:10, ptcl_idx) + motl(11:13, ptcl_idx)) ./ ...
+        bin_factor);
 
     % Particles can exist at the boundaries of the tomogram so we need to set
     % their boundaries manually to avoid improper indexing
@@ -187,9 +216,7 @@ clear ptcl_idx ptcl_pos ptcl_min_* ptcl_max_*
 if noise_count > 0
     for noise_idx = 1:noise_count
         % Get the noise position in the tomogram
-        noise_pos = [noise_motl(8, noise_idx), noise_motl(9, noise_idx), ...
-            noise_motl(10, noise_idx)];
-
+        noise_pos = round(noise_motl(8:10, noise_idx) ./ bin_factor);
         % Noise shouldn't exist at the boundaries of the tomogram, but just in
         % case the user has given some very large overlap factor value.
         noise_min_x = noise_pos(1) - noise_masksize;
@@ -255,9 +282,9 @@ while noise_count < num_noise
     % Add this position to the noise MOTL
     noise_count = noise_count + 1;
     noise_motl(tomo_row, noise_count) = tomogram_number;
-    noise_motl(8, noise_count) = noise_pos_x;
-    noise_motl(9, noise_count) = noise_pos_y;
-    noise_motl(10, noise_count) = noise_pos_z;
+    noise_motl(8, noise_count) = noise_pos_x * bin_factor;
+    noise_motl(9, noise_count) = noise_pos_y * bin_factor;
+    noise_motl(10, noise_count) = noise_pos_z * bin_factor;
     noise_motl(20, noise_count) = 1;
 
     % Noise shouldn't exist at the boundaries of the tomogram, but just in
@@ -305,21 +332,19 @@ clear noise_mask noise_pos_array noise_pos_idx noise_pos_* delprog
 clear noise_min_* noise_max_*
 
 % Extract the subtomograms for each tomogram
+fprintf('Starting Noise Extraction and Amp. Spec. Calculation\n');
 tomogram = getfield(tom_mrcread(tomogram_fn), 'Value');
-noise_ampspec = extract_noise_ampspec(boxsize, tomogram, noise_motl);
+noise_ampspec = extract_noise_ampspec(extract_boxsize, tomogram, noise_motl);
 tom_emwrite(noise_ampspec_fn, noise_ampspec);
 check_em_file(noise_ampspec_fn, noise_ampspec);
-clear tomogram
 
-if write_noise_motl
-    noise_motl = noise_motl(:, noise_motl(20, :) == 1);
-    tom_emwrite(noise_motl_fn, noise_motl);
-    check_em_file(noise_motl_fn, noise_motl);
+binary_wedge = binary_from_ampspec(noise_ampspec);
+tom_emwrite(binary_wedge_fn, binary_wedge);
+check_em_file(binary_wedge_fn, binary_wedge);
 
-    % Write a noise position file so we can check the positions in IMOD
-    noise_pos_fn = sprintf('%s_%d.pos', noise_motl_fn_prefix, tomogram_number);
-    dlmwrite(noise_pos_fn, transpose(noise_motl(8:10, :) - 1), ' ');
-end
+noise_motl = noise_motl(:, noise_motl(20, :) == 1);
+tom_emwrite(noise_motl_fn, noise_motl);
+check_em_file(noise_motl_fn, noise_motl);
 
 %% Display a progress bar
 function new_delprog = disp_progbar(tomogram_number, noise_count, num_noise, ...
@@ -343,7 +368,9 @@ function noise_ampspec_avg = extract_noise_ampspec(...
 % Initialize amplitude spectrum volume
 noise_ampspec_sum = zeros(boxsize, boxsize, boxsize);
 num_noise = size(motl_vec, 2);
+tomogram_number = max(motl_vec(5, 1), motl_vec(7, 1));
 
+delprog = '';
 for idx = 1:num_noise
     noise_pos = transpose(motl_vec(8:10, idx));
     noise_start = round(noise_pos - (boxsize / 2));
@@ -362,6 +389,7 @@ for idx = 1:num_noise
     noise_ampspec = fftshift(tom_fourier(noise_vol));
     noise_ampspec = sqrt(noise_ampspec .* conj(noise_ampspec));
     noise_ampspec_sum = noise_ampspec_sum + noise_ampspec;
+    delprog = disp_progbar(tomogram_number, idx, num_noise, delprog);
 end
 
 noise_ampspec_avg = noise_ampspec_sum ./ num_noise;
@@ -379,3 +407,34 @@ function check_em_file(em_fn, em_data)
             tom_emwrite(em_fn, em_data);
         end
     end
+
+%% Create binary wedge from the amplitude spectrum
+function binary_wedge = binary_from_ampspec(ampspec)
+    if size(ampspec, 1) <= 32
+        crop_size = size(ampspec, 1);
+    elseif round(size(ampspec, 1) / 2) <= 32
+        crop_size = round(size(ampspec, 1) / 2);
+    elseif round(size(ampspec, 1) / 4) <= 32
+        crop_size = round(size(ampspec, 1) / 4);
+    else
+        crop_size = round(size(ampspec, 1) / 8);
+    end
+    crop_start = size(ampspec) / 2 + 1 - (crop_size / 2);
+    norm_ampspec = tom_red(ampspec, crop_start, repmat(crop_size, 1, 3));
+    norm_ampspec = (norm_ampspec - mean(norm_ampspec(:))) ./ ...
+        std(norm_ampspec(:), 1);
+    best_ccc = [-1, -60, 60];
+    n_voxels = numel(norm_ampspec);
+    for min_angle = -60:-1
+        for max_angle = 1:60
+            wedge = av3_wedge(norm_ampspec, min_angle, max_angle);
+            wedge = min(wedge, norm_ampspec);
+            norm_wedge = (wedge - mean(wedge(:))) ./ std(wedge(:), 1);
+            ccc = norm_ampspec .* norm_wedge;
+            ccc = sum(ccc(:)) ./ n_voxels;
+            if ccc > best_ccc(1)
+                best_ccc = [ccc, min_angle, max_angle];
+            end
+        end
+    end
+    binary_wedge = av3_wedge(ampspec, best_ccc(2), best_ccc(3));

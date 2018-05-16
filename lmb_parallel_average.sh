@@ -172,7 +172,7 @@ num_avg_jobs=$(((num_avg_batch + array_max - 1) / array_max))
 ref_fn="${scratch_dir}/${ref_fn_prefix}_${iteration}.em"
 
 # Loop to generate parallel alignment scripts
-for ((job_idx = 1; array_start = 1; \
+for ((job_idx = 1, array_start = 1; \
       job_idx <= num_avg_jobs; \
       job_idx++, array_start += array_max))
 do
@@ -227,12 +227,12 @@ ${weight_sum_fn_prefix} \\
 ${iclass} \\
 \${process_idx}
 rm -rf \${MCRDIR}/${job_name}_paral_avg_\${process_idx}
-###done 2> error_${job_name}_paral_avg_array_${iteration}_${job_idx} >\
+###done 2> error_${job_name}_paral_avg_array_${iteration}_${job_idx} >\\
 ###log_${job_name}_paral_avg_array_${iteration}_${job_idx}
 PAVGJOB
     if [[ ! -e "${ref_fn}" ]]
     then
-        if [[ ${run_local} -eq 1]]
+        if [[ ${run_local} -eq 1 ]]
         then
             mv ${job_name}_paral_avg_array_${iteration}_${job_idx} temp_array
             sed 's/\#\#\#//' temp_array > \

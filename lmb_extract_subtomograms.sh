@@ -16,10 +16,10 @@ set -o nounset   # Crash on unset variables
 #                                 DIRECTORIES                                  #
 ################################################################################
 # Folders where the tomograms are stored
-tomogram_dir="${bstore1}/VMV013/20170528/data/tomos/bin4"
+tomogram_dir="<TOMOGRAM_DIR>"
 
 # Root folder for subtomogram extraction. Other paths are relative to this one.
-scratch_dir="${nfs6}/VMV013/20170528/subtomo/bin4"
+scratch_dir="<SCRATCH_DIR>"
 
 # MCR directory for each job
 mcr_cache_dir="${scratch_dir}/mcr"
@@ -46,7 +46,7 @@ memmax='15G'
 #                              OTHER LSF OPTIONS                               #
 ################################################################################
 # BE CAREFUL THAT THE NAME DOESN'T CORRESPOND TO THE BEGINNING OF ANY OTHER FILE
-job_name='VMV013_tomo_extract'
+job_name='<JOB_NAME>'
 
 # If you want to skip the cluster and run the job locally set this to 1.
 run_local=0
@@ -59,7 +59,7 @@ run_local=0
 #                                 FILE OPTIONS                                 #
 ################################################################################
 # Relative path to allmotl file from root folder.
-all_motl_fn='combinedmotl/allmotl_2_1.em'
+all_motl_fn='combinedmotl/allmotl_1.em'
 
 # Relative path and filename for output subtomograms
 subtomo_fn_prefix='subtomograms/subtomo'
@@ -191,13 +191,30 @@ echo "Parallel tomogram extraction submitted"
 ################################################################################
 check_dir=$(dirname "${scratch_dir}/${stats_fn_prefix}")
 check_base=$(basename "${scratch_dir}/${stats_fn_prefix}")
-check_count=$(find "${check_dir}" -name "${check_base}_*.csv" | wc -l)
+if [[ ${reextract} -eq 1 ]]
+then
+    touch ${check_dir}/empty_file
+    check_count=$(find ${check_dir} -newer ${check_dir}/empty_file \
+        -and -name "${check_base}_*.csv" | wc -l)
+else
+    check_count=$(find "${check_dir}" -name "${check_base}_*.csv" | wc -l)
+fi
 # Wait for jobs to finish
 while [ ${check_count} -lt ${num_tomos} ]; do
     sleep 60s
-    check_count=$(find "${check_dir}" -name "${check_base}_*.csv" | wc -l)
+    if [[ ${reextract} -eq 1 ]]
+    then
+        check_count=$(find ${check_dir} -newer ${check_dir}/empty_file \
+            -and -name "${check_base}_*.csv" | wc -l)
+    else
+        check_count=$(find "${check_dir}" -name "${check_base}_*.csv" | wc -l)
+    fi
     echo "Number of tomograms extracted ${check_count} out of ${num_tomos}"
 done
+if [[ -f ${check_dir}/empty_file ]]
+then
+    rm ${check_dir}/empty_file
+fi
 ################################################################################
 #                       SUBTOMOGRAM EXTRACTION CLEAN UP                        #
 ################################################################################

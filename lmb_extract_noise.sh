@@ -74,6 +74,9 @@ noise_motl_fn_prefix="combinedmotl/noisemotl"
 # Relative path and filename prefix for output amplitude spectrums
 ampspec_fn_prefix="otherinputs/ampspec"
 
+# Relative path and filename prefix for output binary wedges
+binary_fn_prefix="otherinputs/ampspec"
+
 ################################################################################
 #                              TOMOGRAM OPTIONS                                #
 ################################################################################
@@ -181,6 +184,7 @@ time ${noise_extract_exe} \\
     ${scratch_dir} \\
     ${tomo_row} \\
     ${ampspec_fn_prefix} \\
+    ${binary_fn_prefix} \\
     ${all_motl_fn} \\
     ${noise_motl_fn_prefix} \\
     ${subtomogram_size} \\
@@ -211,24 +215,29 @@ echo "Parallel noise extraction submitted"
 ################################################################################
 check_dir=$(dirname ${scratch_dir}/${ampspec_fn_prefix})
 check_base=$(basename ${scratch_dir}/${ampspec_fn_prefix})
-check_count=$(find ${check_dir} -name "${check_base}_*.em" | wc -l)
+if [[ ${reextract} -eq 1 ]]
+then
+    touch ${check_dir}/empty_file
+    check_count=$(find ${check_dir} -newer ${check_dir}/empty_file \
+        -and -name "${check_base}_*.em" | wc -l)
+else
+    check_count=$(find ${check_dir} -name "${check_base}_*.em" | wc -l)
+fi
 # Wait for jobs to finish
 while [ ${check_count} -lt ${num_tomos} ]; do
-    check_count=$(find ${check_dir} -name "${check_base}_*.em" | wc -l)
+    if [[ ${reextract} -eq 1 ]]
+    then
+        check_count=$(find ${check_dir} -newer ${check_dir}/empty_file \
+            -and -name "${check_base}_*.em" | wc -l)
+    else
+        check_count=$(find ${check_dir} -name "${check_base}_*.em" | wc -l)
+    fi
     echo "Number of amplitude spectra complete ${check_count} / ${num_tomos}"
     sleep 60s
 done
-
-pos_dir=$(dirname ${scratch_dir}/${noise_motl_fn_prefix})
-pos_base=$(basename ${scratch_dir}/${noise_motl_fn_prefix})
-pos_count=$(find ${pos_dir} -name "${pos_base}_*.pos" | wc -l)
-if [[ ${pos_count} -gt 0 ]]
+if [[ -f ${check_dir}/empty_file ]]
 then
-    for pos_idx in "${scratch_dir}/${noise_motl_fn_prefix}"_*.pos
-    do
-        point2model -ScatteredPoints -CircleSize 5 -LineWidthIn2D 2 \
-            "${pos_idx}" "${pos_idx/%pos/mod}"
-    done
+    rm ${check_dir}/empty_file
 fi
 ################################################################################
 #                          NOISE EXTRACTION CLEAN UP                           #
