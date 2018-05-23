@@ -393,7 +393,7 @@ for idx = 1:num_noise
 end
 
 noise_ampspec_avg = noise_ampspec_sum ./ num_noise;
-noise_ampspec_avg = noise_ampspec_avg ./ max(noise_ampspec_avg(:));
+%noise_ampspec_avg = noise_ampspec_avg ./ max(noise_ampspec_avg(:));
 
 %% check_em_file
 % A function to check that an EM file was correctly written.
@@ -419,6 +419,11 @@ function binary_wedge = binary_from_ampspec(ampspec)
     else
         crop_size = round(size(ampspec, 1) / 8);
     end
+
+    if mod(crop_size, 2) == 1
+        crop_size = crop_size + 1;
+    end
+
     crop_start = size(ampspec) / 2 + 1 - (crop_size / 2);
     norm_ampspec = tom_red(ampspec, crop_start, repmat(crop_size, 1, 3));
     norm_ampspec = (norm_ampspec - mean(norm_ampspec(:))) ./ ...
