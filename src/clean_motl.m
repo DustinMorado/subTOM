@@ -78,6 +78,8 @@ function clean_motl(input_motl_fn, output_motl_fn, tomo_row, ...
                 ptcl_idxs = motl_(4, delete_idxs);
                 motl(1, ismember(motl(4, :), motl_(4, delete_idxs))) = -100;
                 motl_(:, clean_idxs) = [];
+            else
+                motl_(:, clean_idxs) = [];
             end
         end
     end

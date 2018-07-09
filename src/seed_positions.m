@@ -77,6 +77,7 @@ function seed_positions(input_motl_fn_prefix, output_motl_fn, spacing, ...
         end
     end
 
+    allmotl(4, :) = 1:size(allmotl, 2);
     tom_emwrite(output_motl_fn, allmotl);
     check_em_file(output_motl_fn, allmotl);
 end % END of lmb_seed_positions

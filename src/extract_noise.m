@@ -207,11 +207,11 @@ function extract_noise(tomogram_dir, scratch_dir, tomo_row, ...
     noise_mask(:, :, size(noise_mask, 3) - (boxsize - 1):end) = 0;
 
     % We define mask size as a factor of the boxsize which defines the amount of
-    % overlap we allow between particles and noise particles. Values greater
-    % that one will create extra padding between particles, while values less
-    % than one will allow some overlap
-    ptcl_masksize = max(round(boxsize * ptcl_overlap_factor), 1);
-    noise_masksize = max(round(boxsize * noise_overlap_factor), 1);
+    % overlap we allow between particles and noise particles. Values less than
+    % zero will create extra padding between particles, while values greater
+    % than zero will allow some overlap
+    ptcl_masksize = max(round(boxsize * (1 - ptcl_overlap_factor)), 1);
+    noise_masksize = max(round(boxsize * (1 - noise_overlap_factor)), 1);
 
     % For each particle we clear out the mask around the particle
     for ptcl_idx = 1:size(motl, 2)
@@ -221,41 +221,13 @@ function extract_noise(tomogram_dir, scratch_dir, tomo_row, ...
 
         % Particles can exist at the boundaries of the tomogram so we need to
         % set their boundaries manually to avoid improper indexing
-        ptcl_min_x = ptcl_pos(1) - ptcl_masksize;
-        ptcl_min_y = ptcl_pos(2) - ptcl_masksize;
-        ptcl_min_z = ptcl_pos(3) - ptcl_masksize;
-
-        if ptcl_min_x < 1
-            ptcl_min_x = 1;
-        end
-
-        if ptcl_min_y < 1
-            ptcl_min_y = 1;
-        end
-
-        if ptcl_min_z < 1
-            ptcl_min_z = 1;
-        end
-
-        ptcl_max_x = ptcl_pos(1) + (ptcl_masksize - 1);
-        ptcl_max_y = ptcl_pos(2) + (ptcl_masksize - 1);
-        ptcl_max_z = ptcl_pos(3) + (ptcl_masksize - 1);
-
-        if ptcl_max_x > size(noise_mask, 1)
-            ptcl_max_x = size(noise_mask, 1);
-        end
-
-        if ptcl_max_y > size(noise_mask, 2)
-            ptcl_max_y = size(noise_mask, 2);
-        end
-
-        if ptcl_max_z > size(noise_mask, 3)
-            ptcl_max_z = size(noise_mask, 3);
-        end
+        ptcl_min = max(round(ptcl_pos - (ptcl_masksize / 2)), 1);
+        ptcl_max = min(round(ptcl_pos + (ptcl_masksize / 2 - 1)), ...
+            size(noise_mask));
 
         % Zero out the mask around the particle
-        noise_mask(ptcl_min_x:ptcl_max_x, ptcl_min_y:ptcl_max_y, ...
-            ptcl_min_z:ptcl_max_z) = 0;
+        noise_mask(ptcl_min(1):ptcl_max(1), ptcl_min(2):ptcl_max(2), ...
+            ptcl_min(3):ptcl_max(3)) = 0;
     end
 
     % For each existing noise position we clear out the mask around the particle
@@ -265,41 +237,13 @@ function extract_noise(tomogram_dir, scratch_dir, tomo_row, ...
             noise_pos = round(noise_motl(8:10, noise_idx) ./ bin_factor);
             % Noise shouldn't exist at the boundaries of the tomogram, but just
             % in case the user has given some very large overlap factor value.
-            noise_min_x = noise_pos(1) - noise_masksize;
-            noise_min_y = noise_pos(2) - noise_masksize;
-            noise_min_z = noise_pos(3) - noise_masksize;
-
-            if noise_min_x < 1
-                noise_min_x = 1;
-            end
-
-            if noise_min_y < 1
-                noise_min_y = 1;
-            end
-
-            if noise_min_z < 1
-                noise_min_z = 1;
-            end
-
-            noise_max_x = noise_pos(1) + (noise_masksize - 1);
-            noise_max_y = noise_pos(2) + (noise_masksize - 1);
-            noise_max_z = noise_pos(3) + (noise_masksize - 1);
-
-            if noise_max_x > size(noise_mask, 1)
-                noise_max_x = size(noise_mask, 1);
-            end
-
-            if noise_max_y > size(noise_mask, 2)
-                noise_max_y = size(noise_mask, 2);
-            end
-
-            if noise_max_z > size(noise_mask, 3)
-                noise_max_z = size(noise_mask, 3);
-            end
+            noise_min = max(round(noise_pos - (noise_masksize / 2)), 1);
+            noise_max = min(round(noise_pos + (noise_masksize / 2 - 1)), ...
+                size(noise_mask));
 
             % Zero out the mask around the particle
-            noise_mask(noise_min_x:noise_max_x, noise_min_y:noise_max_y, ...
-                noise_min_z:noise_max_z) = 0;
+            noise_mask(noise_min(1):noise_max(1), noise_min(2):noise_max(2), ...
+                noise_min(3):noise_max(3)) = 0;
         end
     end
 
@@ -323,52 +267,23 @@ function extract_noise(tomogram_dir, scratch_dir, tomo_row, ...
 
         [noise_pos_x, noise_pos_y, noise_pos_z] = ind2sub(size(noise_mask), ...
             noise_pos_idx);
+        noise_pos = [noise_pos_x, noise_pos_y, noise_pos_z];
 
         % Add this position to the noise MOTL
         noise_count = noise_count + 1;
         noise_motl(tomo_row, noise_count) = tomogram_number;
-        noise_motl(8, noise_count) = noise_pos_x * bin_factor;
-        noise_motl(9, noise_count) = noise_pos_y * bin_factor;
-        noise_motl(10, noise_count) = noise_pos_z * bin_factor;
+        noise_motl(8:10, noise_count) = noise_pos .* bin_factor;
         noise_motl(20, noise_count) = 1;
 
         % Noise shouldn't exist at the boundaries of the tomogram, but just in
         % case the user has given some very large overlap factor value.
-        noise_min_x = noise_pos_x - noise_masksize;
-        noise_min_y = noise_pos_y - noise_masksize;
-        noise_min_z = noise_pos_z - noise_masksize;
-
-        if noise_min_x < 1
-            noise_min_x = 1;
-        end
-
-        if noise_min_y < 1
-            noise_min_y = 1;
-        end
-
-        if noise_min_z < 1
-            noise_min_z = 1;
-        end
-
-        noise_max_x = noise_pos_x + (noise_masksize - 1);
-        noise_max_y = noise_pos_y + (noise_masksize - 1);
-        noise_max_z = noise_pos_z + (noise_masksize - 1);
-
-        if noise_max_x > size(noise_mask, 1)
-            noise_max_x = size(noise_mask, 1);
-        end
-
-        if noise_max_y > size(noise_mask, 2)
-            noise_max_y = size(noise_mask, 2);
-        end
-
-        if noise_max_z > size(noise_mask, 3)
-            noise_max_z = size(noise_mask, 3);
-        end
+        noise_min = max(round(noise_pos - (noise_masksize / 2)), 1);
+        noise_max = min(round(noise_pos + (noise_masksize / 2 - 1)), ...
+            size(noise_mask));
 
         % Zero out the mask around the particle
-        noise_mask(noise_min_x:noise_max_x, noise_min_y:noise_max_y, ...
-            noise_min_z:noise_max_z) = 0;
+        noise_mask(noise_min(1):noise_max(1), noise_min(2):noise_max(2), ...
+            noise_min(3):noise_max(3)) = 0;
 
         % Display some output
         delprog = disp_progbar(tomogram_number, noise_count, num_noise, ...
@@ -378,6 +293,7 @@ function extract_noise(tomogram_dir, scratch_dir, tomo_row, ...
     % Extract the subtomograms for each tomogram
     fprintf('Starting Noise Extraction and Amp. Spec. Calculation\n');
     tomogram = getfield(tom_mrcread(tomogram_fn), 'Value');
+    noise_motl = noise_motl(:, noise_motl(20, :) == 1);
     noise_ampspec = extract_noise_ampspec(extract_boxsize, tomogram, ...
         noise_motl);
 
@@ -388,7 +304,6 @@ function extract_noise(tomogram_dir, scratch_dir, tomo_row, ...
     tom_emwrite(binary_wedge_fn, binary_wedge);
     check_em_file(binary_wedge_fn, binary_wedge);
 
-    noise_motl = noise_motl(:, noise_motl(20, :) == 1);
     tom_emwrite(noise_motl_fn, noise_motl);
     check_em_file(noise_motl_fn, noise_motl);
 end

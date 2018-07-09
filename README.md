@@ -1,3 +1,5 @@
-# SubSECT
+# subTOM
 
-Subvolume Scripts for Electron Cryo-Tomography
+Subtomogram averaging scripts with TOM toolbox.
+
+The subTOM documentation is in the directory docs/build/index.html.

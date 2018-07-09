@@ -20,8 +20,12 @@ set -o nounset   # Crash on unset variables
 ################################################################################
 #                                 DIRECTORIES                                  #
 ################################################################################
-# MCR directory for the processing
-mcr_cache_dir="mcr"
+# Absolute path to the folder with the input to be processed.
+# Other paths are relative to this one.
+scratch_dir=<SCRATCH_DIR>
+
+# Absolute path to MCR directory for the processing
+mcr_cache_dir=${scratch_dir}/mcr
 
 # Directory for executables
 exec_dir=XXXINSTALLATION_DIRXXX/bin
@@ -58,28 +62,30 @@ do_tubule=0
 #                                END OF OPTIONS                                #
 #                                                                              #
 ################################################################################
+cd ${scratch_dir}
+mcr_cache_dir=${mcr_cache_dir}/seed_positons
 if [[ ! -d ${mcr_cache_dir} ]]
 then
     mkdir -p ${mcr_cache_dir}
+else
+    rm -rf ${mcr_cache_dir}
+    mkdir -p ${mcr_cache_dir}
 fi
 
-if [[ ! -d $(dirname output_motl_fn) ]]
+if [[ ! -d $(dirname ${output_motl_fn}) ]]
 then
-    mkdir -p $(dirname output_motl_fn) ]]
+    mkdir -p $(dirname ${output_motl_fn}) ]]
 fi
 
-ldpath=/XXXMCR_DIRXXX/runtime/glnxa64
-ldpath=${ldpath}:/XXXMCR_DIRXXX/bin/glnxa64
-ldpath=${ldpath}:/XXXMCR_DIRXXX/sys/os/glnxa64
-ldpath=${ldpath}:/XXXMCR_DIRXXX/sys/opengl/lib/glnxa64
+ldpath=XXXMCR_DIRXXX/runtime/glnxa64
+ldpath=${ldpath}:XXXMCR_DIRXXX/bin/glnxa64
+ldpath=${ldpath}:XXXMCR_DIRXXX/sys/os/glnxa64
+ldpath=${ldpath}:XXXMCR_DIRXXX/sys/opengl/lib/glnxa64
 export LD_LIBRARY_PATH=${ldpath}
-MCRDIR=${PWD}/${mcr_cache_dir}/seed_positions
-rm -rf ${MCRDIR}
-mkdir ${MCRDIR}
-export MCR_CACHE_ROOT=${MCRDIR}
+export MCR_CACHE_ROOT=${mcr_cache_dir}
 time ${seed_pos_exec} \
     ${input_motl_fn_prefix} \
     ${output_motl_fn} \
     ${spacing} \
     ${do_tubule}
-rm -rf ${MCRDIR}
+rm -rf ${mcr_cache_dir}

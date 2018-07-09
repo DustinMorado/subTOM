@@ -29,14 +29,18 @@ set -o nounset   # Crash on unset variables
 ################################################################################
 #                                 DIRECTORIES                                  #
 ################################################################################
-# Root folder on the scratch
+# Absolute path to the root folder for subtomogram extraction.
+# Other paths are relative to this one.
 scratch_dir=<SCRATCH_DIR>
 
-# Folder on group shares
+# Absolute path to the folder on a group share, if your scratch directory is
+# cleaned and deleted regularly you can set a local directory to which you can
+# copy the important results. If you do not need to do this, you can skip this
+# step with the option skip_local_copy below.
 local_dir=<LOCAL_DIR>
 
-# MRC directory for each job
-mcr_cache_dir="${scratch_dir}/mcr"
+# Absolute path to the MCR directory for each job
+mcr_cache_dir=${scratch_dir}/mcr
 
 # Directory for executables
 exec_dir=XXXINSTALLATION_DIRXXX/bin
@@ -248,6 +252,15 @@ iclass=1
 #                                END OF OPTIONS                                #
 #                                                                              #
 ################################################################################
+# Check number of jobs
+num_ali_batch=$(((num_ptcls + ali_batch_size - 1) / ali_batch_size))
+num_avg_batch=$(((num_ptcls + avg_batch_size - 1) / avg_batch_size))
+if [[ ${num_ali_batch} -gt ${max_jobs} || ${num_avg_batch} -gt ${max_jobs} ]]
+then
+    echo " TOO MANY JOBS!!!!!  I QUIT!!!"
+    exit 1
+fi
+
 # Check that other directories exist and if not, make them
 if [[ ${skip_local_copy} -ne 1 ]]
 then
@@ -272,20 +285,32 @@ then
     fi
 fi
 
+oldpwd=$(pwd)
+cd ${scratch_dir}
 if [[ ! -d ${mcr_cache_dir} ]]
 then
     mkdir -p ${mcr_cache_dir}
 fi
 
-# Check number of jobs
-num_ali_batch=$(((num_ptcls + ali_batch_size - 1) / ali_batch_size))
-num_avg_batch=$(((num_ptcls + avg_batch_size - 1) / avg_batch_size))
-if [[ ${num_ali_batch} -gt ${max_jobs} || ${num_avg_batch} -gt ${max_jobs} ]]
+if [[ ! -d $(dirname ${ptcl_motl_fn_prefix}) ]]
 then
-    echo " TOO MANY JOBS!!!!!  I QUIT!!!"
-    exit 1
+    mkdir -p $(dirname ${ptcl_motl_fn_prefix})
 fi
 
+if [[ ! -d $(dirname ${weight_sum_fn_prefix}) ]]
+then
+    mkdir -p $(dirname ${weight_sum_fn_prefix})
+fi
+
+cd ${oldpwd}
+job_name=${job_name}_ali
+
+if [[ ${mem_free%G} -ge 24 ]]
+then
+    dedmem=',dedicated=12'
+else
+    dedmem=''
+fi
 # Calculate the number of array subset jobs we will submit
 num_ali_jobs=$(((num_ali_batch + array_max - 1) / array_max))
 num_avg_jobs=$(((num_avg_batch + array_max - 1) / array_max))
@@ -359,19 +384,17 @@ for ((iteration = start_iteration, array_idx = 0; \
       iteration++, array_idx++))
 do
     avg_iteration=$((iteration + 1))
-    all_motl_fn="${scratch_dir}/${all_motl_fn_prefix}_${avg_iteration}.em"
-    motl_dir=$(dirname ${scratch_dir}/${ptcl_motl_fn_prefix})
-    motl_base=$(basename ${scratch_dir}/${ptcl_motl_fn_prefix})
-    ptcl_motl_dir=$(dirname ${scratch_dir}/${ptcl_motl_fn_prefix})
-    ptcl_motl_base=$(basename ${scratch_dir}/${ptcl_motl_fn_prefix})
-    ref_fn="${scratch_dir}/${ref_fn_prefix}_${avg_iteration}.em"
-    ref_dir=$(dirname ${scratch_dir}/${ref_fn_prefix})
-    ref_base=$(basename ${scratch_dir}/${ref_fn_prefix})_${avg_iteration}
-    weight_sum_dir=$(dirname ${scratch_dir}/${weight_sum_fn_prefix})
-    weight_sum_base=$(basename ${scratch_dir}/${weight_sum_fn_prefix})
-    weight_sum_base=${weight_sum_base}_${avg_iteration}
-    comparison_fn="${scratch_dir}/${all_motl_fn_prefix}_${iteration}"
-    comparison_fn="${comparison_fn}_${avg_iteration}_diff.csv"
+    all_motl_fn=${all_motl_fn_prefix}_${avg_iteration}.em
+    motl_dir=$(dirname ${ptcl_motl_fn_prefix})
+    motl_base=$(basename ${ptcl_motl_fn_prefix})
+    ptcl_motl_dir=$(dirname ${ptcl_motl_fn_prefix})
+    ptcl_motl_base=$(basename ${ptcl_motl_fn_prefix})
+    ref_fn=${ref_fn_prefix}_${avg_iteration}.em
+    ref_dir=$(dirname ${ref_fn_prefix})
+    ref_base=$(basename ${ref_fn_prefix})_${avg_iteration}
+    weight_sum_dir=$(dirname ${weight_sum_fn_prefix})
+    weight_sum_base=$(basename ${weight_sum_fn_prefix}_${avg_iteration})
+    comparison_fn=${all_motl_fn_prefix}_${iteration}_${avg_iteration}_diff.csv
     echo "            ITERATION number ${iteration}"
 ################################################################################
 #                            SUBTOMOGRAM ALIGNMENT                             #
@@ -389,15 +412,15 @@ do
         fi
 
         ### Write out script for each node
-        cat > ${job_name}_ali_array_${iteration}_${job_idx} <<-ALIJOB
+        cat > ${job_name}_${iteration}_${job_idx} <<-ALIJOB
 #!/bin/bash
-#$ -N ${job_name}_ali_array_${iteration}_${job_idx}
+#$ -N ${job_name}_${iteration}_${job_idx}
 #$ -S /bin/bash
 #$ -V
 #$ -cwd
-#$ -l mem_free=${mem_free_ali},h_vmem=${mem_max_ali}
-#$ -o log_${job_name}_ali_array_${iteration}_${job_idx}
-#$ -e error_${job_name}_ali_array_${iteration}_${job_idx}
+#$ -l mem_free=${mem_free_ali},h_vmem=${mem_max_ali}${dedmem}
+#$ -o log_${job_name}_${iteration}_${job_idx}
+#$ -e error_${job_name}_${iteration}_${job_idx}
 #$ -t ${array_start}-${array_end}
 set +o noclobber
 set -e
@@ -409,56 +432,64 @@ ldpath=\${ldpath}:XXXMCR_DIRXXX/sys/opengl/lib/glnxa64
 export LD_LIBRARY_PATH=\${ldpath}
 cd ${scratch_dir}
 ###for SGE_TASK_ID in {${array_start}..${array_end}}; do
-process_idx=\${SGE_TASK_ID}
-if [[ -f "${all_motl_fn}" ]]
-then
-    echo "${all_motl_fn} already complete. SKIPPING"
-    exit 0
-fi
-MCRDIR=${mcr_cache_dir}/${job_name}_ali_\${process_idx}
-rm -rf \${MCRDIR}
-mkdir \${MCRDIR}
-export MCR_CACHE_ROOT=\${MCRDIR}
-ptcl_start_idx=\$(((${ali_batch_size} * (process_idx - 1)) + 1))
-time ${align_exec} \\
-\${ptcl_start_idx} \\
-${iteration} \\
-${ali_batch_size} \\
-${ref_fn_prefix} \\
-${all_motl_fn_prefix} \\
-${ptcl_motl_fn_prefix} \\
-${ptcl_fn_prefix} \\
-${tomo_row} \\
-${weight_fn_prefix} \\
-${apply_weight} \\
-${align_mask_fn[${array_idx}]} \\
-${apply_mask} \\
-${cc_mask_fn[${array_idx}]} \\
-${psi_angle_step[${array_idx}]} \\
-${psi_angle_shells[${array_idx}]} \\
-${phi_angle_step[${array_idx}]} \\
-${phi_angle_shells[${array_idx}]} \\
-${high_pass_fp[${array_idx}]} \\
-${low_pass_fp[${array_idx}]} \\
-${nfold} \\
-${threshold} \\
-${iclass}
-rm -rf \${MCRDIR}
-###done 2> error_${job_name}_ali_array_${iteration}_${job_idx} >\\
-###log_${job_name}_ali_array_${iteration}_${job_idx}
+    mcr_cache_dir=${mcr_cache_dir}/${job_name}_${job_idx}_\${SGE_TASK_ID}
+    if [[ ! -d \${mcr_cache_dir} ]]
+    then
+        mkdir -p \${mcr_cache_dir}
+    else
+        rm -rf \${mcr_cache_dir}
+        mkdir -p \${mcr_cache_dir}
+    fi
+
+    export MCR_CACHE_ROOT=\${mcr_cache_dir}
+    if [[ -f "${all_motl_fn}" ]]
+    then
+        echo "${all_motl_fn} already complete. SKIPPING"
+        exit 0
+    fi
+
+    ptcl_start_idx=\$(((${ali_batch_size} * (SGE_TASK_ID - 1)) + 1))
+    time ${align_exec} \\
+    \${ptcl_start_idx} \\
+    ${iteration} \\
+    ${ali_batch_size} \\
+    ${ref_fn_prefix} \\
+    ${all_motl_fn_prefix} \\
+    ${ptcl_motl_fn_prefix} \\
+    ${ptcl_fn_prefix} \\
+    ${tomo_row} \\
+    ${weight_fn_prefix} \\
+    ${apply_weight} \\
+    ${align_mask_fn[${array_idx}]} \\
+    ${apply_mask} \\
+    ${cc_mask_fn[${array_idx}]} \\
+    ${psi_angle_step[${array_idx}]} \\
+    ${psi_angle_shells[${array_idx}]} \\
+    ${phi_angle_step[${array_idx}]} \\
+    ${phi_angle_shells[${array_idx}]} \\
+    ${high_pass_fp[${array_idx}]} \\
+    ${low_pass_fp[${array_idx}]} \\
+    ${nfold} \\
+    ${threshold} \\
+    ${iclass}
+    rm -rf \${mcr_cache_dir}
+###done 2> error_${job_name}_${iteration}_${job_idx} >\\
+###log_${job_name}_${iteration}_${job_idx}
 ALIJOB
+        cd ${scratch_dir}
         if [[ ! -e "${all_motl_fn}" ]]
         then
+            cd ${oldpwd}
             if [[ ${run_local} -eq 1 ]]
             then
-                mv ${job_name}_ali_array_${iteration}_${job_idx} temp_array
+                mv ${job_name}_${iteration}_${job_idx} temp_array
                 sed 's/\#\#\#//' temp_array > \
-                    ${job_name}_ali_array_${iteration}_${job_idx}
+                    ${job_name}_${iteration}_${job_idx}
                 rm temp_array
-                chmod u+x ${job_name}_ali_array_${iteration}_${job_idx}
-                ./${job_name}_ali_array_${iteration}_${job_idx} &
+                chmod u+x ${job_name}_${iteration}_${job_idx}
+                ./${job_name}_${iteration}_${job_idx} &
             else
-                qsub ${job_name}_ali_array_${iteration}_${job_idx}
+                qsub ${job_name}_${iteration}_${job_idx}
             fi
         fi
     done
@@ -467,6 +498,7 @@ ALIJOB
 ################################################################################
 #                              ALIGNMENT PROGRESS                              #
 ################################################################################
+    cd ${scratch_dir}
     num_complete=$(find ${motl_dir} -name \
         "${motl_base}_*_${avg_iteration}.em" | wc -l)
     num_complete_prev=0
@@ -495,42 +527,41 @@ ALIJOB
 ################################################################################
 #                              ALIGNMENT CLEAN UP                              #
 ################################################################################
-    if [[ ! -d "${scratch_dir}/ali_${iteration}" ]]
+    cd ${oldpwd}
+    if [[ ! -d ali_${iteration} ]]
     then
-        mkdir "${scratch_dir}/ali_${iteration}"
+        mkdir ali_${iteration}
     fi
 
-    if [[ -e "${job_name}_ali_array_${iteration}_1" ]]
+    if [[ -e ${job_name}_${iteration}_1 ]]
     then
-        mv -f "${job_name}_ali_array_${iteration}"_* \
-            "${scratch_dir}/ali_${iteration}/."
+        mv -f ${job_name}_${iteration}_* ali_${iteration}/.
     fi
 
-    if [[ -e "log_${job_name}_ali_array_${iteration}_1" ]]
+    if [[ -e log_${job_name}_${iteration}_1 ]]
     then
-        mv -f "log_${job_name}_ali_array_${iteration}"_* \
-            "${scratch_dir}/ali_${iteration}/."
+        mv -f log_${job_name}_${iteration}_* ali_${iteration}/.
     fi
 
-    if [[ -e "error_${job_name}_ali_array_${iteration}_1" ]]
+    if [[ -e error_${job_name}_${iteration}_1 ]]
     then
-        mv -f "error_${job_name}_ali_array_${iteration}"_* \
-            "${scratch_dir}/ali_${iteration}/."
+        mv -f error_${job_name}_${iteration}_* ali_${iteration}/.
     fi
 
     echo "FINISHED Alignment in Iteration Number: ${iteration}"
 ################################################################################
 #                           COLLECT & COMBINE MOTLS                            #
 ################################################################################
-    cat > ${job_name}_join_motl_${iteration} <<-JOINJOB
+    job_name=${job_name/%_ali/_join_motl}
+    cat > ${job_name}_${iteration} <<-JOINJOB
 #!/bin/bash
-#$ -N ${job_name}_join_motl_${iteration}
+#$ -N ${job_name}_${iteration}
 #$ -S /bin/bash
 #$ -V
 #$ -cwd
-#$ -l mem_free=${mem_free_ali},h_vmem=${mem_max_ali}
-#$ -o log_${job_name}_join_motl_${iteration}
-#$ -e error_${job_name}_join_motl_${iteration}
+#$ -l mem_free=${mem_free_ali},h_vmem=${mem_max_ali}${dedmem}
+#$ -o log_${job_name}_${iteration}
+#$ -e error_${job_name}_${iteration}
 set +o noclobber
 set -e
 echo \${HOSTNAME}
@@ -545,76 +576,90 @@ then
     echo "${all_motl_fn} already complete. SKIPPING"
     exit 0
 fi
-MCRDIR=${mcr_cache_dir}/${job_name}_join_motl
-rm -rf \${MCRDIR}
-mkdir \${MCRDIR}
-export MCR_CACHE_ROOT=\${MCRDIR}
+mcr_cache_dir=${mcr_cache_dir}/${job_name}_${iteration}
+if [[ ! -d \${mcr_cache_dir} ]]
+then
+    mkdir -p \${mcr_cache_dir}
+else
+    rm -rf \${mcr_cache_dir}
+    mkdir -p \${mcr_cache_dir}
+fi
+export MCR_CACHE_ROOT=\${mcr_cache_dir}
 time ${join_exec} \\
-${iteration} \\
-${all_motl_fn_prefix} \\
-${ptcl_motl_fn_prefix}
-rm -rf \${MCRDIR}
+    ${iteration} \\
+    ${all_motl_fn_prefix} \\
+    ${ptcl_motl_fn_prefix}
+rm -rf \${mcr_cache_dir}
 JOINJOB
 
+    cd ${scratch_dir}
     if [[ ! -e "${all_motl_fn}" ]]
     then
+        cd ${oldpwd}
         if [[ ${run_local} -eq 1 ]]
         then
-            chmod u+x ./${job_name}_join_motl_${iteration}
-            ./${job_name}_join_motl_${iteration} &
+            chmod u+x ./${job_name}_${iteration}
+            ./${job_name}_${iteration} &
         else
-            qsub ${job_name}_join_motl_${iteration}
+            qsub ${job_name}_${iteration}
         fi
     fi
     echo "STARTING MOTL Join in Iteration Number: ${iteration}"
 ################################################################################
 #                              MOTL JOIN PROGRESS                              #
 ################################################################################
+    cd ${scratch_dir}
+    echo "Waiting for the final allmotl ..."
     unchanged_count=0
     while [[ ! -e "${all_motl_fn}" ]]
     do
-        unchanged_count=$((unchanged_count + 1))
-        if [[ ${unchanged_count} -gt 60 ]]
+        if [[ -d ${mcr_cache_dir}/${job_name}_${iteration} ]]
+        then
+            unchanged_count=$((unchanged_count + 1))
+        fi
+        if [[ ${unchanged_count} -gt 120 ]]
         then
             echo "MOTL join has seemed to stall"
             echo "Please check error logs and resubmit the job if neeeded."
             exit 1
         fi  
+
         sleep 60s
     done
 ################################################################################
 #                              MOTL JOIN CLEAN UP                              #
 ################################################################################
-    if [[ ! -d "${scratch_dir}/ali_${iteration}" ]]
+    cd ${oldpwd}
+    if [[ ! -d ali_${iteration} ]]
     then
-        mkdir "${scratch_dir}/ali_${iteration}"
+        mkdir ali_${iteration}
     fi
 
-    if [[ -e "${job_name}_join_motl_${iteration}" ]]
+    if [[ -e ${job_name}_${iteration} ]]
     then
-        mv -f "${job_name}_join_motl_${iteration}" \
-            "${scratch_dir}/ali_${iteration}/."
+        mv -f ${job_name}_${iteration} ali_${iteration}/.
     fi
 
-    if [[ -e "log_${job_name}_join_motl_${iteration}" ]]
+    if [[ -e log_${job_name}_${iteration} ]]
     then
-        mv -f "log_${job_name}_join_motl_${iteration}" \
-            "${scratch_dir}/ali_${iteration}/."
+        mv -f log_${job_name}_${iteration} ali_${iteration}/.
     fi
 
-    if [[ -e "error_${job_name}_join_motl_${iteration}" ]]
+    if [[ -e error_${job_name}_${iteration} ]]
     then
-        mv -f "error_${job_name}_join_motl_${iteration}" \
-            "${scratch_dir}/ali_${iteration}/."
+        mv -f error_${job_name}_${iteration} ali_${iteration}/.
     fi
 
+    cd ${scratch_dir}
     find ${ptcl_motl_dir} -name \
         "${ptcl_motl_base}_[0-9]*_${avg_iteration}.em" -delete
+    cd ${oldpwd}
 
     echo "FINISHED MOTL Join in Iteration Number: ${iteration}"
 ################################################################################
 #                              PARALLEL AVERAGING                              #
 ################################################################################
+    job_name=${job_name/%_join_motl/_paral_avg}
     # Averaging scripts generate the reference for a given iteration number
     # since the alignment has output the allmotl for the next iteration we use
     # the next iteration to pass to the averaging executables
@@ -629,15 +674,15 @@ JOINJOB
             array_end=${num_avg_batch}
         fi
 
-        cat > ${job_name}_paral_avg_array_${avg_iteration}_${job_idx}<<-PAVGJOB
+        cat > ${job_name}_${avg_iteration}_${job_idx}<<-PAVGJOB
 #!/bin/bash
-#$ -N ${job_name}_paral_avg_array_${avg_iteration}_${job_idx}
+#$ -N ${job_name}_${avg_iteration}_${job_idx}
 #$ -S /bin/bash
 #$ -V
 #$ -cwd
-#$ -l mem_free=${mem_free_avg},h_vmem=${mem_max_avg}
-#$ -o log_${job_name}_paral_avg_array_${avg_iteration}_${job_idx}
-#$ -e error_${job_name}_paral_avg_array_${avg_iteration}_${job_idx}
+#$ -l mem_free=${mem_free_avg},h_vmem=${mem_max_avg}${dedmem}
+#$ -o log_${job_name}_${avg_iteration}_${job_idx}
+#$ -e error_${job_name}_${avg_iteration}_${job_idx}
 #$ -t ${array_start}-${array_end}
 set +o noclobber
 set -e
@@ -649,53 +694,60 @@ ldpath=\${ldpath}:XXXMCR_DIRXXX/sys/opengl/lib/glnxa64
 export LD_LIBRARY_PATH=\${ldpath}
 cd ${scratch_dir}
 ###for SGE_TASK_ID in {${array_start}..${array_end}}; do
-process_idx=\${SGE_TASK_ID}
-if [[ -f "${ref_fn}" ]]
-then
-    echo "${ref_fn} already complete. SKIPPING"
-    exit 0
-fi
-check_process="${ref_fn_prefix}_${avg_iteration}_\${process_idx}.em"
-if [[ -f "\${check_process}" ]]
-then
-    echo "\${check_process} already complete. SKIPPING"
-    exit 0
-fi
-MCRDIR=${mcr_cache_dir}/${job_name}_paral_avg_\${process_idx}
-rm -rf \${MCRDIR}
-mkdir \${MCRDIR}
-export MCR_CACHE_ROOT=\${MCRDIR}
-ptcl_start_idx=\$(((${avg_batch_size} * (process_idx - 1)) + 1))
-time ${paral_avg_exec} \\
-\${ptcl_start_idx} \\
-${avg_batch_size} \\
-${avg_iteration} \\
-${all_motl_fn_prefix} \\
-${ref_fn_prefix} \\
-${ptcl_fn_prefix} \\
-${tomo_row} \\
-${weight_fn_prefix} \\
-${weight_sum_fn_prefix} \\
-${iclass} \\
-\${process_idx}
-rm -rf \${MCRDIR}
-###done 2> error_${job_name}_paral_avg_array_${avg_iteration}_${job_idx} >\\
-###log_${job_name}_paral_avg_array_${avg_iteration}_${job_idx}
+    mcr_cache_dir=${mcr_cache_dir}/${job_name}_${job_idx}_\${SGE_TASK_ID}
+    if [[ ! -d \${mcr_cache_dir} ]]
+    then
+        mkdir -p \${mcr_cache_dir}
+    else
+        rm -rf \${mcr_cache_dir}
+        mkdir -p \${mcr_cache_dir}
+    fi
+
+    export MCR_CACHE_ROOT=\${mcr_cache_dir}
+    if [[ -f ${ref_fn} ]]
+    then
+        echo "${ref_fn} already complete. SKIPPING"
+        exit 0
+    fi
+    check_process=${ref_fn_prefix}_${avg_iteration}_\${SGE_TASK_ID}.em
+    if [[ -f \${check_process} ]]
+    then
+        echo "\${check_process} already complete. SKIPPING"
+        exit 0
+    fi
+
+    ptcl_start_idx=\$(((${avg_batch_size} * (SGE_TASK_ID - 1)) + 1))
+    time ${paral_avg_exec} \\
+        \${ptcl_start_idx} \\
+        ${avg_batch_size} \\
+        ${avg_iteration} \\
+        ${all_motl_fn_prefix} \\
+        ${ref_fn_prefix} \\
+        ${ptcl_fn_prefix} \\
+        ${tomo_row} \\
+        ${weight_fn_prefix} \\
+        ${weight_sum_fn_prefix} \\
+        ${iclass} \\
+        \${SGE_TASK_ID}
+    rm -rf \${mcr_cache_dir}
+###done 2> error_${job_name}_${avg_iteration}_${job_idx} >\\
+###log_${job_name}_${avg_iteration}_${job_idx}
 PAVGJOB
+        cd ${scratch_dir}
         if [[ ! -e "${ref_fn}" ]]
         then
+            cd ${oldpwd}
             if [[ ${run_local} -eq 1 ]]
             then
-                mv ${job_name}_paral_avg_array_${avg_iteration}_${job_idx} \
-                    temp_array
+                mv ${job_name}_${avg_iteration}_${job_idx} temp_array
                 sed 's/\#\#\#//' temp_array > \
-                    ${job_name}_paral_avg_array_${avg_iteration}_${job_idx}
+                    ${job_name}_${avg_iteration}_${job_idx}
+
                 rm temp_array
-                chmod u+x \
-                    ${job_name}_paral_avg_array_${avg_iteration}_${job_idx}
-                ./${job_name}_paral_avg_array_${avg_iteration}_${job_idx} &
+                chmod u+x ${job_name}_${avg_iteration}_${job_idx}
+                ./${job_name}_${avg_iteration}_${job_idx} &
             else
-                qsub ${job_name}_paral_avg_array_${avg_iteration}_${job_idx}
+                qsub ${job_name}_${avg_iteration}_${job_idx}
             fi
         fi
     done
@@ -704,6 +756,7 @@ PAVGJOB
 ################################################################################
 #                         PARALLEL AVERAGING PROGRESS                          #
 ################################################################################
+    cd ${scratch_dir}
     num_complete=$(find ${ref_dir} -name "${ref_base}_*.em" | wc -l)
     num_complete_prev=0
     unchanged_count=0
@@ -730,42 +783,41 @@ PAVGJOB
 ################################################################################
 #                         PARALLEL AVERAGING CLEAN UP                          #
 ################################################################################
-    if [[ ! -d "${scratch_dir}/avg_${avg_iteration}" ]]
+    cd ${oldpwd}
+    if [[ ! -d avg_${avg_iteration} ]]
     then
-        mkdir "${scratch_dir}/avg_${avg_iteration}"
+        mkdir avg_${avg_iteration}
     fi
 
-    if [[ -e "${job_name}_paral_avg_array_${avg_iteration}_1" ]]
+    if [[ -e ${job_name}_${avg_iteration}_1 ]]
     then
-        mv -f "${job_name}_paral_avg_array_${avg_iteration}"_* \
-            "${scratch_dir}/avg_${avg_iteration}/."
+        mv -f ${job_name}_${avg_iteration}_* avg_${avg_iteration}/.
     fi
 
-    if [[ -e "log_${job_name}_paral_avg_array_${avg_iteration}_1" ]]
+    if [[ -e log_${job_name}_${avg_iteration}_1 ]]
     then
-        mv -f "log_${job_name}_paral_avg_array_${avg_iteration}"_* \
-            "${scratch_dir}/avg_${avg_iteration}/."
+        mv -f log_${job_name}_${avg_iteration}_* avg_${avg_iteration}/.
     fi
 
-    if [[ -e "error_${job_name}_paral_avg_array_${avg_iteration}_1" ]]
+    if [[ -e error_${job_name}_${avg_iteration}_1 ]]
     then
-        mv -f "error_${job_name}_paral_avg_array_${avg_iteration}"_* \
-            "${scratch_dir}/avg_${avg_iteration}/."
+        mv -f error_${job_name}_${avg_iteration}_* avg_${avg_iteration}/.
     fi
 
     echo "FINISHED Parallel Average in Iteration Number: ${avg_iteration}"
 ################################################################################
 #                                FINAL AVERAGE                                 #
 ################################################################################
-    cat > ${job_name}_avg_${avg_iteration} <<-AVGJOB
+    job_name=${job_name/%_paral_avg/_avg}
+    cat > ${job_name}_${avg_iteration} <<-AVGJOB
 #!/bin/bash
-#$ -N ${job_name}_avg_${avg_iteration}
+#$ -N ${job_name}_${avg_iteration}
 #$ -S /bin/bash
 #$ -V
 #$ -cwd
-#$ -l mem_free=${mem_free_avg},h_vmem=${mem_max_avg}
-#$ -o log_${job_name}_avg_${avg_iteration}
-#$ -e error_${job_name}_avg_${avg_iteration}
+#$ -l mem_free=${mem_free_avg},h_vmem=${mem_max_avg}${dedmem}
+#$ -o log_${job_name}_${avg_iteration}
+#$ -e error_${job_name}_${avg_iteration}
 set +o noclobber
 set -e
 
@@ -776,33 +828,42 @@ ldpath=\${ldpath}:XXXMCR_DIRXXX/sys/os/glnxa64
 ldpath=\${ldpath}:XXXMCR_DIRXXX/sys/opengl/lib/glnxa64
 export LD_LIBRARY_PATH=\${ldpath}
 cd ${scratch_dir}
-check="${ref_fn_prefix}_${avg_iteration}.em"
-if [[ -f "\${check}" ]]
+
+if [[ -f ${ref_fn} ]]
 then
-    echo "\${check} already complete. SKIPPING"
+    echo ${ref_fn} already complete. SKIPPING"
     exit 0
 fi
-MCRDIR=${mcr_cache_dir}/${job_name}_avg_${avg_iteration}
-rm -rf \${MCRDIR}
-mkdir \${MCRDIR}
-export MCR_CACHE_ROOT=\${MCRDIR}
+
+mcr_cache_dir=${mcr_cache_dir}/${job_name}_${avg_iteration}
+if [[ ! -d \${mcr_cache_dir} ]]
+then
+    mkdir -p \${mcr_cache_dir}
+else
+    rm -rf \${mcr_cache_dir}
+    mkdir -p \${mcr_cache_dir}
+fi
+
+export MCR_CACHE_ROOT=\${mcr_cache_dir}
 time ${avg_exec} \\
-${ref_fn_prefix} \\
-${all_motl_fn_prefix} \\
-${weight_sum_fn_prefix} \\
-${avg_iteration} \\
-${iclass}
-rm -rf \${MCRDIR}
+    ${ref_fn_prefix} \\
+    ${all_motl_fn_prefix} \\
+    ${weight_sum_fn_prefix} \\
+    ${avg_iteration} \\
+    ${iclass}
+rm -rf \${mcr_cache_dir}
 AVGJOB
 
-    if [[ ! -e "${ref_fn}" ]]
+    cd ${scratch_dir}
+    if [[ ! -e ${ref_fn} ]]
     then
+        cd ${oldpwd}
         if [[ ${run_local} -eq 1 ]]
         then
-            chmod u+x ${job_name}_avg_${avg_iteration}
-            ./${job_name}_avg_${avg_iteration} &
+            chmod u+x ${job_name}_${avg_iteration}
+            ./${job_name}_${avg_iteration} &
         else
-            qsub ${job_name}_avg_${avg_iteration}
+            qsub ${job_name}_${avg_iteration}
         fi
     fi
 
@@ -810,22 +871,29 @@ AVGJOB
 ################################################################################
 #                            FINAL AVERAGE PROGRESS                            #
 ################################################################################
+    cd ${scratch_dir}
+    echo "Waiting for the final average ..."
     unchanged_count=0
-    while [[ ! -e "${ref_fn}" ]]
+    while [[ ! -e ${ref_fn} ]]
     do
-        unchanged_count=$((unchanged_count + 1))
-        if [[ ${unchanged_count} -gt 60 ]]
+        if [[ -d ${mcr_cache_dir}/${job_name}_${avg_iteration} ]]
+        then
+            unchanged_count=$((unchanged_count + 1))
+        fi
+
+        if [[ ${unchanged_count} -gt 120 ]]
         then
             echo "Final averaging has seemed to stall"
             echo "Please check error logs and resubmit the job if neeeded."
             exit 1
         fi
+
         sleep 60s
     done
 ################################################################################
 #                            FINAL AVERAGE CLEAN UP                            #
 ################################################################################
-    ### Copy file to group share
+    cd ${oldpwd}
     if [[ ${skip_local_copy} -ne 1 ]]
     then
         cp ${scratch_dir}/${ref_fn_prefix}_${avg_iteration}.em \
@@ -842,33 +910,33 @@ AVGJOB
             ${local_dir}/${weight_sum_fn_prefix}_debug_${avg_iteration}.em
     fi
 
-    if [[ -e "${job_name}_avg_${avg_iteration}" ]]
+    if [[ -e ${job_name}_${avg_iteration} ]]
     then
-        mv ${job_name}_avg_${avg_iteration} \
-            ${scratch_dir}/avg_${avg_iteration}/.
+        mv ${job_name}_${avg_iteration} avg_${avg_iteration}/.
     fi
 
-    if [[ -e "log_${job_name}_avg_${avg_iteration}" ]]
+    if [[ -e log_${job_name}_${avg_iteration} ]]
     then
-        mv log_${job_name}_avg_${avg_iteration} \
-            ${scratch_dir}/avg_${avg_iteration}/.
+        mv log_${job_name}_${avg_iteration} avg_${avg_iteration}/.
     fi
 
-    if [[ -e "error_${job_name}_avg_${avg_iteration}" ]]
+    if [[ -e error_${job_name}_${avg_iteration} ]]
     then
-        mv error_${job_name}_avg_${avg_iteration} \
-            ${scratch_dir}/avg_${avg_iteration}/.
+        mv error_${job_name}_${avg_iteration} avg_${avg_iteration}/.
     fi
 
+    cd ${scratch_dir}
     find ${ref_dir} -name "${ref_base}_[0-9]*.em" -delete
     find ${weight_sum_dir} -name "${weight_sum_base}_[0-9]*.em" -delete
+    cd ${oldpwd}
 
     echo "FINISHED Final Average in Iteration Number: ${avg_iteration}"
     echo "AVERAGE DONE IN ITERATION NUMBER ${avg_iteration}"
 ################################################################################
 #                        COMPARE CHANGES OVER ITERATION                        #
 ################################################################################
-    cat > ${job_name}_compare_motl_${iteration} <<-COMPAREJOB
+    job_name=${job_name/%_avg/_compare_motl}
+    cat > ${job_name}_${iteration} <<-COMPAREJOB
 #!/bin/bash
 set +o noclobber
 set -e
@@ -879,18 +947,26 @@ ldpath=\${ldpath}:XXXMCR_DIRXXX/sys/os/glnxa64
 ldpath=\${ldpath}:XXXMCR_DIRXXX/sys/opengl/lib/glnxa64
 export LD_LIBRARY_PATH=\${ldpath}
 cd ${scratch_dir}
-MCRDIR=${mcr_cache_dir}/${job_name}_compare_motl
-rm -rf \${MCRDIR}
-mkdir \${MCRDIR}
-export MCR_CACHE_ROOT=\${MCRDIR}
+mcr_cache_dir=${mcr_cache_dir}/${job_name}_${iteration}
+
+if [[ ! -d \${mcr_cache_dir} ]]
+then
+    mkdir -p \${mcr_cache_dir}
+else
+    rm -rf \${mcr_cache_dir}
+    mkdir -p \${mcr_cache_dir}
+fi
+
+export MCR_CACHE_ROOT=\${mcr_cache_dir}
 ${compare_exec} \\
-${all_motl_fn_prefix}_${iteration}.em \\
-${all_motl_fn_prefix}_${avg_iteration}.em \\
-1 \\
-${comparison_fn}
-rm -rf \${MCRDIR}
+    ${all_motl_fn_prefix}_${iteration}.em \\
+    ${all_motl_fn_prefix}_${avg_iteration}.em \\
+    1 \\
+    ${comparison_fn}
+rm -rf \${mcr_cache_dir}
 COMPAREJOB
-    chmod u+x ./${job_name}_compare_motl_${iteration}
-    ./${job_name}_compare_motl_${iteration}
-    rm ./${job_name}_compare_motl_${iteration}
+    chmod u+x ./${job_name}_${iteration}
+    ./${job_name}_${iteration}
+    rm -rf ./${job_name}_${iteration}
+    job_name=${job_name/%_compare_motl/_ali}
 done

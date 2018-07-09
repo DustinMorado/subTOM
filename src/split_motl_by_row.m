@@ -1,41 +1,75 @@
-function lmb_split_motl_by_row(input_motl_fn, motl_row, output_motl_fn_prfx)
-% LMB_SPLIT_MOTL_BY_ROW split a MOTL file by a given row.
-% LMB_SPLIT_MOTL_BY_ROW(INPUT_MOTL_FN, MOTL_ROW, OUTPUT_MOTL_FN_PRFX) takes
-%    the MOTL file specified by INPUT_MOTL_FN and writes out a seperate MOTL
-%    file with OUTPUT_MOTL_FN_PRFX as the prefix where each output file
+function split_motl_by_row(input_motl_fn, motl_row, output_motl_fn_prfx)
+% SPLIT_MOTL_BY_ROW split a MOTL file by a given row.
+%     SPLIT_MOTL_BY_ROW(
+%         INPUT_MOTL_FN,
+%         MOTL_ROW,
+%         OUTPUT_MOTL_FN_PRFX)
+%
+%    Takes the MOTL file specified by INPUT_MOTL_FN and writes out a seperate
+%    MOTL file with OUTPUT_MOTL_FN_PRFX as the prefix where each output file
 %    corresponds to a unique value of the row MOTL_ROW in INPUT_MOTL_FN.
-% See also LMB_SPLIT_MOTL, LMB_SCALE_MOTL
+%
+% Example:
+%     SPLIT_MOTL_BY_ROW('combinedmotl/allmotl_1.em', 7, ...
+%         'combinedmotl/allmotl_1_tomo')
+%
+% See also SCALE_MOTL
 
 % DRM 05-2018
-% ==============================================================================
+%##############################################################################%
+%                                    DEBUG                                     %
+%##############################################################################%
+% input_motl_fn = 'input_motl.em';
+% motl_row = 7;
+% output_motl_fn_prefix = 'output_motl_tomo'
+%##############################################################################%
+    % Evaluate numeric inputs
+    if ischar(motl_row)
+        motl_row = str2double(motl_row);
+    end
 
-% Evaluate numeric inputs
-if ischar(motl_row)
-    motl_row = str2double(motl_row);
+    input_motl = getfield(tom_emread(input_motl_fn), 'Value');
+    row_values = unique(input_motl(motl_row, :));
+    num_outputs = size(row_values, 2);
+    output_motl_fmt = sprintf('%s_%%0%dd.em', output_motl_fn_prfx, ...
+        length(num2str(num_outputs)));
+
+    for row_value = row_values
+        split_motl = input_motl(:, input_motl(motl_row, :) == row_value);
+        split_motl_fn = sprintf(output_motl_fmt, row_value);
+        tom_emwrite(split_motl_fn, split_motl);
+        check_em_file(split_motl_fn, split_motl);
+    end
 end
 
-input_motl = getfield(tom_emread(input_motl_fn), 'Value');
-row_values = unique(input_motl(motl_row, :));
-num_outputs = size(row_values, 2);
-output_motl_fmt = sprintf('%s_%%0%dd.em', output_motl_fn_prfx, ...
-    length(num2str(num_outputs)));
-
-for row_value = row_values
-    split_motl = input_motl(:, input_motl(motl_row, :) == row_value);
-    split_motl_fn = sprintf(output_motl_fmt, row_value);
-    tom_emwrite(split_motl_fn, split_motl);
-    check_em_file(split_motl_fn, split_motl);
-end
-
-%% check_em_file
-% A function to check that an EM file was correctly written.
+%##############################################################################%
+%                                CHECK_EM_FILE                                 %
+%##############################################################################%
 function check_em_file(em_fn, em_data)
-while true
-    try
-        % If this fails, catch command is run
-        tom_emread(em_fn);
-        break;
-    catch
-        tom_emwrite(em_fn, em_data)
+% CHECK_EM_FILE check that an EM file was correctly written.
+%     CHECK_EM_FILE(...
+%         EM_FN, ...
+%         EM_DATA)
+%
+%     Tries to verify that the EM-file was correctly written before proceeding,
+%     it should always be run following a call to TOM_EMWRITE to make sure that
+%     that function call succeeded. If an error is caught here while trying to
+%     read the file that was just written, it just tries to write it again.
+%
+% Example:
+%   CHECK_EM_FILE('my_EM_filename.em', my_EM_data);
+%
+% See also TOM_EMWRITE
+
+% DRM 11-2017
+    while true
+        try
+            % If this fails, catch command is run
+            tom_emread(em_fn);
+            break;
+        catch ME
+            fprintf('******\nWARNING:\n\t%s\n******', ME.message);
+            tom_emwrite(em_fn, em_data)
+        end
     end
 end

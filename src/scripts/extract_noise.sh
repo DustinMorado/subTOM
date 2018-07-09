@@ -26,7 +26,7 @@ tomogram_dir=<TOMOGRAM_DIR>
 scratch_dir=<SCRATCH_DIR>
 
 # Absolute path to the MCR directory for each job
-mcr_cache_dir="${scratch_dir}/mcr"
+mcr_cache_dir=${scratch_dir}/mcr
 
 # Absolute path to the directory for executables
 exec_dir=XXXINSTALLATION_DIRXXX/bin
@@ -56,6 +56,7 @@ job_name=<JOB_NAME>
 
 # If you want to skip the cluster and run the job locally set this to 1.
 run_local=0
+
 ################################################################################
 #                                                                              #
 #                      NOISE EXTRACTION WORKFLOW OPTIONS                       #
@@ -63,20 +64,20 @@ run_local=0
 ################################################################################
 #                                 FILE OPTIONS                                 #
 ################################################################################
-# Relative path to allmotl file from root folder.
+# Relative or absolute path to allmotl file from root folder.
 all_motl_fn=<ALL_MOTL_FN>
 
-# Relative path to noisemotl filename. If the file doesn't exist a new one will
-# be written with the determined noise positions. If a previously existing noise
-# motl exists it will be used instead. If the number of noise particles
-# requested has been increased new particles will be found and added and the
-# file will be updated.
+# Relative or absolute path to noisemotl filename. If the file doesn't exist a
+# new one will be written with the determined noise positions. If a previously
+# existing noise motl exists it will be used instead. If the number of noise
+# particles requested has been increased new particles will be found and added
+# and the file will be updated.
 noise_motl_fn_prefix=<NOISE_MOTL_FN_PREFIX>
 
-# Relative path and filename prefix for output amplitude spectrums
+# Relative or absolute path and filename prefix for output amplitude spectrums
 ampspec_fn_prefix=<AMPSPEC_FN_PREFIX>
 
-# Relative path and filename prefix for output binary wedges
+# Relative or absolute path and filename prefix for output binary wedges
 binary_fn_prefix=<BINARY_FN_PREFIX>
 
 ################################################################################
@@ -100,19 +101,19 @@ subtomogram_size=<SUBTOMOGRAM_SIZE>
 just_extract=0
 
 # The amount of overlap to allow between noise particles and subtomograms
-# Numbers greater than 1 will allow for larger than a box size spacing between
-# noise and a particle. Numbers less than 1 will allow for some overlap between
-# noise and a particle. For example 0.5 will allow 50% overlap between the noise
-# and the particle, which can be useful when the boxsize is much larger than the
-# particle.
-ptcl_overlap_factor=1;
+# Numbers less than 0 will allow for larger than a box size spacing between
+# noise and a particle. Numbers greater than 0 will allow for some overlap
+# between noise and a particle. For example 0.5 will allow 50% overlap between
+# the noise and the particle, which can be useful when the boxsize is much
+# larger than the particle.
+ptcl_overlap_factor=0;
 
-# The amount of overlap to allow between noise particles
-# Numbers greater than 1 will allow for larger than a box size spacing between
-# noise. Numbers less than 1 will allow for some overlap between noise. For
-# example 0.25 will allow 75% overlap between the noise, which can be useful when
-# there is not much space for enough noise.
-noise_overlap_factor=1;
+# The amount of overlap to allow between noise particles Numbers less than 0
+# will allow for larger than a box size spacing between noise. Numbers greater
+# than 0 will allow for some overlap between noise. For example 0.75 will allow
+# 75% overlap between the noise, which can be useful when there is not much
+# space for enough noise.
+noise_overlap_factor=0;
 
 # Number of noise particles to extract
 num_noise=<NUM_NOISE>
@@ -126,27 +127,47 @@ reextract=0
 #                                END OF OPTIONS                                #
 #                                                                              #
 ################################################################################
-if [[ ! -d "${mcr_cache_dir}" ]]
+oldpwd=$(pwd)
+cd ${scratch_dir}
+if [[ ! -d ${mcr_cache_dir} ]]
 then
-    mkdir "${mcr_cache_dir}"
+    mkdir -p ${mcr_cache_dir}
 fi
 
-if [[ -f ${job_name}_array ]]
+if [[ ! -d $(dirname ${noise_motl_fn_prefix}) ]]
 then
-    rm -f ${job_name}_array
+    mkdir -p $(dirname ${noise_motl_fn_prefix})
 fi
 
-if [[ -f error_${job_name}_array ]]
+if [[ ! -d $(dirname ${ampspec_fn_prefix}) ]]
 then
-    rm -f error_${job_name}_array
+    mkdir -p $(dirname ${ampspec_fn_prefix})
 fi
 
-if [[ -f log_${job_name}_array ]]
+if [[ ! -d $(dirname ${binary_fn_prefix}) ]]
 then
-    rm -f log_${job_name}_array
+    mkdir -p $(dirname ${binary_fn_prefix})
 fi
 
-if [[ ${mem_free%G} -ge 24 ]]; then
+cd ${oldpwd}
+job_name=${job_name}_extract_noise_array
+if [[ -f ${job_name} ]]
+then
+    rm -f ${job_name}
+fi
+
+if [[ -f error_${job_name} ]]
+then
+    rm -f error_${job_name}
+fi
+
+if [[ -f log_${job_name} ]]
+then
+    rm -f log_${job_name}
+fi
+
+if [[ ${mem_free%G} -ge 24 ]]
+then
     dedmem=',dedicated=12'
 else
     dedmem=''
@@ -157,66 +178,74 @@ fi
 #                          TOMOGRAM NOISE EXTRACTION                           #
 #                                                                              #
 ################################################################################
-cat > ${job_name}_array <<-JOBDATA
+cat > ${job_name} <<-JOBDATA
 #!/bin/bash
 #$ -N ${job_name}
 #$ -S /bin/bash
 #$ -V
 #$ -cwd
 #$ -l mem_free=${mem_free},h_vmem=${mem_max}${dedmem}
-#$ -e error_${job_name}_array
-#$ -o log_${job_name}_array
+#$ -e error_${job_name}
+#$ -o log_${job_name}
 #$ -t 1-${num_tomos}
 set +C # Turn off prevention of redirection file overwriting
 set -e # Turn on exit on error
 set -f # Turn off filename expansion (globbing)
 echo \${HOSTNAME}
-ldpath="XXXMCR_DIRXXX/sys/opengl/lib/glnxa64"
-ldpath="XXXMCR_DIRXXX/sys/os/glnxa64:\${ldpath}"
-ldpath="XXXMCR_DIRXXX/bin/glnxa64:\${ldpath}"
-ldpath="XXXMCR_DIRXXX/runtime/glnxa64:\${ldpath}"
+ldpath=XXXMCR_DIRXXX/sys/opengl/lib/glnxa64
+ldpath=XXXMCR_DIRXXX/sys/os/glnxa64:\${ldpath}
+ldpath=XXXMCR_DIRXXX/bin/glnxa64:\${ldpath}
+ldpath=XXXMCR_DIRXXX/runtime/glnxa64:\${ldpath}
 export LD_LIBRARY_PATH=\${ldpath}
 cd ${scratch_dir}
 ###for SGE_TASK_ID in {1..${num_tomos}}; do
-rm -rf ${mcr_cache_dir}/${job_name}_\${SGE_TASK_ID}
-mkdir ${mcr_cache_dir}/${job_name}_\${SGE_TASK_ID}
-export MCR_CACHE_ROOT="${mcr_cache_dir}/${job_name}_\${SGE_TASK_ID}"
-time ${noise_extract_exe} \\
-    ${tomogram_dir} \\
-    ${scratch_dir} \\
-    ${tomo_row} \\
-    ${ampspec_fn_prefix} \\
-    ${binary_fn_prefix} \\
-    ${all_motl_fn} \\
-    ${noise_motl_fn_prefix} \\
-    ${subtomogram_size} \\
-    ${just_extract} \\
-    ${ptcl_overlap_factor} \\
-    ${noise_overlap_factor} \\
-    ${num_noise} \\
-    \${SGE_TASK_ID} \\
-    ${reextract}
-rm -rf ${mcr_cache_dir}/${job_name}_\${SGE_TASK_ID}
-###done 2> error_${job_name}_array > log_${job_name}_array
+    mcr_cache_dir=${mcr_cache_dir}/${job_name}_\${SGE_TASK_ID}
+    if [[ ! -d \${mcr_cache_dir} ]]
+    then
+        mkdir -p \${mcr_cache_dir}
+    else
+        rm -rf \${mcr_cache_dir}
+        mkdir -p \${mcr_cache_dir}
+    fi
+
+    export MCR_CACHE_ROOT=\${mcr_cache_dir}
+    time ${noise_extract_exe} \\
+        ${tomogram_dir} \\
+        ${scratch_dir} \\
+        ${tomo_row} \\
+        ${ampspec_fn_prefix} \\
+        ${binary_fn_prefix} \\
+        ${all_motl_fn} \\
+        ${noise_motl_fn_prefix} \\
+        ${subtomogram_size} \\
+        ${just_extract} \\
+        ${ptcl_overlap_factor} \\
+        ${noise_overlap_factor} \\
+        ${num_noise} \\
+        \${SGE_TASK_ID} \\
+        ${reextract}
+    rm -rf \${mcr_cache_dir}
+###done 2> error_${job_name} > log_${job_name}
 JOBDATA
 
 if [[ ${run_local} -eq 1 ]]
 then
-    mv ${job_name}_array temp_array
-    sed 's/\#\#\#//' temp_array > ${job_name}_array
+    mv ${job_name} temp_array
+    sed 's/\#\#\#//' temp_array > ${job_name}
     rm temp_array
-    chmod u+x ${job_name}_array
-    ./${job_name}_array &
+    chmod u+x ${job_name}
+    ./${job_name} &
 else
-    qsub ./${job_name}_array
+    qsub ./${job_name}
 fi
 
 echo "Parallel noise extraction submitted"
 ################################################################################
 #                          NOISE EXTRACTION PROGRESS                           #
 ################################################################################
-check_dir=$(dirname ${scratch_dir}/${ampspec_fn_prefix})
-check_base=$(basename ${scratch_dir}/${ampspec_fn_prefix})
+cd ${scratch_dir}
+check_dir=$(dirname ${ampspec_fn_prefix})
+check_base=$(basename ${ampspec_fn_prefix})
 if [[ ${reextract} -eq 1 ]]
 then
     touch ${check_dir}/empty_file
@@ -225,6 +254,7 @@ then
 else
     check_count=$(find ${check_dir} -name "${check_base}_*.em" | wc -l)
 fi
+
 # Wait for jobs to finish
 while [ ${check_count} -lt ${num_tomos} ]; do
     if [[ ${reextract} -eq 1 ]]
@@ -234,13 +264,17 @@ while [ ${check_count} -lt ${num_tomos} ]; do
     else
         check_count=$(find ${check_dir} -name "${check_base}_*.em" | wc -l)
     fi
+
     echo "Number of amplitude spectra complete ${check_count} / ${num_tomos}"
     sleep 60s
 done
+
 if [[ -f ${check_dir}/empty_file ]]
 then
     rm ${check_dir}/empty_file
 fi
+
+cd ${oldpwd}
 ################################################################################
 #                          NOISE EXTRACTION CLEAN UP                           #
 ################################################################################
@@ -249,17 +283,17 @@ then
     mkdir extract_noise
 fi
 
-if [[ -f ${job_name}_array ]]
+if [[ -f ${job_name} ]]
 then
-    mv ${job_name}_array extract_noise/.
+    mv ${job_name} extract_noise/.
 fi
 
-if [[ -f log_${job_name}_array ]]
+if [[ -f log_${job_name} ]]
 then
-    mv log_${job_name}_array extract_noise/.
+    mv log_${job_name} extract_noise/.
 fi
 
-if [[ -f error_${job_name}_array ]]
+if [[ -f error_${job_name} ]]
 then
-    mv error_${job_name}_array extract_noise/.
+    mv error_${job_name} extract_noise/.
 fi

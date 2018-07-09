@@ -18,8 +18,12 @@ set -o nounset   # Crash on unset variables
 ################################################################################
 #                                 DIRECTORIES                                  #
 ################################################################################
-# MCR directory for the processing
-mcr_cache_dir="mcr"
+# Absolute path to the folder with the input to be processed.
+# Other paths are relative to this one.
+scratch_dir=<SCRATCH_DIR>
+
+# Absolute path to MCR directory for the processing.
+mcr_cache_dir=${scratch_dir}/mcr
 
 # Directory for executables
 exec_dir=XXXINSTALLATION_DIRXXX/bin
@@ -27,22 +31,25 @@ exec_dir=XXXINSTALLATION_DIRXXX/bin
 ################################################################################
 #                                 FILE OPTIONS                                 #
 ################################################################################
-# Relative path and name of the first half-map.
+# Relative or absolute path and name of the first half-map.
 reference_A_fn=<RENCE_A_FN>
 
-# Relative path and name of the second half-map.
+# Relative or absolute path and name of the second half-map.
 reference_B_fn=<REFERENCE_B_FN>
 
-# Relative path and name of the FSC mask.
+# Relative or absolute path and name of the FSC mask.
 FSC_mask_fn=<FSC_MASK_FN>
 
-# Relative path and name of the Fourier filter volume for the first half-map.
+# Relative or absolute path and name of the Fourier filter volume for the first
+# half-map.
 filter_A_fn=<FILTER_A_FN>
 
-# Relative path and name of the Fourier filter volume for the second half-map.
+# Relative or absolute path and name of the Fourier filter volume for the second
+# half-map.
 filter_B_fn=<FILTER_B_FN>
 
-# Relative path and prefix for the name of the output maps and figures.
+# Relative or absolute path and prefix for the name of the output maps and
+# figures.
 output_fn_prefix=<OUTPUT_FN_PREFIX>
 
 ################################################################################
@@ -108,9 +115,19 @@ do_reweight=0
 #                                END OF OPTIONS                                #
 #                                                                              #
 ################################################################################
+cd ${scratch_dir}
+mcr_cache_dir=${mcr_cache_dir}/maskcorrected_FSC
 if [[ ! -d ${mcr_cache_dir} ]]
 then
     mkdir -p ${mcr_cache_dir}
+else
+    rm -rf ${mcr_cache_dir}
+    mkdir -p ${mcr_cache_dir}
+fi
+
+if [[ ! -d $(dirname ${output_fn_prefix}) ]]
+then
+    mkdir -p $(dirname ${output_fn_prefix})
 fi
 
 ldpath=XXXMCR_DIRXXX/runtime/glnxa64
@@ -118,10 +135,7 @@ ldpath=${ldpath}:XXXMCR_DIRXXX/bin/glnxa64
 ldpath=${ldpath}:XXXMCR_DIRXXX/sys/os/glnxa64
 ldpath=${ldpath}:XXXMCR_DIRXXX/sys/opengl/lib/glnxa64
 export LD_LIBRARY_PATH=${ldpath}
-MCRDIR=${PWD}/${mcr_cache_dir}/maskcorrected_FSC
-rm -rf ${MCRDIR}
-mkdir ${MCRDIR}
-export MCR_CACHE_ROOT=${MCRDIR}
+export MCR_CACHE_ROOT=${mcr_cache_dir}
 time ${FSC_exec} \
     ${reference_A_fn} \
     ${reference_B_fn} \
@@ -140,4 +154,4 @@ time ${FSC_exec} \
     ${do_reweight} \
     ${filter_A_fn} \
     ${filter_B_fn}
-rm -rf ${MCRDIR}
+rm -rf ${mcr_cache_dir}

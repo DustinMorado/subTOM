@@ -26,7 +26,6 @@ function compare_motls(motl_A_fn, motl_B_fn, write_diffs, diffs_output_fn)
 % write_diffs = true;
 % diffs_output_fn = 'combinedmotl/allmotl_1_2_diff.csv';
 %##############################################################################%
-
     % Evaluate boolean input
     if ischar(write_diffs)
         write_diffs = logical(write_diffs);
@@ -35,6 +34,12 @@ function compare_motls(motl_A_fn, motl_B_fn, write_diffs, diffs_output_fn)
 
     motl_A = getfield(tom_emread(motl_A_fn), 'Value');
     motl_B = getfield(tom_emread(motl_B_fn), 'Value');
+
+    if ~all(motl_A(4, :) == motl_B(4, :))
+        fprintf('\nWARNING:\n');
+        fpirntf('\tSubtomogram indices between MOTLs differ!\n\n');
+    end
+
     coord_A = motl_A(8:10, :) + motl_A(11:13, :);
     coord_B = motl_B(8:10, :) + motl_B(11:13, :);
     eulers_A = motl_A(17:19, :);
@@ -60,24 +65,26 @@ function compare_motls(motl_A_fn, motl_B_fn, write_diffs, diffs_output_fn)
     median_angular_diff = median(angular_diffs);
     std_angular_diff = std(angular_diffs);
 
-    disp(sprintf('\nMean Coordinate Difference\t:\t%f', mean_coord_diff));
-    disp(sprintf('Median Coordinate Difference\t:\t%f', median_coord_diff));
-    disp(sprintf('Coordinate Difference Std. Dev.\t:\t%f',std_coord_diff));
-    disp(sprintf('\nMean Angular Difference\t\t:\t%f', mean_angular_diff));
-    disp(sprintf('Median Angular Difference\t:\t%f', median_angular_diff));
-    disp(sprintf('Angular Std. Dev.\t\t:\t%f',std_angular_diff));
-    disp(sprintf('\nMean CCC for %s\t\t:\t%f', motl_A_fn, mean(motl_A(1, :))));
-    disp(sprintf('Median CCC for %s\t:\t%f', motl_A_fn, median(motl_A(1, :))));
-    disp(sprintf('Std. Dev. CCC for %s\t:\t%f', motl_A_fn, std(motl_A(1, :))));
-    disp(sprintf('\nMean CCC for %s\t\t:\t%f', motl_B_fn, mean(motl_B(1, :))));
-    disp(sprintf('Median CCC for %s\t:\t%f', motl_B_fn, median(motl_B(1, :))));
-    disp(sprintf('Std. Dev. CCC for %s\t:\t%f\n', motl_B_fn, ...
-        std(motl_B(1, :))));
+    fprintf('\nMean Coordinate Difference\t:\t%f\n', mean_coord_diff);
+    fprintf('Median Coordinate Difference\t:\t%f\n', median_coord_diff);
+    fprintf('Coordinate Difference Std. Dev.\t:\t%f\n',std_coord_diff);
+    fprintf('\nMean Angular Difference\t\t:\t%f\n', mean_angular_diff);
+    fprintf('Median Angular Difference\t:\t%f\n', median_angular_diff);
+    fprintf('Angular Std. Dev.\t\t:\t%f\n\n',std_angular_diff);
+    fprintf('Mean CCC for      %s\t:\t%f\n', motl_A_fn, mean(motl_A(1, :)));
+    fprintf('Median CCC for    %s\t:\t%f\n', motl_A_fn, median(motl_A(1, :)));
+    fprintf('Std. Dev. CCC for %s\t:\t%f\n\n', motl_A_fn, std(motl_A(1, :)));
+    fprintf('Mean CCC for      %s\t:\t%f\n', motl_B_fn, mean(motl_B(1, :)));
+    fprintf('Median CCC for    %s\t:\t%f\n', motl_B_fn, median(motl_B(1, :)));
+    fprintf('Std. Dev. CCC for %s\t:\t%f\n\n', motl_B_fn, std(motl_B(1, :)));
 
     if write_diffs
-        diffs = zeros(2, n_idxs);
-        diffs(1, :) = coord_diffs;
-        diffs(2, :) = angular_diffs;
+        diffs = zeros(5, n_idxs);
+        diffs(1, :) = motl_B(4, :);
+        diffs(2, :) = motl_A(1, :);
+        diffs(3, :) = motl_B(1, :);
+        diffs(4, :) = coord_diffs;
+        diffs(5, :) = angular_diffs;
         dlmwrite(diffs_output_fn, transpose(diffs), ...
             'delimiter', ',', 'precision', 6);
     end
@@ -93,7 +100,7 @@ function distance = euler_diff(e1, e2);
         rot_mat_2 = euler_to_matrix(e2(:, e_idx));
         q1 = matrix_to_quaternion(rot_mat_1);
         q2 = matrix_to_quaternion(rot_mat_2);
-        distance(e_idx) = rad2deg(real(acos(abs(dot(q1, q2)))) * 2);
+        distance(e_idx) = real(acosd(abs(dot(q1, q2))) * 2);
     end
 end
 
