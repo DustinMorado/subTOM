@@ -349,14 +349,14 @@ function noise_ampspec_avg = extract_noise_ampspec(boxsize, vol, motl_vec)
         noise_stddev = std(noise_vol(:));
         noise_vol = (noise_vol - noise_mean) / noise_stddev;
 
-        noise_ampspec = fftshift(tom_fourier(noise_vol));
+        noise_ampspec = fftn(noise_vol);
         noise_ampspec = sqrt(noise_ampspec .* conj(noise_ampspec));
         noise_ampspec_sum = noise_ampspec_sum + noise_ampspec;
         delprog = disp_progbar(tomogram_number, idx, num_noise, delprog);
     end
 
-    noise_ampspec_avg = noise_ampspec_sum ./ num_noise;
-    %noise_ampspec_avg = noise_ampspec_avg ./ max(noise_ampspec_avg(:));
+    noise_ampspec_avg = fftshift(noise_ampspec_sum ./ num_noise);
+    noise_ampspec_avg = noise_ampspec_avg ./ max(noise_ampspec_avg(:));
 
     % Relion gets unhappy with the origin of the FFT having a zero value so we
     % apply a 3x3 median filter in the origin plane to the origin

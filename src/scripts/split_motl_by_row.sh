@@ -37,7 +37,7 @@ exec_dir=XXXINSTALLATION_DIRXXX/bin
 input_motl_fn=<INPUT_MOTL_FN>
 
 # Relative or absolute path and filename prefix of output MOTL files
-output_motl_fn_prfx=<OUTPUT_MOTL_FN_PRFX>
+output_motl_fn_prefix=<OUTPUT_MOTL_FN_PRFX>
 
 ################################################################################
 #                                  VARIABLES                                   #
@@ -77,5 +77,5 @@ export MCR_CACHE_ROOT=${mcr_cache_dir}
 time ${split_motl_by_row_exec} \
     ${input_motl_fn} \
     ${motl_row} \
-    ${output_motl_fn_prfx}
+    ${output_motl_fn_prefix}
 rm -rf ${mcr_cache_dir}

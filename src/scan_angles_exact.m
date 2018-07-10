@@ -343,7 +343,7 @@ function scan_angles_exact(ptcl_start_idx, iteration, ali_batch_size, ...
         end
 
         % Fourier transform particle
-        ptcl_fft = fftshift(tom_fourier(ptcl));
+        ptcl_fft = fftshift(fftn(ptcl));
 
         % Apply band-pass filter and inverse FFT shift
         if apply_weight
@@ -403,7 +403,7 @@ function scan_angles_exact(ptcl_start_idx, iteration, ali_batch_size, ...
                     rot_ref = tom_rotate(masked_ref, [phi, psi, theta]);
 
                     % Fourier transform reference
-                    ref_fft = fftshift(tom_fourier(rot_ref));
+                    ref_fft = fftshift(fftn(rot_ref));
 
                     % Apply band-pass filter and inverse FFT shift
                     ref_fft = ifftshift(ref_fft .* weight .* band_pass_mask);
@@ -413,7 +413,7 @@ function scan_angles_exact(ptcl_start_idx, iteration, ali_batch_size, ...
 
                     % Calculate cross correlation and apply rotated ccmask
                     ccf = real(...
-                        fftshift(tom_ifourier(ptcl_fft .* conj(ref_fft))));
+                        fftshift(ifftn(ptcl_fft .* conj(ref_fft))));
 
                     ccf = ccf / numel(ccf);
 

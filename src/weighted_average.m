@@ -131,7 +131,7 @@ function weighted_average(ref_fn_prefix, allmotl_fn_prefix, ...
     check_em_file(weight_average_inverse_fn, weight_average_inverse);
 
     % Apply the weight to the average
-    average = fftshift(tom_fourier(average));
+    average = fftshift(fftn(average));
     average = average .* weight_average_inverse;
 
     % Determine low pass filter dimensions, this filter takes out the last few
@@ -139,7 +139,7 @@ function weighted_average(ref_fn_prefix, allmotl_fn_prefix, ...
     % rotations etc.
     spheremask_radius = floor(size(average, 1) / 2) - 3;
     average = tom_spheremask(average, spheremask_radius);
-    average = real(tom_ifourier(ifftshift(average)));
+    average = real(ifftn(ifftshift(average)));
 
     % Write-out the weighted average
     average_fn = sprintf('%s_%d.em', ref_fn_prefix, iteration);
