@@ -6,6 +6,11 @@ then
     exit 0
 fi
 
+if [[ ! -d ${1}/scripts ]]
+then
+    mkdir ${1}/scripts
+fi
+
 for i in ${1}/src/scripts/*.sh
 do
     sed -e "s:XXXINSTALLATION_DIRXXX:${1}:g" \
