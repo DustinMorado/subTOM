@@ -28,6 +28,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Tutorial" href="tutorial.html" />
     <link rel="prev" title="Installation" href="installation.html" /> 
 
   
@@ -84,7 +85,29 @@
               <p class="caption"><span class="caption-text">Table of Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Conventions</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Conventions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#preprocessing">Preprocessing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ctf-correction">CTF Correction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#particle-picking">Particle Picking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#alignment-and-averaging">Alignment and Averaging</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#orientations">Orientations</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#coordinate-system">Coordinate System</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image-center">Image Center</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#euler-angle-rotations">Euler Angle Rotations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#translations">Translations</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#motive-list-specification">Motive List Specification</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#class-number">Class Number</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scripts.html">Scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functions.html">Functions</a></li>
 </ul>
 
             
@@ -151,7 +174,214 @@
             
   <div class="section" id="conventions">
 <h1>Conventions<a class="headerlink" href="#conventions" title="Permalink to this headline">¶</a></h1>
-<p>If you</p>
+<div class="section" id="preprocessing">
+<h2>Preprocessing<a class="headerlink" href="#preprocessing" title="Permalink to this headline">¶</a></h2>
+<p>Preprocessing is done for dose-fractionated data that comes from detectors that
+collect movie tilt-images. Preprocessing is done with several programs from
+various sources.</p>
+<ul class="simple">
+<li><strong>Beam-induced Motion Correction</strong><ul>
+<li>The command <code class="docutils literal"><span class="pre">alignframes</span></code> which is a part of the <a class="reference external" href="http://bio3d.colorado.edu/imod/">IMOD</a> package is used to do
+the beam-induced motion correction of the movies. subTOM assumes that the
+data is collected with <a class="reference external" href="http://bio3d.colorado.edu/SerialEM/">SerialEM</a> but the program should support MRC and TIFF
+format movie-frames collected with other programs as well. However this
+requires you to have your movies to have the following name-scheme:<ul>
+<li><code class="docutils literal"><span class="pre">&lt;BASENAME&gt;_&lt;FRAME_IDX&gt;_&lt;ANGLE&gt;.&lt;mrc|tif&gt;</span></code><ul>
+<li>Where <code class="docutils literal"><span class="pre">&lt;BASENAME&gt;</span></code> is your own filename identifier <em>e.g. TS_01</em></li>
+<li>Where <code class="docutils literal"><span class="pre">&lt;FRAME_IDX&gt;</span></code> is a three digit identifier of the movie that
+describes the order the data was collected in <em>e.g. 000-040</em></li>
+<li>Where <code class="docutils literal"><span class="pre">&lt;ANGLE&gt;</span></code> is the tilt-angle at which the movie was collected at
+<em>e.g. 15.0</em></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Defocus Estimation</strong><ul>
+<li><a class="reference external" href="http://grigoriefflab.janelia.org/ctffind4">CTFFIND4</a> is used to estimate the defocus in the corrected tilt-series.</li>
+</ul>
+</li>
+<li><strong>Dose Filtering</strong><ul>
+<li>subTOM has its own program to apply a dose-filter to the tilt-series based
+on the accumulated dose of each tilt-image. This is the program
+<code class="docutils literal"><span class="pre">dose_filter_tiltseries</span></code>.</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="ctf-correction">
+<h2>CTF Correction<a class="headerlink" href="#ctf-correction" title="Permalink to this headline">¶</a></h2>
+<p>CTF correction is done in 3D using the program <a class="reference external" href="https://github.com/turonova/novaCTF">novaCTF</a>, and a run script
+<code class="docutils literal"><span class="pre">run_nova.sh</span></code> is included to facilitate performing novaCTF in parallel and on an
+SGE cluster.</p>
+</div>
+<div class="section" id="particle-picking">
+<h2>Particle Picking<a class="headerlink" href="#particle-picking" title="Permalink to this headline">¶</a></h2>
+<p>Particle picking is done using <a class="reference external" href="https://www.cgl.ucsf.edu/chimera/">UCSF Chimera</a>. First users use the built-in
+<a class="reference external" href="https://www.cgl.ucsf.edu/chimera/docs/ContributedSoftware/volumepathtracer/framevolpath.html">Volume Tracer</a> utility to create a Marker Set of
+points at the center of spherical particles onto which seed positions or a
+collection of Marker Sets of points along tubular surfaces onto which seed
+positions. The number of Marker Sets used is not important in picking points on
+spheres, but in picking points on tubes, each tube should correspond to a single
+Marker Set. The collection of Marker Sets should be saved to a single file, one
+per tomogram with the name format:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">&lt;BASENAME&gt;_&lt;TOMOGRAM_IDX&gt;.cmm</span></code><ul>
+<li>Where <code class="docutils literal"><span class="pre">&lt;BASENAME&gt;</span></code> is your own filename identifier <em>e.g. clicker</em>.</li>
+<li>Where <code class="docutils literal"><span class="pre">&lt;TOMOGRAM_IDX&gt;</span></code> is the tomogram number <em>e.g. 1</em>.</li>
+</ul>
+</li>
+</ul>
+<p>Motive Lists are then generated for the picked objects using the <em>PickParticle</em>
+plug-in developed in the Briggs’ lab by Kun Qu. The format of motive lists is
+detailed below, and the motive list is assumed to saved to a single file, one
+per tomogram with the name format:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">&lt;BASENAME&gt;_&lt;TOMOGRAM_IDX&gt;.em</span></code></li>
+</ul>
+</div>
+<div class="section" id="alignment-and-averaging">
+<h2>Alignment and Averaging<a class="headerlink" href="#alignment-and-averaging" title="Permalink to this headline">¶</a></h2>
+<p>The alignment parameters for a set of data are stored in a MOTive List or
+so-called MOTL file, which is a table of 20-fields stored in an EM-format binary
+data file. Particles are also extracted into subvolumes in EM-format from
+tomograms which are expected to be in MRC-format with the name:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">&lt;TOMOGRAM_IDX&gt;.rec</span></code></li>
+</ul>
+<div class="section" id="orientations">
+<h3>Orientations<a class="headerlink" href="#orientations" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="coordinate-system">
+<h4>Coordinate System<a class="headerlink" href="#coordinate-system" title="Permalink to this headline">¶</a></h4>
+<p>subTOM uses a right-handed coordinate system where positive rotations are
+clockwise looking along the directed axis. The orthogonal axes X, Y, Z are with
+the positive Z-axis pointing out of the screen out at the user.</p>
+</div>
+<div class="section" id="image-center">
+<h4>Image Center<a class="headerlink" href="#image-center" title="Permalink to this headline">¶</a></h4>
+<p>Since Matlab uses array-indices that start from 1, unlike most other programming
+languages which count from zero, the origin of a subvolume with dimensions,
+<span class="math">\(NX, NY, NZ\)</span> is defined as:</p>
+<div class="math">
+\[O = (\left\lfloor{NX / 2}\right\rfloor + 1,
+     \left\lfloor{NY / 2}\right\rfloor + 1,
+     \left\lfloor{NZ / 2}\right\rfloor + 1)\]</div>
+</div>
+<div class="section" id="euler-angle-rotations">
+<h4>Euler Angle Rotations<a class="headerlink" href="#euler-angle-rotations" title="Permalink to this headline">¶</a></h4>
+<p>Rotations in MOTLs describe the best-found rotation of the reference to the
+particle in terms of ZXZ Euler angles in degrees. The Euler angle definition in
+subTOM is:</p>
+<ul class="simple">
+<li>The first rotation <em>Azimuth</em> or <em>psi</em> (<span class="math">\(\psi\)</span>) about the Z-axis.</li>
+<li>The second rotation <em>Zenith</em> or <em>theta</em> (<span class="math">\(\theta\)</span>) about the new X-axis.</li>
+<li>The final rotaiton <em>Spin</em> or <em>phi</em> (<span class="math">\(\phi\)</span>) about the final Z-axis.</li>
+</ul>
+<p>This is particularly confusing given that phi and psi generally are swapped in
+other software packages, but is kept for historical reasons from the
+TOM-toolbox. Therefore care has been taken to use the unambiguous notation
+azimuth, zenith, and spin in most of the subTOM code and documentation.</p>
+</div>
+<div class="section" id="translations">
+<h4>Translations<a class="headerlink" href="#translations" title="Permalink to this headline">¶</a></h4>
+<p>Translations in MOTLs describe the best-found translation of the reference to
+the particle in pixels with respect to the subvolume origin. This translation
+occurs after the rotation of the reference about the subvolume origin.</p>
+</div>
+</div>
+</div>
+<div class="section" id="motive-list-specification">
+<h2>Motive List Specification<a class="headerlink" href="#motive-list-specification" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="49%" />
+<col width="51%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Field</th>
+<th class="head">Contents</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>1</td>
+<td>Cross-Correlation Coefficient</td>
+</tr>
+<tr class="row-odd"><td>2</td>
+<td>Marker Set Used from PickParticle</td>
+</tr>
+<tr class="row-even"><td>3</td>
+<td>Radius of tube/sphere in PickParticle</td>
+</tr>
+<tr class="row-odd"><td>4</td>
+<td>Particle Number (Running count from 1)</td>
+</tr>
+<tr class="row-even"><td>5</td>
+<td>Tomogram Number (Running count from 1)</td>
+</tr>
+<tr class="row-odd"><td>6</td>
+<td>PickParticle Object Number (Running)</td>
+</tr>
+<tr class="row-even"><td>7</td>
+<td>Tomogram Number (From Filename)</td>
+</tr>
+<tr class="row-odd"><td>8</td>
+<td>X-coordinate in Tomogram (Integer)</td>
+</tr>
+<tr class="row-even"><td>9</td>
+<td>Y-coordinate in Tomogram (Integer)</td>
+</tr>
+<tr class="row-odd"><td>10</td>
+<td>Z-coordinate in Tomogram (Integer)</td>
+</tr>
+<tr class="row-even"><td>11</td>
+<td>X-translation AFTER rotation of Ref.</td>
+</tr>
+<tr class="row-odd"><td>12</td>
+<td>Y-translation AFTER rotation of Ref.</td>
+</tr>
+<tr class="row-even"><td>13</td>
+<td>Z-translation AFTER rotation of Ref.</td>
+</tr>
+<tr class="row-odd"><td>14</td>
+<td>Not Used (X-shift BEFORE rotation)</td>
+</tr>
+<tr class="row-even"><td>15</td>
+<td>Not Used (Y-shift BEFORE rotation)</td>
+</tr>
+<tr class="row-odd"><td>16</td>
+<td>Not Used (Z-shift BEFORE rotation)</td>
+</tr>
+<tr class="row-even"><td>17</td>
+<td>Spin Rotation of Ref. in Degrees</td>
+</tr>
+<tr class="row-odd"><td>18</td>
+<td>Azimuth Rotation of Ref. in Degrees</td>
+</tr>
+<tr class="row-even"><td>19</td>
+<td>Zenith Rotation of Ref. in Degrees</td>
+</tr>
+<tr class="row-odd"><td>20</td>
+<td>Class Number</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="class-number">
+<h3>Class Number<a class="headerlink" href="#class-number" title="Permalink to this headline">¶</a></h3>
+<p>The class number field acts as a field for classification, but also
+thresholding. Historically:</p>
+<ul class="simple">
+<li>Particles that have class number 1 are always aligned and included in the
+final average.</li>
+<li>Particles that have class number 2 are always aligned but are not included in
+the final average.</li>
+<li>Particles that have class number <span class="math">\(\leq 0\)</span> are not aligned nor included
+in the final average.</li>
+</ul>
+<p>Remaining class numbers <span class="math">\(\gt 2\)</span> can be used in classification to identify
+homogeneous subsets within a heterogeneous dataset.</p>
+</div>
+</div>
 </div>
 
 
@@ -161,6 +391,8 @@
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="tutorial.html" class="btn btn-neutral float-right" title="Tutorial" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="installation.html" class="btn btn-neutral" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

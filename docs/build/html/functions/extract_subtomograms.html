@@ -1,0 +1,308 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>extract_subtomograms &mdash; subTOM 0.5.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="join_motls" href="join_motls.html" />
+    <link rel="prev" title="extract_noise" href="extract_noise.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> subTOM
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.5
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Table of Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../conventions.html">Conventions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Tutorial</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Links to Individual Script Documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/clean_motl.html">clean_motl.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/compare_motls.html">compare_motls.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/even_odd_motl.html">even_odd_motl.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/extract_noise.html">extract_noise.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/extract_subtomograms.html">extract_subtomograms.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/maskcorrected_FSC.html">maskcorrected_FSC.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/parallel_average.html">parallel_average.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/preprocess.html">preprocess.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/run_1.html">run_1.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/run_nova.html">run_nova.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/scale_motl.html">scale_motl.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/seed_positions.html">seed_positions.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/split_motl_by_row.html">split_motl_by_row.sh</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Links to Individual Function Documentation:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="clean_motl.html">clean_motl.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compare_motls.html">compare_motls.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dose_filter_tiltseries.html">dose_filter_tiltseries.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="even_odd_motl.html">even_odd_motl.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extract_noise.html">extract_noise.m</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">extract_subtomograms.m</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#example">Example:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#see-also">See also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="join_motls.html">join_motls.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="maskcorrected_FSC.html">maskcorrected_FSC.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parallel_sums.html">parallel_sums.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scale_motl.html">scale_motl.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scan_angles_exact.html">scan_angles_exact.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="seed_positions.html">seed_positions.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="split_motl_by_row.html">split_motl_by_row.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="weighted_average.html">weighted_average.m</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">subTOM</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>extract_subtomograms</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/functions/extract_subtomograms.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="extract-subtomograms">
+<h1>extract_subtomograms<a class="headerlink" href="#extract-subtomograms" title="Permalink to this headline">¶</a></h1>
+<p>Extract subtomograms on the cluster.</p>
+<div class="highlight-Matlab"><div class="highlight"><pre><span></span><span class="n">EXTRACT_SUBTOMOGRAMS</span><span class="p">(</span><span class="c">...</span>
+    <span class="n">TOMOGRAM_DIR</span><span class="p">,</span> <span class="c">...</span>
+    <span class="n">SCRATCH_DIR</span><span class="p">,</span> <span class="c">...</span>
+    <span class="n">TOMO_ROW</span><span class="p">,</span> <span class="c">...</span>
+    <span class="n">SUBTOMO_FN_PREFIX</span><span class="p">,</span> <span class="c">...</span>
+    <span class="n">SUBTOMO_DIGITS</span><span class="p">,</span> <span class="c">...</span>
+    <span class="n">ALL_MOTL_FN</span><span class="p">,</span> <span class="c">...</span>
+    <span class="n">BOXSIZE</span><span class="p">,</span> <span class="c">...</span>
+    <span class="n">STATS_FN_PREFIX</span><span class="p">,</span> <span class="c">...</span>
+    <span class="n">PROCESS_IDX</span><span class="p">,</span> <span class="c">...</span>
+    <span class="n">REEXTRACT</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>takes the tomograms given in <code class="docutils literal"><span class="pre">tomogram_dir</span></code> and extracts subtomograms
+specified in <code class="docutils literal"><span class="pre">all_motl_fn</span></code> with size <code class="docutils literal"><span class="pre">boxsize</span></code> into <code class="docutils literal"><span class="pre">scratch_dir</span></code> with the
+name formats <code class="docutils literal"><span class="pre">subtomo_fn_prefix_#.em</span></code> where # corresponds to the entry in
+field 4 in <code class="docutils literal"><span class="pre">all_motl_fn</span></code> zero-padded to have at least <code class="docutils literal"><span class="pre">subtomo_digits</span></code>
+digits.</p>
+<p>tomograms are specified by the field <code class="docutils literal"><span class="pre">tomo_row</span></code> in motive list
+<code class="docutils literal"><span class="pre">all_motl_fn</span></code>, and the tomogram that will be processed is selected by
+<code class="docutils literal"><span class="pre">process_idx</span></code>. a CSV-format file with the subtomogram ID-number, average, min,
+max, standard deviation and variance for each subtomogram in the tomogram is
+also written with the name format <code class="docutils literal"><span class="pre">stats_fn_prefix_#.em</span></code> where # corresponds
+to the tomogram from which subtomograms were extracted.</p>
+<p>if <code class="docutils literal"><span class="pre">reextract</span></code> evaluates to true as a boolean, than existing subtomograms will
+be overwritten. otherwise the program will do nothing and exit if
+<code class="docutils literal"><span class="pre">stats_fn_prefix_#.em</span></code> already exists, or will also skip any subtomogram it is
+trying to extract that already exists. this is for in the case that the
+processing crashed at some point in execution and then can just be re-run
+without any alterations.</p>
+<div class="section" id="example">
+<h2>Example:<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-Matlab"><div class="highlight"><pre><span></span><span class="n">extract_subtomograms</span><span class="p">(</span><span class="c">...</span>
+    <span class="s">&#39;/net/bstore1/bstore1/user/dataset/date/data/tomos/bin1&#39;</span><span class="p">,</span> <span class="c">...</span>
+    <span class="s">&#39;/net/bstore1/bstore1/user/dataset/date/subtomo/bin1/even&#39;</span><span class="p">,</span> <span class="c">...</span>
+    <span class="mi">7</span><span class="p">,</span> <span class="s">&#39;subtomograms/subtomo&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s">&#39;combinedmotl/allmotl_1.em&#39;</span><span class="p">,</span> <span class="c">...</span>
+    <span class="mi">192</span><span class="p">,</span> <span class="s">&#39;subtomograms/stats/subtomo_stats&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="see-also">
+<h2>See also<a class="headerlink" href="#see-also" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="extract_noise.html"><span class="doc">extract_noise</span></a></p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="join_motls.html" class="btn btn-neutral float-right" title="join_motls" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="extract_noise.html" class="btn btn-neutral" title="extract_noise" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Dustin Reed Morado.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.5.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

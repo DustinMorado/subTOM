@@ -1,9 +1,9 @@
 function compare_motls(motl_A_fn, motl_B_fn, write_diffs, diffs_output_fn)
 % COMPARE_MOTLS compares orientations and shifts between two MOTLS.
-%     LMB_COMPARE_MOTLS(...
-%         MOTL_A_FN, ...
-%         MOTL_B_FN, ...
-%         WRITE_DIFFS, ...
+%     COMPARE_MOTLS(
+%         MOTL_A_FN,
+%         MOTL_B_FN,
+%         WRITE_DIFFS,
 %         DIFFS_OUPUT_FN)
 %
 %    Takes the motls given by MOTL_A_FN and MOTL_B_FN and calculates the

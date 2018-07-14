@@ -11,11 +11,4 @@ Care has been taken to make sure the functions have at least upper-level
 documentation, which can be accessed using the ``help`` command in Matlab, and
 is also included here for reference.
 
--------------------------------------------
-Links to Individual Function Documentation:
--------------------------------------------
-
-* :doc:`clean_motl`: Cleans a given MOTL file based on distance and or CC
-  scores.
-* :doc:`compare_motls`: blah blah
 

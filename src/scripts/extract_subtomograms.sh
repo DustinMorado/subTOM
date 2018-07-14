@@ -23,7 +23,7 @@ tomogram_dir=<TOMOGRAM_DIR>
 scratch_dir=<SCRATCH_DIR>
 
 # MCR directory for each job
-mcr_cache_dir="${scratch_dir}/mcr"
+mcr_cache_dir=${scratch_dir}/mcr
 
 # Directory for executables
 exec_dir=XXXINSTALLATION_DIRXXX/bin
@@ -118,7 +118,7 @@ then
     mkdir -p $(dirname ${stats_fn_prefix})
 fi
 
-cd ${old_pwd}
+cd ${oldpwd}
 job_name=${job_name}_extract_tomo_array
 if [[ -f ${job_name} ]]
 then
@@ -189,7 +189,7 @@ cd ${scratch_dir}
         ${stats_fn_prefix} \\
         \${SGE_TASK_ID} \\
         ${reextract}
-    rm -rf "\${mcr_cache_dir}
+    rm -rf \${mcr_cache_dir}
 ###done 2> error_${job_name} > log_${job_name}
 JOBDATA
 
@@ -217,7 +217,7 @@ then
     check_count=$(find ${check_dir} -newer ${check_dir}/empty_file \
         -and -name "${check_base}_*.csv" | wc -l)
 else
-    check_count=$(find "${check_dir}" -name "${check_base}_*.csv" | wc -l)
+    check_count=$(find ${check_dir} -name "${check_base}_*.csv" | wc -l)
 fi
 
 # Wait for jobs to finish
@@ -227,7 +227,7 @@ while [ ${check_count} -lt ${num_tomos} ]; do
         check_count=$(find ${check_dir} -newer ${check_dir}/empty_file \
             -and -name "${check_base}_*.csv" | wc -l)
     else
-        check_count=$(find "${check_dir}" -name "${check_base}_*.csv" | wc -l)
+        check_count=$(find ${check_dir} -name "${check_base}_*.csv" | wc -l)
     fi
 
     echo "Number of tomograms extracted ${check_count} out of ${num_tomos}"
@@ -261,4 +261,4 @@ fi
 if [[ -f error_${job_name} ]]
 then
     mv error_${job_name} extract_tomo/.
-fI
+fi

@@ -5,8 +5,10 @@ function dose_filter_tiltseries(input_fn, output_fn, dose_fn)
 %         OUTPUT_FN
 %         DOSE_FN)
 %
-%     A script to read in a tilt stack, and the order_tilt.csv file
-%     used to generate the stack in order to dose filter each tilt.
+%     A script to read in a tilt stack with the name format INPUT_FN, and a
+%     CSV-format file with the name formate DOSE_FN with the accumulated
+%     dose for each tilt image on each respective line to generate a stack that
+%     has been filtered by dose and is written out as OUTPUT_FN.
 %
 % Example:
 %     DOSE_FILTER_TILTSERIES('TS_01_aligned.st', 'TS_01_dose_filt.st', ...

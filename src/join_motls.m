@@ -1,8 +1,8 @@
 function join_motls(iteration, all_motl_fn_prefix, ptcl_motl_fn_prefix)
 % JOIN_MOTLS combines individual subtomogram motive lists into a single allmotl.
-%     JOIN_MOTLS(...
-%         ITERATION, ...
-%         ALL_MOTL_FN_PREFIX, ...
+%     JOIN_MOTLS(
+%         ITERATION,
+%         ALL_MOTL_FN_PREFIX,
 %         PTCL_MOTL_FN_PREFIX)
 %
 %     Takes the individual subtomogram motive lists with the name format

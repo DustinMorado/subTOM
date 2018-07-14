@@ -305,11 +305,18 @@ fi
 cd ${oldpwd}
 job_name=${job_name}_ali
 
-if [[ ${mem_free%G} -ge 24 ]]
+if [[ ${mem_free_ali%G} -ge 24 ]]
 then
-    dedmem=',dedicated=12'
+    dedmem_ali=',dedicated=12'
 else
-    dedmem=''
+    dedmem_ali=''
+fi
+
+if [[ ${mem_free_avg%G} -ge 24 ]]
+then
+    dedmem_avg=',dedicated=12'
+else
+    dedmem_avg=''
 fi
 # Calculate the number of array subset jobs we will submit
 num_ali_jobs=$(((num_ali_batch + array_max - 1) / array_max))
@@ -418,7 +425,7 @@ do
 #$ -S /bin/bash
 #$ -V
 #$ -cwd
-#$ -l mem_free=${mem_free_ali},h_vmem=${mem_max_ali}${dedmem}
+#$ -l mem_free=${mem_free_ali},h_vmem=${mem_max_ali}${dedmem_ali}
 #$ -o log_${job_name}_${iteration}_${job_idx}
 #$ -e error_${job_name}_${iteration}_${job_idx}
 #$ -t ${array_start}-${array_end}
@@ -442,7 +449,7 @@ cd ${scratch_dir}
     fi
 
     export MCR_CACHE_ROOT=\${mcr_cache_dir}
-    if [[ -f "${all_motl_fn}" ]]
+    if [[ -f ${all_motl_fn} ]]
     then
         echo "${all_motl_fn} already complete. SKIPPING"
         exit 0
@@ -477,7 +484,7 @@ cd ${scratch_dir}
 ###log_${job_name}_${iteration}_${job_idx}
 ALIJOB
         cd ${scratch_dir}
-        if [[ ! -e "${all_motl_fn}" ]]
+        if [[ ! -e ${all_motl_fn} ]]
         then
             cd ${oldpwd}
             if [[ ${run_local} -eq 1 ]]
@@ -503,7 +510,7 @@ ALIJOB
         "${motl_base}_*_${avg_iteration}.em" | wc -l)
     num_complete_prev=0
     unchanged_count=0
-    while [[ ${num_complete} -lt ${num_ptcls} && ! -e "${all_motl_fn}" ]]
+    while [[ ${num_complete} -lt ${num_ptcls} && ! -e ${all_motl_fn} ]]
     do
         num_complete=$(find ${motl_dir} -name \
             "${motl_base}_*_${avg_iteration}.em" | wc -l)
@@ -559,7 +566,7 @@ ALIJOB
 #$ -S /bin/bash
 #$ -V
 #$ -cwd
-#$ -l mem_free=${mem_free_ali},h_vmem=${mem_max_ali}${dedmem}
+#$ -l mem_free=${mem_free_ali},h_vmem=${mem_max_ali}${dedmem_ali}
 #$ -o log_${job_name}_${iteration}
 #$ -e error_${job_name}_${iteration}
 set +o noclobber
@@ -571,7 +578,7 @@ ldpath=\${ldpath}:XXXMCR_DIRXXX/sys/os/glnxa64
 ldpath=\${ldpath}:XXXMCR_DIRXXX/sys/opengl/lib/glnxa64
 export LD_LIBRARY_PATH=\${ldpath}
 cd ${scratch_dir}
-if [[ -f "${all_motl_fn}" ]]
+if [[ -f ${all_motl_fn} ]]
 then
     echo "${all_motl_fn} already complete. SKIPPING"
     exit 0
@@ -593,7 +600,7 @@ rm -rf \${mcr_cache_dir}
 JOINJOB
 
     cd ${scratch_dir}
-    if [[ ! -e "${all_motl_fn}" ]]
+    if [[ ! -e ${all_motl_fn} ]]
     then
         cd ${oldpwd}
         if [[ ${run_local} -eq 1 ]]
@@ -611,7 +618,7 @@ JOINJOB
     cd ${scratch_dir}
     echo "Waiting for the final allmotl ..."
     unchanged_count=0
-    while [[ ! -e "${all_motl_fn}" ]]
+    while [[ ! -e ${all_motl_fn} ]]
     do
         if [[ -d ${mcr_cache_dir}/${job_name}_${iteration} ]]
         then
@@ -680,7 +687,7 @@ JOINJOB
 #$ -S /bin/bash
 #$ -V
 #$ -cwd
-#$ -l mem_free=${mem_free_avg},h_vmem=${mem_max_avg}${dedmem}
+#$ -l mem_free=${mem_free_avg},h_vmem=${mem_max_avg}${dedmem_avg}
 #$ -o log_${job_name}_${avg_iteration}_${job_idx}
 #$ -e error_${job_name}_${avg_iteration}_${job_idx}
 #$ -t ${array_start}-${array_end}
@@ -734,7 +741,7 @@ cd ${scratch_dir}
 ###log_${job_name}_${avg_iteration}_${job_idx}
 PAVGJOB
         cd ${scratch_dir}
-        if [[ ! -e "${ref_fn}" ]]
+        if [[ ! -e ${ref_fn} ]]
         then
             cd ${oldpwd}
             if [[ ${run_local} -eq 1 ]]
@@ -760,7 +767,7 @@ PAVGJOB
     num_complete=$(find ${ref_dir} -name "${ref_base}_*.em" | wc -l)
     num_complete_prev=0
     unchanged_count=0
-    while [[ ${num_complete} -lt ${num_avg_batch} && ! -e "${ref_fn}" ]]
+    while [[ ${num_complete} -lt ${num_avg_batch} && ! -e ${ref_fn} ]]
     do
         num_complete=$(find ${ref_dir} -name "${ref_base}_*.em" | wc -l)
         echo "${num_complete} parallel average out of ${num_avg_batch}"
@@ -815,7 +822,7 @@ PAVGJOB
 #$ -S /bin/bash
 #$ -V
 #$ -cwd
-#$ -l mem_free=${mem_free_avg},h_vmem=${mem_max_avg}${dedmem}
+#$ -l mem_free=${mem_free_avg},h_vmem=${mem_max_avg}${dedmem_avg}
 #$ -o log_${job_name}_${avg_iteration}
 #$ -e error_${job_name}_${avg_iteration}
 set +o noclobber
@@ -831,7 +838,7 @@ cd ${scratch_dir}
 
 if [[ -f ${ref_fn} ]]
 then
-    echo ${ref_fn} already complete. SKIPPING"
+    echo "${ref_fn} already complete. SKIPPING"
     exit 0
 fi
 

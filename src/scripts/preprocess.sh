@@ -15,7 +15,6 @@
 # - dose_filter_tiltseries
 # DRM 07-2018
 ################################################################################
-set -e           # Crash on error
 set -o nounset   # Crash on unset variables
 ################################################################################
 #                                 DIRECTORIES                                  #
@@ -211,6 +210,16 @@ do
     fmt_idx=$(printf ${idx_fmt} ${idx})
     ts=${ts_fmt/XXXIDXXXX/${fmt_idx}}
 
+    # Skip series that do not exist
+    ls ${frame_dir} | grep -q "${ts}"
+    has_frames=$?
+    if [[ ${has_frames} -ne 0 ]]
+    then
+        echo "Did not find frames for ${ts}! SKIPPING!"
+        continue
+    fi
+    set -e 
+
     if [[ ${tiff_frames} -eq 1 ]]
     then
         frame_suffix=tif
@@ -225,13 +234,6 @@ do
     nimg=$(ls ${frame_dir}/${frame_fmt} | wc -l)
     dose_field=$(echo ${test_frame} | grep -o '_' | wc -l)
     angle_field=$((dose_field + 1))
-
-    # Skip series that do not exist
-    if [[ ! -f ${ts}.st && ! -f ${ts}/${ts}.st ]]
-    then
-        echo "Did not find ${ts}.st or ${ts}/${ts}.st! SKIPPING!"
-        continue
-    fi
 
     if [[ ! -d ${ts} ]]
     then
@@ -410,9 +412,9 @@ PREPROC
     if [[ ${run_local} -eq 1 ]]
     then
         chmod u+x preprocess_${fmt_idx}.sh
-        #./preprocess_${fmt_idx}.sh
+        ./preprocess_${fmt_idx}.sh
     else
-        :
-        #qsub preprocess_${fmt_idx}.sh
+        qsub preprocess_${fmt_idx}.sh
     fi
+    set +e
 done

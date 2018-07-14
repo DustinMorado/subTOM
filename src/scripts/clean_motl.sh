@@ -43,7 +43,7 @@ output_motl_fn=<OUTPUT_MOTL_FN>
 #                                  VARIABLES                                   #
 ################################################################################
 # clean_motl executable
-clean_motl_exec={exec_dir}/clean_motl
+clean_motl_exec=${exec_dir}/clean_motl
 
 ################################################################################
 #                                CLEAN OPTIONS                                 #

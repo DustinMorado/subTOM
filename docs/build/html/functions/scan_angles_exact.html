@@ -1,0 +1,384 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>scan_angles_exact &mdash; subTOM 0.5.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="seed_positions" href="seed_positions.html" />
+    <link rel="prev" title="scale_motl" href="scale_motl.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> subTOM
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.5
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Table of Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../conventions.html">Conventions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Tutorial</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Links to Individual Script Documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/clean_motl.html">clean_motl.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/compare_motls.html">compare_motls.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/even_odd_motl.html">even_odd_motl.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/extract_noise.html">extract_noise.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/extract_subtomograms.html">extract_subtomograms.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/maskcorrected_FSC.html">maskcorrected_FSC.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/parallel_average.html">parallel_average.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/preprocess.html">preprocess.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/run_1.html">run_1.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/run_nova.html">run_nova.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/scale_motl.html">scale_motl.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/seed_positions.html">seed_positions.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/split_motl_by_row.html">split_motl_by_row.sh</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Links to Individual Function Documentation:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="clean_motl.html">clean_motl.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compare_motls.html">compare_motls.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dose_filter_tiltseries.html">dose_filter_tiltseries.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="even_odd_motl.html">even_odd_motl.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extract_noise.html">extract_noise.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extract_subtomograms.html">extract_subtomograms.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="join_motls.html">join_motls.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="maskcorrected_FSC.html">maskcorrected_FSC.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parallel_sums.html">parallel_sums.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scale_motl.html">scale_motl.m</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">scan_angles_exact.m</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#example">Example:</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="seed_positions.html">seed_positions.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="split_motl_by_row.html">split_motl_by_row.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="weighted_average.html">weighted_average.m</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">subTOM</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>scan_angles_exact</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/functions/scan_angles_exact.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="scan-angles-exact">
+<h1>scan_angles_exact<a class="headerlink" href="#scan-angles-exact" title="Permalink to this headline">¶</a></h1>
+<p>Find best alignment for a particle batch over local angles.</p>
+<div class="highlight-Matlab"><div class="highlight"><pre><span></span><span class="n">scan_angles_exact</span><span class="p">(</span>
+    <span class="n">ptcl_start_idx</span><span class="p">,</span>
+    <span class="n">iteration</span><span class="p">,</span>
+    <span class="n">ali_batch_size</span><span class="p">,</span>
+    <span class="n">ref_fn_prefix</span><span class="p">,</span>
+    <span class="n">all_motl_fn_prefix</span><span class="p">,</span>
+    <span class="n">ptcl_motl_fn_prefix</span><span class="p">,</span>
+    <span class="n">ptcl_fn_prefix</span><span class="p">,</span>
+    <span class="n">tomo_row</span><span class="p">,</span>
+    <span class="n">weight_fn_prefix</span><span class="p">,</span>
+    <span class="n">apply_weight</span><span class="p">,</span>
+    <span class="n">align_mask_fn</span><span class="p">,</span>
+    <span class="n">apply_mask</span><span class="p">,</span>
+    <span class="n">cc_mask_fn</span><span class="p">,</span>
+    <span class="n">psi_angle_step</span><span class="p">,</span>
+    <span class="n">psi_angle_shells</span><span class="p">,</span>
+    <span class="n">phi_angle_step</span><span class="p">,</span>
+    <span class="n">phi_angle_shells</span><span class="p">,</span>
+    <span class="n">high_pass_fp</span><span class="p">,</span>
+    <span class="n">low_pass_fp</span><span class="p">,</span>
+    <span class="n">nfold</span><span class="p">,</span>
+    <span class="n">threshold</span><span class="p">,</span>
+    <span class="n">iclass</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Aligns a batch of particles from the collective motive list with the name format
+<code class="docutils literal"><span class="pre">all_motl_fn_prefix_#.em</span></code> where # is the number <code class="docutils literal"><span class="pre">iteration</span></code>. The batch start
+at <code class="docutils literal"><span class="pre">ptcl_start_idx</span></code> and contains <code class="docutils literal"><span class="pre">ali_batch_size</span></code> number of particles. A
+motive list for the best determined alignment parameters is written out for each
+particle with the name format <code class="docutils literal"><span class="pre">ptct_motl_fn_prefix_#_#.em</span></code> where the first #
+is the subtomogram ID from the fourth field in the all motive list, and the
+second # is the number <code class="docutils literal"><span class="pre">iteration</span></code> + 1.</p>
+<p>Particles, with the name format <code class="docutils literal"><span class="pre">ptcl_fn_prefx_#.em</span></code> where # is the
+subtomogram ID, are aligned against the reference with the name format
+<code class="docutils literal"><span class="pre">ref_fn_prefix_#.em</span></code> where # is <code class="docutils literal"><span class="pre">iteration</span></code>. Before the comparison is made a
+number of alterations are made to both the particle and reference:</p>
+<ul>
+<li><p class="first">If <code class="docutils literal"><span class="pre">nfold</span></code> is greater than 1 then C#-symmetry is applied along the Z-axis to
+the reference where # is <code class="docutils literal"><span class="pre">nfold</span></code>.</p>
+</li>
+<li><p class="first">The reference is masked in real space with the mask <code class="docutils literal"><span class="pre">align_mask_fn</span></code>, and if
+<code class="docutils literal"><span class="pre">apply_mask</span></code> evaluates to true as a boolean, then this mask is also applied
+to the particle. A sphere mask is applied to the particle to reduces the
+artifacts caused by the box-edges on the comparison. This sphere has a
+diameter that is 80% the boxsize and falls of with a sigma that is 15% half
+the boxsize.</p>
+<blockquote>
+<div><ul class="simple">
+<li>The mask is rotated and shifted with the currently existing alignment
+parameters for the particle as to best center the mask on the particle
+density.</li>
+<li><code class="docutils literal"><span class="pre">apply_mask</span></code> can help alignment and suppress alignment to other features
+when the particle is well-centered or already reasonably well aligned, but
+if this is not the case there is the risk that a tight alignment will
+cutoff parts of the particle.</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first">Both the particle and the reference are bandpass filtered in the Fourier
+domain defined by <code class="docutils literal"><span class="pre">high_pass_fp</span></code> and <code class="docutils literal"><span class="pre">low_pass_fp</span></code>, which are both in the
+units of Fourier pixels.</p>
+</li>
+<li><p class="first">A Fourier weight volume with the name format <code class="docutils literal"><span class="pre">weight_fn_prefix_#.em</span></code> where #
+corresponds to the tomogram from which the particle came from, which is found
+from the field <code class="docutils literal"><span class="pre">tomo_row</span></code> in the motive list, is applied to the reference in
+the Fourier domain, after the reference has been rotated with the currently
+existing alignment parameters.  If <code class="docutils literal"><span class="pre">apply_weight</span></code> evaluates to true as a
+boolean, then this weight is also applied to the particle with no rotation.
+This Fourier weight is designed to compensate for the missing wedge.</p>
+<blockquote>
+<div><ul class="simple">
+<li>If a binary wedge is used, then it is reasonable to apply the weight to
+the particle, however, for more complicated weights, like the average
+amplitude spectrum, it should not be done.</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<p>The local rotations searched during alignment are deteremined by the four
+parameters <code class="docutils literal"><span class="pre">psi_angle_step</span></code>, <code class="docutils literal"><span class="pre">psi_angle_shells</span></code>, <code class="docutils literal"><span class="pre">phi_angle_step</span></code>, and
+<code class="docutils literal"><span class="pre">phi_angle_shells</span></code>. They describe a search where the currently existing
+alignment parameters for azimuth and zenith are used to define a “pole” to
+search about in <code class="docutils literal"><span class="pre">psi_angle_shells</span></code> cones. The change in zenith between each
+cone is <code class="docutils literal"><span class="pre">psi_angle_step</span></code> and the azimuth around the cone is close to the same
+angle but is adjusted slightly to account for bias near the pole. The final spin
+angle of the search is done with a change in spin of <code class="docutils literal"><span class="pre">phi_angle_step</span></code> in
+<code class="docutils literal"><span class="pre">phi_angle_shells</span></code> steps. The spin is applied in both clockwise and
+counter-clockwise fashion.</p>
+<blockquote>
+<div><ul class="simple">
+<li>The angles phi, and psi here are flipped in their sense of every other
+package for EM image processing, which is absolutely infuriating and
+confusing, but maintained for historical reasons, however most
+descriptions use the words azimuth, zenith, and spin to avoid ambiguity.</li>
+</ul>
+</div></blockquote>
+<p>Finally after the constrained cross-correlation function is calculated it is
+masked with <code class="docutils literal"><span class="pre">cc_mask_fn</span></code> to limit the shifts to inside this volume, and a peak
+is found and it’s location is determined to sub-pixel accuracy using
+interpolation. The rotations and shifts that gives the highest cross-correlation
+coefficient are then chosen as the new alignments parameters. Particles with a
+coefficient lower than <code class="docutils literal"><span class="pre">threshold</span></code> are placed into class 2 and ignored in
+later processing, and particles with class <code class="docutils literal"><span class="pre">iclass</span></code> are the only particles
+processed.</p>
+<blockquote>
+<div><ul class="simple">
+<li>If <code class="docutils literal"><span class="pre">iclass</span></code> is 0 all particles will be considered. If <code class="docutils literal"><span class="pre">iclass</span></code> is
+nonzero than particles above <code class="docutils literal"><span class="pre">threshold</span></code> will be reassigned to class
+number <code class="docutils literal"><span class="pre">iclass</span></code></li>
+<li>The class number is stored in the 20th field of the motive list.</li>
+</ul>
+</div></blockquote>
+<div class="section" id="example">
+<h2>Example:<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-Matlab"><div class="highlight"><pre><span></span><span class="n">scan_angles_exact</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="s">&#39;ref/ref&#39;</span><span class="p">,</span> <span class="s">&#39;combinedmotl/allmotl&#39;</span><span class="p">,</span> <span class="c">...</span>
+    <span class="s">&#39;motls/motl&#39;</span><span class="p">,</span> <span class="s">&#39;subtomograms/subtomo&#39;</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="s">&#39;otherinputs/binary&#39;</span><span class="p">,</span> <span class="c">...</span>
+    <span class="mi">1</span><span class="p">,</span> <span class="s">&#39;otherinputs/alignmask.em&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s">&#39;otherinputs/ccmask.em&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="c">...</span>
+    <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="seed_positions.html" class="btn btn-neutral float-right" title="seed_positions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="scale_motl.html" class="btn btn-neutral" title="scale_motl" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Dustin Reed Morado.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.5.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
