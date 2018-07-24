@@ -2,7 +2,7 @@
 if [[ $# -ne 2 || $1 == '-h' || $1 == '--help' ]]
 then
     echo 'USAGE: install.sh <INSTALL_DIR> <MCR_DIR>'
-    echo     Example: ./install.sh ~/software/SubSECT ~/opt/MCR/2016b/v91
+    echo     Example: ./install.sh ~/software/subTOM ~/opt/MCR/2016b/v91
     exit 0
 fi
 
