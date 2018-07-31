@@ -7,17 +7,17 @@ set -o nounset
 # The format string for the datasets to process. The string XXXIDXXXX will be
 # replaced with the numbers specified between the range start_idx and end_idx
 tomo_fmt=XXXIDXXXX_dose-filt
-#tomo_fmt=TS_XXXIDXXX
-#tomo_fmt=TS_XXXIDXXX_dose-filt
-#tomo_fmt=ts_XXXIDXXX
-#tomo_fmt=ts_XXXIDXXX_dose-filt
+#tomo_fmt=TS_XXXIDXXXX
+#tomo_fmt=TS_XXXIDXXXX_dose-filt
+#tomo_fmt=ts_XXXIDXXXX
+#tomo_fmt=ts_XXXIDXXXX_dose-filt
 
 # The format string for the directory of datasets to process. The string
 # XXXIDXXXX will be replaced with the numbers specified between the range
 # start_idx and end_idx
 tomo_dir_fmt=XXXIDXXXX
-#tomo_dir_fmt=TS_XXXIDXXX
-#tomo_dir_fmt=ts_XXXIDXXX
+#tomo_dir_fmt=TS_XXXIDXXXX
+#tomo_dir_fmt=ts_XXXIDXXXX
 
 # The first tomogram to operate on
 start_idx=1
@@ -331,10 +331,10 @@ RUNNOVA
 
         if [[ ${do_qsub} -eq 1 ]]
         then
-#           qsub run_nova_${fmt_idx}.sh
+            qsub run_nova_${fmt_idx}.sh
         else
             chmod u+x run_nova_${fmt_idx}.sh
-#           ./run_nova_${fmt_idx}.sh
+            ./run_nova_${fmt_idx}.sh
         fi
     else
         cat<<PREPNOVA>prep_nova_${fmt_idx}.sh
@@ -372,10 +372,10 @@ PREPNOVA
 
         if [[ ${do_qsub} -eq 1 ]]
         then
-#           qsub prep_nova_${fmt_idx}.sh
+            qsub prep_nova_${fmt_idx}.sh
         else
             chmod u+x prep_nova_${fmt_idx}.sh
-#           ./prep_nova_${fmt_idx}.sh
+           ./prep_nova_${fmt_idx}.sh
         fi
         cat<<RECNOVA>rec_nova_${fmt_idx}.sh
 #!/bin/bash
@@ -404,6 +404,6 @@ cd ..
 RECNOVA
 
         chmod u+x rec_nova_${fmt_idx}.sh
-#       ./rec_nova_${fmt_idx}.sh
+       ./rec_nova_${fmt_idx}.sh
     fi
 done

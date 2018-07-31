@@ -11,9 +11,9 @@
 # mainly because the behaviour of bash is a bit more predictable.
 #
 # This MOTL manipulation script uses one MATLAB compiled scripts below:
-# - split_motl_by_row
+# - cat_motls
 
-# DRM 05-2018
+# DRM 07-2018
 ################################################################################
 set -e           # Crash on error
 set -o nounset   # Crash on unset variables
@@ -33,20 +33,33 @@ exec_dir=XXXINSTALLATION_DIRXXX/bin
 ################################################################################
 #                                 FILE OPTIONS                                 #
 ################################################################################
-# Relative or absolute path and name of the input MOTL file to be split.
-input_motl_fn=<INPUT_MOTL_FN>
+# Relative or absolute path and filename(s) of the input MOTL files to be
+# concatenated. You can use shell wildcard characters * and ? to specify a given
+# number of files and they will be expanded or you can just list the files one
+# by one.
+input_motl_fns=(<INPUT_MOTL_FNS>)
 
-# Relative or absolute path and filename prefix of output MOTL files
-output_motl_fn_prefix=<OUTPUT_MOTL_FN_PRFX>
+# Relative or absolute path and name of the output MOTL file.
+output_motl_fn=<OUTPUT_MOTL_FN>
 
 ################################################################################
 #                                  VARIABLES                                   #
 ################################################################################
-# unbinmotl executable
-split_motl_by_row_exec=${exec_dir}/split_motl_by_row
+# cat_motls executable
+cat_motls_exec=${exec_dir}/cat_motls
 
-# Which row to split the input MOTL file by
-motl_row=<MOTL_ROW>
+################################################################################
+#                             CONCATENATE OPTIONS                               #
+################################################################################
+# If you want to write out the concatenated MOTL files set this to 1, however if
+# you just want to print the MOTL contents to the screen, set this to 0.
+write_output=0
+
+# If you want to have the output MOTL file sorted by a particular field then
+# specify it here. If the given value is not a value between 1-20 then the
+# output MOTL file will be sorted arbitrarily based on the dir command in
+# Matlab.
+sort_row=0
 
 ################################################################################
 #                                                                              #
@@ -54,7 +67,7 @@ motl_row=<MOTL_ROW>
 #                                                                              #
 ################################################################################
 cd ${scratch_dir}
-mcr_cache_dir=${mcr_cache_dir}/split_motl_by_row
+mcr_cache_dir=${mcr_cache_dir}/cat_motls
 if [[ ! -d ${mcr_cache_dir} ]]
 then
     mkdir -p ${mcr_cache_dir}
@@ -63,9 +76,9 @@ else
     mkdir -p ${mcr_cache_dir}
 fi
 
-if [[ ! -d $(dirname ${output_motl_fn_prefix}) ]]
+if [[ ! -d $(dirname ${output_motl_fn}) ]]
 then
-    mkdir -p $(dirname ${output_motl_fn_prefix})
+    mkdir -p $(dirname ${output_motl_fn})
 fi
 
 ldpath=XXXMCR_DIRXXX/runtime/glnxa64
@@ -74,8 +87,9 @@ ldpath=${ldpath}:XXXMCR_DIRXXX/sys/os/glnxa64
 ldpath=${ldpath}:XXXMCR_DIRXXX/sys/opengl/lib/glnxa64
 export LD_LIBRARY_PATH=${ldpath}
 export MCR_CACHE_ROOT=${mcr_cache_dir}
-time ${split_motl_by_row_exec} \
-    ${input_motl_fn} \
-    ${motl_row} \
-    ${output_motl_fn_prefix}
+${cat_motls_exec} \
+    ${write_output} \
+    ${output_motl_fn} \
+    ${sort_row} \
+    ${input_motl_fns[*]}
 rm -rf ${mcr_cache_dir}

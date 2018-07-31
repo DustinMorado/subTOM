@@ -53,5 +53,3 @@ Step-by-Step Instructions
 
     * *example* ``./install.sh /lmb/home/dmorado/opt/subTOM
       /lmb/home/public/matlab/jbriggs``
-
-

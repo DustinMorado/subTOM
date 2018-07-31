@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>&lt;no title&gt; &mdash; subTOM 0.5.0 documentation</title>
+  <title>cat_motls &mdash; subTOM 0.5.0 documentation</title>
   
 
   
@@ -27,7 +27,9 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" /> 
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="clean_motl" href="clean_motl.html" />
+    <link rel="prev" title="Functions" href="introduction.html" /> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -89,6 +91,7 @@
 <p class="caption"><span class="caption-text">Links to Individual Script Documentation:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../scripts/introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/cat_motls.html">cat_motls.sh</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../scripts/clean_motl.html">clean_motl.sh</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../scripts/compare_motls.html">compare_motls.sh</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../scripts/even_odd_motl.html">even_odd_motl.sh</a></li>
@@ -102,10 +105,15 @@
 <li class="toctree-l1"><a class="reference internal" href="../scripts/scale_motl.html">scale_motl.sh</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../scripts/seed_positions.html">seed_positions.sh</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../scripts/split_motl_by_row.html">split_motl_by_row.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/transform_motl.html">transform_motl.sh</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Links to Individual Function Documentation:</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">cat_motls.m</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#example">Example:</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="clean_motl.html">clean_motl.m</a></li>
 <li class="toctree-l1"><a class="reference internal" href="compare_motls.html">compare_motls.m</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dose_filter_tiltseries.html">dose_filter_tiltseries.m</a></li>
@@ -119,6 +127,8 @@
 <li class="toctree-l1"><a class="reference internal" href="scan_angles_exact.html">scan_angles_exact.m</a></li>
 <li class="toctree-l1"><a class="reference internal" href="seed_positions.html">seed_positions.m</a></li>
 <li class="toctree-l1"><a class="reference internal" href="split_motl_by_row.html">split_motl_by_row.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="weighted_average.html">weighted_average.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="transform_motl.html">transform_motl.m</a></li>
 </ul>
 
             
@@ -164,13 +174,13 @@
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
         
-      <li>&lt;no title&gt;</li>
+      <li>cat_motls</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../_sources/functions/subsets_weighted_average.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/functions/cat_motls.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -183,12 +193,49 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  
+  <div class="section" id="cat-motls">
+<h1>cat_motls<a class="headerlink" href="#cat-motls" title="Permalink to this headline">¶</a></h1>
+<p>Concatenate motive lists and print on the standard output.</p>
+<div class="highlight-matlab"><div class="highlight"><pre><span></span><span class="n">cat_motls</span><span class="p">(</span>
+    <span class="n">write_ouput</span><span class="p">,</span>
+    <span class="n">output_motl_fn</span><span class="p">,</span>
+    <span class="n">sort_row</span><span class="p">,</span>
+    <span class="n">input_motl_fns</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Takes the motive lists <code class="docutils literal"><span class="pre">input_motl_fns</span></code>, and concatenates them all together.
+If <code class="docutils literal"><span class="pre">write_output</span></code> evaluates to True as a boolean then the joined motive
+lists are written out as <code class="docutils literal"><span class="pre">ouput_motl_fn</span></code>. Since the
+used to find the files, and this does not guarantee that the output motive
+list will have any form of sorting, if <code class="docutils literal"><span class="pre">sort_row</span></code> is a valid field number
+the output motive list will be sorted by <code class="docutils literal"><span class="pre">sort_row</span></code>.</p>
+<p>The motive list is also printed to standard ouput. An arbitrary choice has
+been made to ouput the motive list in STAR format, since it is used in
+other more well-known EM software packages.</p>
+<div class="section" id="example">
+<h2>Example:<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-matlab"><div class="highlight"><pre><span></span><span class="n">cat_motls</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;combinedmotl/allmotl_1_joined.em&#39;</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="c">...</span>
+ <span class="s">&#39;combinedmotl/allmotl_1_tomo_1.em&#39;</span><span class="p">,</span> <span class="c">...</span>
+ <span class="s">&#39;combinedmotl/allmotl_1_tomo_3.em&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+
 
            </div>
            
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="clean_motl.html" class="btn btn-neutral float-right" title="clean_motl" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="introduction.html" class="btn btn-neutral" title="Functions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>

@@ -28,7 +28,7 @@ scratch_dir=<SCRATCH_DIR>
 frame_dir=<FRAME_DIR>
 
 # Absolute path to MCR directory for the processing.
-mcr_cache_dir=<MCR_CACHE_DIR>
+mcr_cache_dir=${scratch_dir}/mcr
 
 # Directory for executables
 exec_dir=XXXINSTALLATION_DIRXXX/bin
@@ -261,7 +261,7 @@ do
 #$ -S /bin/bash
 #$ -V
 #$ -cwd
-#$ -l dedicated=24,gpu=4,mem_free=${mem_free},h_vmem=${mem_max}
+#$ -l dedicated=24,mem_free=${mem_free},h_vmem=${mem_max}
 #$ -o log_preprocess_${fmt_idx}
 #$ -e error_preprocess_${fmt_idx}
 set +o noclobber
@@ -276,7 +276,6 @@ do
     fi
     
     alignframes -InputFile \${frame} \\
-                -UseGPU 0 \\
                 -PairwiseFrames -1 \\
                 -AlignAndSumBinning ${align_bin},${sum_bin} \\
                 -FilterRadius2 ${filter_radius2} \\
@@ -300,6 +299,13 @@ PREPROC
                 -RefineAlignment ${refine_iterations} \\
                 -RefineRadius2 ${refine_radius2} \\
                 -StopIterationsAtShift ${refine_shift_stop} \\
+PREPROC
+    fi
+
+    if [[ -z ${extra_opts//} ]]
+    then
+        cat<<PREPROC>>preprocess_${fmt_idx}.sh
+            ${extra_opts} \\
 PREPROC
     fi
 

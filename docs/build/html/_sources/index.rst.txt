@@ -24,6 +24,7 @@ cryo-tomography data.
     :caption: Links to Individual Script Documentation:
 
     Introduction <scripts/introduction>
+    cat_motls.sh <scripts/cat_motls>
     clean_motl.sh <scripts/clean_motl>
     compare_motls.sh <scripts/compare_motls>
     even_odd_motl.sh <scripts/even_odd_motl>
@@ -37,12 +38,14 @@ cryo-tomography data.
     scale_motl.sh <scripts/scale_motl>
     seed_positions.sh <scripts/seed_positions>
     split_motl_by_row.sh <scripts/split_motl_by_row>
+    transform_motl.sh <scripts/transform_motl>
 
 .. toctree::
     :maxdepth: 1
     :caption: Links to Individual Function Documentation:
 
     Introduction <functions/introduction>
+    cat_motls.m <functions/cat_motls>
     clean_motl.m <functions/clean_motl>
     compare_motls.m <functions/compare_motls>
     dose_filter_tiltseries.m <functions/dose_filter_tiltseries>
@@ -57,6 +60,7 @@ cryo-tomography data.
     seed_positions.m <functions/seed_positions>
     split_motl_by_row.m <functions/split_motl_by_row>
     weighted_average.m <functions/weighted_average>
+    transform_motl.m <functions/transform_motl>
 
 Indices and tables
 ==================
