@@ -76,9 +76,12 @@ else
     mkdir -p ${mcr_cache_dir}
 fi
 
-if [[ ! -d $(dirname ${output_motl_fn}) ]]
+if [[ ${write_output} -eq 1 ]]
 then
-    mkdir -p $(dirname ${output_motl_fn})
+    if [[ ! -d $(dirname ${output_motl_fn}) ]]
+    then
+        mkdir -p $(dirname ${output_motl_fn})
+    fi
 fi
 
 ldpath=XXXMCR_DIRXXX/runtime/glnxa64
