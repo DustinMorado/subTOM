@@ -39,8 +39,9 @@ exec_dir=XXXINSTALLATION_DIRXXX/bin
 # by one.
 input_motl_fns=(<INPUT_MOTL_FNS>)
 
-# Relative or absolute path and name of the output MOTL file.
-output_motl_fn=<OUTPUT_MOTL_FN>
+# Relative or absolute path and name of the output MOTL file. If you are not
+# going to write an output file just set this variable to 'none'
+output_motl_fn='none'
 
 ################################################################################
 #                                  VARIABLES                                   #
