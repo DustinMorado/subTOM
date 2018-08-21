@@ -15,7 +15,10 @@
 # - dose_filter_tiltseries
 # DRM 07-2018
 ################################################################################
+set -e
 set -o nounset   # Crash on unset variables
+unset ml
+unset module
 ################################################################################
 #                                 DIRECTORIES                                  #
 ################################################################################
@@ -34,9 +37,20 @@ mcr_cache_dir=${scratch_dir}/mcr
 exec_dir=XXXINSTALLATION_DIRXXX/bin
 
 ################################################################################
-#                                  VARIABLES                                   #
+#                                 EXECUTABLES                                  #
 ################################################################################
-# Dose-filtering executable
+# Absolute path to the IMOD alignframes executable. The directory of this will
+# be used for the other IMOD programs used in the processing.
+#alignframes_exe=${bstore1}../LMB/software/imod_4.10.10_RHEL7-64_CUDA8.0/IMOD/bin/alignframes
+#alignframes_exe=$(which alignframes) # If you have alignframes in your path.
+alignframes_exe=<ALIGNFRAMES_EXE>
+
+# Absolute path to the CTFFIND4 executable.
+#ctffind_exe=${bstore1}/../LMB/software/ctffind/ctffind.exe
+#ctffind_exe=$(which ctffind.exe)
+ctffind_exe=<CTFFIND_EXE>
+
+# Absolute path to the dose-filtering executable
 dose_filt_exec=${exec_dir}/dose_filter_tiltseries
 
 ################################################################################
@@ -179,26 +193,8 @@ dose_rate=<DOSE_RATE>
 #                                                                              #
 ################################################################################
 cd ${scratch_dir}
-# Make sure that we have the commands we need
-echo "Checking for alignframes executable"
-which alignframes &> /dev/null
-check_alignframes=$?
 
-echo "Checking for CTFFIND4 executable"
-which ctffind.exe &> /dev/null
-check_ctffind4=$?
-
-if [[ ${check_alignframes} -ne 0 ]]
-then
-    echo 'ERROR: Cannot find executable alignframes! Is IMOD in your PATH?'
-    exit 1
-fi
-
-if [[ ${check_ctffind4} -ne 0 ]]
-then
-    echo 'ERROR: Cannot find CTFFIND4 executable! Is CTFFIND4 in your PATH?'
-    exit 1
-fi
+imod_exe_dir=$(dirname ${alignframes_exe})
 
 if [[ ! -d ${mcr_cache_dir} ]]
 then
@@ -275,42 +271,43 @@ do
         continue
     fi
     
-    alignframes -InputFile \${frame} \\
-                -PairwiseFrames -1 \\
-                -AlignAndSumBinning ${align_bin},${sum_bin} \\
-                -FilterRadius2 ${filter_radius2} \\
-                -FilterSigma2 ${filter_sigma2} \\
-                -ShiftLimit ${shift_limit} \\
+    ${alignframes_exe} \\
+        -InputFile \${frame} \\
+        -PairwiseFrames -1 \\
+        -AlignAndSumBinning ${align_bin},${sum_bin} \\
+        -FilterRadius2 ${filter_radius2} \\
+        -FilterSigma2 ${filter_sigma2} \\
+        -ShiftLimit ${shift_limit} \\
 PREPROC
 
     if [[ ${do_gain_correction} -eq 1 ]]
     then
         cat<<PREPROC>>preprocess_${fmt_idx}.sh
-                -GainReferenceFile ${gainref_fn} \\
-                -CameraDefectFile ${defects_fn} \\
-                -RotationAndFlip -1 \\
-                -ImagesAreBinned 1.0 \\
+        -GainReferenceFile ${gainref_fn} \\
+        -CameraDefectFile ${defects_fn} \\
+        -RotationAndFlip -1 \\
+        -ImagesAreBinned 1.0 \\
 PREPROC
     fi
 
     if [[ ${do_refinement} -eq 1 ]]
     then
         cat<<PREPROC>>preprocess_${fmt_idx}.sh
-                -RefineAlignment ${refine_iterations} \\
-                -RefineRadius2 ${refine_radius2} \\
-                -StopIterationsAtShift ${refine_shift_stop} \\
+        -RefineAlignment ${refine_iterations} \\
+        -RefineRadius2 ${refine_radius2} \\
+        -StopIterationsAtShift ${refine_shift_stop} \\
 PREPROC
     fi
 
     if [[ -z ${extra_opts//} ]]
     then
         cat<<PREPROC>>preprocess_${fmt_idx}.sh
-            ${extra_opts} \\
+        ${extra_opts} \\
 PREPROC
     fi
 
     cat<<PREPROC>>preprocess_${fmt_idx}.sh
-                -OutputImageFile \${output_frame}
+        -OutputImageFile \${output_frame}
 done
 
 if [[ ! -f ${ts}/${ts}_aligned.st ]]
@@ -325,7 +322,8 @@ then
             printf("%s\\n0\\n", \$0);
         }
     ' > ${ts}_filelistin.txt
-    newstack -q -filein ${ts}_filelistin.txt -output ${ts}/${ts}_aligned.st
+    ${imod_exe_dir}/newstack -q -filein ${ts}_filelistin.txt \\
+        -output ${ts}/${ts}_aligned.st
     rm ${ts}_filelistin.txt
 fi
 
@@ -367,7 +365,7 @@ fi
 if [[ ! -f ${ts}/${ts}_output.ctf ]]
 then
     ln -sv ${ts}_aligned.st ${ts}/${ts}_aligned.mrc
-    ctffind.exe<<CTFFINDCARD
+    ${ctffind_exe}<<CTFFINDCARD
 ${ts}/${ts}_aligned.mrc
 no
 ${ts}/${ts}_output.ctf
@@ -422,5 +420,4 @@ PREPROC
     else
         qsub preprocess_${fmt_idx}.sh
     fi
-    set +e
 done

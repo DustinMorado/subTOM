@@ -91,6 +91,8 @@ function extract_noise(tomogram_dir, scratch_dir, tomo_row, ...
         just_extract = str2double(just_extract);
     end
 
+    just_extract = logical(just_extract);
+
     if ischar(num_noise)
         num_noise = str2double(num_noise);
     end
@@ -122,16 +124,15 @@ function extract_noise(tomogram_dir, scratch_dir, tomo_row, ...
     % Identify our tomogram number for processing
     tomogram_number = tomograms(process_idx);
 
-    % Find zero-padding of tomogram numbers in filenames using Aaron's method
-    max_tomogram_number = max(tomograms(:));
-    max_tomogram_string = num2str(max_tomogram_number);
-    tomogram_digits = length(max_tomogram_string);
-
-    % Finally we get the full path of the tomogram
-    tomogram_fn = sprintf(sprintf('%%0%dd.rec', tomogram_digits), ...
-        tomogram_number);
-
-    tomogram_fn = fullfile(tomogram_dir, tomogram_fn);
+    % We just try to open the tomogram with one, two, three, or four digits.
+    for tomogram_digits = 1:4
+        tomogram_fn = sprintf(sprintf('%%0%dd.rec', tomogram_digits), ...
+            tomogram_number);
+        tomogram_fn = fullfile(tomogram_dir, tomogram_fn);
+        if isfile(tomogram_fn)
+            break;
+        end
+    end
 
     % Get tomogram motl
     motl = allmotl(:, allmotl(tomo_row, :) == tomogram_number);
