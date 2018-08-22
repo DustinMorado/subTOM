@@ -91,7 +91,16 @@
 <p class="caption"><span class="caption-text">Links to Individual Script Documentation:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">cat_motls.sh</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">cat_motls.sh</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#options">Options</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#directories">Directories</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#file-options">File Options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#variables">Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#concatenate-options">Concatenate Options</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="clean_motl.html">clean_motl.sh</a></li>
 <li class="toctree-l1"><a class="reference internal" href="compare_motls.html">compare_motls.sh</a></li>
 <li class="toctree-l1"><a class="reference internal" href="even_odd_motl.html">even_odd_motl.sh</a></li>
@@ -193,6 +202,98 @@
   <div class="section" id="cat-motls">
 <h1>cat_motls<a class="headerlink" href="#cat-motls" title="Permalink to this headline">¶</a></h1>
 <p>Concatenate motive lists and print on the standard output.</p>
+<p>This MOTL manipulation script uses one MATLAB compiled scripts below:</p>
+<ul class="simple">
+<li><a class="reference internal" href="../functions/cat_motls.html"><span class="doc">cat_motls</span></a></li>
+</ul>
+<div class="section" id="options">
+<h2>Options<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="directories">
+<h3>Directories<a class="headerlink" href="#directories" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt>scratch_dir</dt>
+<dd><p class="first">Absolute path to the folder with the input to be processed.
+Other paths are relative to this one.</p>
+<ul class="last simple">
+<li><strong>Example</strong>
+- /net/dstore2/teraraid/dmorado/subTOM_tutorial/subtomo/bin1/even</li>
+</ul>
+</dd>
+<dt>mcr_cache_dir</dt>
+<dd><p class="first">Absolute path to MCR directory for the processing.</p>
+<ul class="last simple">
+<li><strong>Example</strong>
+- ${scratch_dir}/mcr</li>
+</ul>
+</dd>
+<dt>exec_dir</dt>
+<dd><p class="first">Directory for executables</p>
+<ul class="last simple">
+<li><strong>Example</strong>
+- /net/dstore2/teraraid/dmorado/software/subTOM/bin</li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="file-options">
+<h3>File Options<a class="headerlink" href="#file-options" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt>input_motl_fns</dt>
+<dd><p class="first">Relative or absolute path and filename(s) of the input MOTL files to be
+concatenated. You can use shell wildcard characters * and ? to specify a given
+number of files and they will be expanded or you can just list the files one
+by one.</p>
+<ul class="last simple">
+<li><strong>Example</strong>
+- (combinedmotl/allmotl_1.em combinedmotl/allmotl_??.em)</li>
+</ul>
+</dd>
+<dt>output_motl_fn</dt>
+<dd><p class="first">Relative or absolute path and name of the output MOTL file. If you are not
+going to write an output file just set this variable to ‘none’.</p>
+<ul class="last simple">
+<li><strong>Example</strong>
+- combinedmotl/allmotl_sel.em</li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="variables">
+<h3>Variables<a class="headerlink" href="#variables" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt>cat_motls_exec</dt>
+<dd><p class="first">cat_motls executable</p>
+<ul class="last simple">
+<li><strong>Example</strong>
+- ${exec_dir}/cat_motls</li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="concatenate-options">
+<h3>Concatenate Options<a class="headerlink" href="#concatenate-options" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt>write_output</dt>
+<dd><p class="first">If you want to write out the concatenated MOTL files set this to 1, however if
+you just want to print the MOTL contents to the screen, set this to 0.</p>
+<ul class="last simple">
+<li><strong>Example</strong>
+- 1</li>
+</ul>
+</dd>
+<dt>sort_row</dt>
+<dd><p class="first">If you want to have the output MOTL file sorted by a particular field then
+specify it here. If the given value is not a value between 1-20 then the
+output MOTL file will be sorted arbitrarily based on the dir command in
+Matlab.</p>
+<ul class="last simple">
+<li><strong>Example</strong>
+- 4</li>
+</ul>
+</dd>
+</dl>
+</div>
+</div>
 </div>
 
 
