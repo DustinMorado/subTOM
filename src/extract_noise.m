@@ -425,3 +425,9 @@ function binary_wedge = binary_from_ampspec(ampspec)
     end
     binary_wedge = av3_wedge(ampspec, best_ccc(2), best_ccc(3));
 end
+
+%% Test if file exists
+file_exists = function isfile(filename)
+    [status, attrib] = fileattrib(filename);
+    file_exists = status;
+end

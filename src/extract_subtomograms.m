@@ -196,3 +196,9 @@ function new_delprog = disp_progbar(tomogram_number, subtomo_count, ...
         length(sprintf(fmtstr, tomogram_number, left, right, percent, ...
         subtomo_count)));
 end
+
+%% Test if file exists
+file_exists = function isfile(filename)
+    [status, attrib] = fileattrib(filename);
+    file_exists = status;
+end

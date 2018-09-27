@@ -207,6 +207,7 @@ do
     ts=${ts_fmt/XXXIDXXXX/${fmt_idx}}
 
     # Skip series that do not exist
+    set +e
     ls ${frame_dir} | grep -q "${ts}"
     has_frames=$?
     if [[ ${has_frames} -ne 0 ]]
