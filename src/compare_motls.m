@@ -37,7 +37,7 @@ function compare_motls(motl_A_fn, motl_B_fn, write_diffs, diffs_output_fn)
 
     if ~all(motl_A(4, :) == motl_B(4, :))
         fprintf('\nWARNING:\n');
-        fpirntf('\tSubtomogram indices between MOTLs differ!\n\n');
+        fprintf('\tSubtomogram indices between MOTLs differ!\n\n');
     end
 
     coord_A = motl_A(8:10, :) + motl_A(11:13, :);
