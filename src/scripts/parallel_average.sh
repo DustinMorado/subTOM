@@ -246,7 +246,7 @@ cd ${scratch_dir}
     if [[ -f "\${check}" ]]
     then
         echo "\${check} already complete. SKIPPING"
-        exit 0
+        continue
     fi
 
     ptcl_start_idx=\$(((${avg_batch_size} * (SGE_TASK_ID - 1)) + 1))
