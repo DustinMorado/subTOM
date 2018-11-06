@@ -167,17 +167,40 @@ function extract_subtomograms(tomogram_dir, scratch_dir, tomo_row, ...
     csvwrite(stats_fn, stats);
 end
 
-%% check_em_file
-% A function to check that an EM file was correctly written.
+%##############################################################################%
+%                                CHECK_EM_FILE                                 %
+%##############################################################################%
 function check_em_file(em_fn, em_data)
+% CHECK_EM_FILE check that an EM file was correctly written.
+%     CHECK_EM_FILE(...
+%         EM_FN, ...
+%         EM_DATA)
+%
+%     Tries to verify that the EM-file was correctly written before proceeding,
+%     it should always be run following a call to TOM_EMWRITE to make sure that
+%     that function call succeeded. If an error is caught here while trying to
+%     read the file that was just written, it just tries to write it again.
+%
+% Example:
+%   CHECK_EM_FILE('my_EM_filename.em', my_EM_data);
+%
+% See also TOM_EMWRITE
+
+% DRM 11-2017
+    size_check = numel(em_data) * 4 + 512;
     while true
-        try
-            % If this fails, catch command is run
-            tom_emread(em_fn);
-            break
-        catch ME
-            ME.message
+        listing = dir(em_fn);
+        if isempty(listing)
+            fprintf('******\nWARNING:\n\tFile %s does not exist!', em_fn);
             tom_emwrite(em_fn, em_data);
+        else
+            if listing.bytes ~= size_check
+                fprintf('******\nWARNING:\n');
+                fprintf('\tFile %s is not the correct size!', em_fn);
+                tom_emwrite(em_fn, em_data);
+            else
+                break;
+            end
         end
     end
 end

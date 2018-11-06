@@ -250,14 +250,20 @@ function check_em_file(em_fn, em_data)
 % See also TOM_EMWRITE
 
 % DRM 11-2017
+    size_check = numel(em_data) * 4 + 512;
     while true
-        try
-            % If this fails, catch command is run
-            tom_emread(em_fn);
-            break;
-        catch ME
-            fprintf('******\nWARNING:\n\t%s\n******', ME.message);
-            tom_emwrite(em_fn, em_data)
+        listing = dir(em_fn);
+        if isempty(listing)
+            fprintf('******\nWARNING:\n\tFile %s does not exist!', em_fn);
+            tom_emwrite(em_fn, em_data);
+        else
+            if listing.bytes ~= size_check
+                fprintf('******\nWARNING:\n');
+                fprintf('\tFile %s is not the correct size!', em_fn);
+                tom_emwrite(em_fn, em_data);
+            else
+                break;
+            end
         end
     end
 end
