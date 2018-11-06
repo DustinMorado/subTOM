@@ -384,9 +384,9 @@ wait
 ${novactf_exe} -param nova_reconstruct.com
 if [[ ${do_trimvol} -ne 1 ]]
 then
-    ${imod_exe_dir}/clip rotx ${tomo}.rec ${tomo}.bin1.rec
+    ${imod_exe_dir}/clip rotx -m 1 ${tomo}.rec ${tomo}.bin1.rec
 else
-    ${imod_exe_dir}/trimvol -rx ${tomo}.rec ${tomo}.bin1.rec
+    ${imod_exe_dir}/trimvol -rx -mode 1 ${tomo}.rec ${tomo}.bin1.rec
 fi
 rm ${tomo}.rec
 ${imod_exe_dir}/binvol -bin 2 -antialias 5 ${tomo}.bin1.rec ${tomo}.bin2.rec
@@ -459,9 +459,9 @@ cd \${tomo_dir}
 ${novactf_exe} -param nova_reconstruct.com
 if [[ ${do_trimvol} -ne 1 ]]
 then
-    ${imod_exe_dir}/clip rotx ${tomo}.rec ${tomo}.bin1.rec
+    ${imod_exe_dir}/clip rotx -m 1 ${tomo}.rec ${tomo}.bin1.rec
 else
-    ${imod_exe_dir}/trimvol -rx ${tomo}.rec ${tomo}.bin1.rec
+    ${imod_exe_dir}/trimvol -rx -mode 1 ${tomo}.rec ${tomo}.bin1.rec
 fi
 rm \${tomo}.rec
 ${imod_exe_dir}/binvol -bin 2 -antialias 5 \${tomo}.bin1.rec \${tomo}.bin2.rec
