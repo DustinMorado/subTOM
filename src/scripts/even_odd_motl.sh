@@ -49,6 +49,15 @@ odd_motl_fn=<ODD_MOTL_FN>
 even_odd_exec=${exec_dir}/even_odd_motl
 
 ################################################################################
+#                              EVEN / ODD OPTIONS                              #
+################################################################################
+# The following specifies which row of the MOTL will be used to split the data.
+# To simply split into even and odd halves use the particle running ID, which is
+# row 4. To split the halves by tomogram use row 5 or 7, and to split the halves
+# by tube or sphere use row 6.
+split_row=4
+
+################################################################################
 #                                                                              #
 #                                END OF OPTIONS                                #
 #                                                                              #
@@ -81,6 +90,7 @@ export LD_LIBRARY_PATH=${ldpath}
 export MCR_CACHE_ROOT=${mcr_cache_dir}
 time ${even_odd_exec} \
     ${input_motl_fn} \
+    ${split_row} \
     ${even_motl_fn} \
     ${odd_motl_fn}
 rm -rf ${mcr_cache_dir}
