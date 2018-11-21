@@ -98,6 +98,31 @@ subtomo_digits=1
 # is true.
 reextract=0
 
+# Set preload_tomogram to 1 if you want to read the whole tomogram into memory
+# before extraction. This is the fastest way to extract particles however the
+# system needs to be able to have the memory to fit the whole tomogram into
+# memory or otherwise it will crash. If it is set to 0, then either the
+# subtomograms can be extracted using a memory-map to the data, or read directly
+# from the file.
+preload_tomogram=1
+
+# Set use_tom_red to 1 if you want to use the AV3/TOM function tom_red to
+# extract particles. This requires that preload_tomogram above is set to 1. This
+# is the original way to extract particles, but it seemed to sometimes produce
+# subtomograms that were incorrectly sized. If it is set to 0 then an inlined
+# window function is used instead.
+use_tom_red=1
+
+# Set use_memmap to 1 to memory-map the tomogram and read subtomograms from this
+# map. This appears to be a little slower than having the tomogram fully in
+# memory without the massive memory footprint. However, it also appears to be
+# slightly unstable and may crash unexpectedly. If it is set to 0 and
+# preload_tomogram is also 0, then subtomograms will be read directly from the
+# tomogram on disk. This also requires much less memory, however it appears to
+# be extremely slow, so this only makes sense for a large number of tomograms
+# being extracted on the cluster.
+use_memmap=0
+
 ################################################################################
 #                                                                              #
 #                                END OF OPTIONS                                #
@@ -190,7 +215,10 @@ cd ${scratch_dir}
         ${subtomogram_size} \\
         ${stats_fn_prefix} \\
         \${SGE_TASK_ID} \\
-        ${reextract}
+        ${reextract} \\
+        ${preload_tomogram} \\
+        ${use_tom_red} \\
+        ${use_memmap}
     rm -rf \${mcr_cache_dir}
 ###done 2> error_${job_name} > log_${job_name}
 JOBDATA

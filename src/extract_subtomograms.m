@@ -1,6 +1,7 @@
 function extract_subtomograms(tomogram_dir, scratch_dir, tomo_row, ...
     subtomo_fn_prefix, subtomo_digits, all_motl_fn, boxsize, ...
-    stats_fn_prefix, process_idx, reextract)
+    stats_fn_prefix, process_idx, reextract, preload_tomogram, use_tom_red, ...
+    use_memmap)
 % EXTRACT_SUBTOMOGRAMS extract subtomograms on the cluster.
 %     EXTRACT_SUBTOMOGRAMS(
 %         TOMOGRAM_DIR, 
@@ -80,6 +81,24 @@ function extract_subtomograms(tomogram_dir, scratch_dir, tomo_row, ...
 
     reextract = logical(reextract);
 
+    if ischar(preload_tomogram)
+        preload_tomogram = str2double(preload_tomogram);
+    end
+
+    preload_tomogram = logical(preload_tomogram);
+
+    if ischar(use_tom_red)
+        use_tom_red = str2double(use_tom_red);
+    end
+
+    use_tom_red = logical(use_tom_red);
+
+    if ischar(use_memmap)
+        use_memmap = str2double(use_memmap);
+    end
+
+    use_memmap = logical(use_memmap);
+
     % Read in allmotl
     allmotl = getfield(tom_emread(all_motl_fn), 'Value');
 
@@ -122,9 +141,33 @@ function extract_subtomograms(tomogram_dir, scratch_dir, tomo_row, ...
     stats = zeros(size(motl, 2), 6);
 
     % Read in the tomogram
-    tomogram = getfield(tom_mrcread(tomogram_fn), 'Value');
+    if preload_tomogram
+        tomogram = getfield(tom_mrcread(tomogram_fn), 'Value');
+    else
+        header = getfield(getfield(tom_readmrcheader(tomogram_fn), ...
+            'Header'), 'MRC');
+    end
+
+    if use_memmap
+        switch header.mode
+            case 0
+                dtype = 'int8';
+            case 1
+                dtype = 'int16';
+            case 2
+                dtype = 'single';
+            case 6
+                dtype = 'uint16';
+            otherwise
+                error('Sorry, I cannot read this as an MRC-File !!!');
+        end
+
+        tomogram = memmapfile(tomogram_fn, 'Offset', 1024, 'Format', ...
+            {dtype, [header.nx, header.ny, header.nz], 'Value'});
+    end
 
     delprog = '';
+    subtomo_size = repmat(boxsize, 1, 3);
     for subtomo_idx = 1:size(motl, 2)
         % First check if the subtomogram already exists
         subtomo_fn = sprintf(sprintf('%s_%%0%dd.em', subtomo_fn_prefix, ...
@@ -138,8 +181,18 @@ function extract_subtomograms(tomogram_dir, scratch_dir, tomo_row, ...
 
         subtomo_position = motl(8:10, subtomo_idx);
         subtomo_start = round(subtomo_position - (boxsize / 2));
-        subtomo = double(tom_red(tomogram, subtomo_start, ...
-            repmat(boxsize, 1, 3)));
+
+        if preload_tomogram && use_tom_red
+            subtomo = double(tom_red(tomogram, subtomo_start, subtomo_size));
+        elseif preload_tomogram
+            subtomo = double(window(tomogram, subtomo_start, subtomo_size));
+        elseif use_memmap
+            subtomo = double(window_memmap(tomogram, header, subtomo_start, ...
+                subtomo_size));
+        else
+            subtomo = double(window_fread(tomogram_fn, header, ...
+                subtomo_start, subtomo_size));
+        end
 
         % Normalize the subtomogram by mean subtraction and division by SD
         subtomo_mean = mean(subtomo(:));
@@ -224,4 +277,293 @@ end
 function file_exists = isfile(filename)
     [status, attrib] = fileattrib(filename);
     file_exists = status;
+end
+
+%% Window out a subvolume from a volume array in memory. tom_red alternative
+function region = window(vol, region_start, region_size)
+    region = nan(region_size);
+    [dim_x, dim_y, dim_z] = size(vol);
+    region_start_ = region_start;
+
+    if region_start(1) < 1
+        start_x = 1 - region_start(1) + 1;
+        if start_x > region_size(1)
+            error('Region is entirely outside MRC');
+        end
+        region_start_(1) = 1;
+    else
+        start_x = 1;
+    end
+
+    if region_start(1) + region_size(1) - 1 > dim_x
+        end_x = region_size(1) - (region_start(1) + region_size(1) - 1 - dim_x);
+        if end_x < 1
+            error('Region is entirely outside MRC');
+        end
+    else
+        end_x = region_size(1);
+    end
+
+    region_end(1) = region_start_(1) + end_x - start_x;
+
+    if region_start(2) < 1
+        start_y = 1 - region_start(2) + 1;
+        if start_y > region_size(2)
+            error('Region is entirely outside MRC');
+        end
+        region_start_(2) = 1;
+    else
+        start_y = 1;
+    end
+    
+    if region_start(2) + region_size(2) - 1 > dim_y
+        end_y = region_size(2) - (region_start(2) + region_size(2) - 1 - dim_y);
+        if end_y < 1
+            error('Region is entirely outside MRC');
+        end
+    else
+        end_y = region_size(2);
+    end
+
+    region_end(2) = region_start_(2) + end_y - start_y;
+
+    if region_start(3) < 1
+        start_z = 1 - region_start(3) + 1;
+        if start_z > region_size(3)
+            error('Region is entirely outside MRC');
+        end
+        region_start_(3) = 1;
+    else
+        start_z = 1;
+    end
+
+    if region_start(3) + region_size(3) - 1 > dim_z
+        end_z = region_size(3) - (region_start(3) + region_size(3) - 1 - dim_z);
+        if end_z < 1
+            error('Region is entirely outside MRC');
+        end
+    else
+        end_z = region_size(3);
+    end
+
+    region_end(3) = region_start_(3) + end_z - start_z;
+
+    region(start_x:end_x, start_y:end_y, start_z:end_z) = vol(...
+        region_start_(1):region_end(1), region_start_(2):region_end(2), ...
+        region_start_(3):region_end(3));
+
+    region(isnan(region)) = mean(region(:), 'omitnan');
+end
+
+%% Window out a subvolume from a memory-map of an MRC File
+function region = window_memmap(tomogram, header, region_start, region_size)
+    region = nan(region_size);
+    region_start_ = region_start;
+
+    if region_start(1) < 1
+        start_x = 1 - region_start(1) + 1;
+        if start_x > region_size(1)
+            error('Region is entirely outside MRC');
+        end
+        region_start_(1) = 1;
+    else
+        start_x = 1;
+    end
+
+    if region_start(1) + region_size(1) - 1 > header.nx
+        end_x = region_size(1) - ...
+            (region_start(1) + region_size(1) - 1 - header.nx);
+        if end_x < 1
+            error('Region is entirely outside MRC');
+        end
+    else
+        end_x = region_size(1);
+    end
+
+    region_end(1) = region_start_(1) + end_x - start_x;
+
+    if region_start(2) < 1
+        start_y = 1 - region_start(2) + 1;
+        if start_y > region_size(2)
+            error('Region is entirely outside MRC');
+        end
+        region_start_(2) = 1;
+    else
+        start_y = 1;
+    end
+    
+    if region_start(2) + region_size(2) - 1 > header.ny
+        end_y = region_size(2) - ...
+            (region_start(2) + region_size(2) - 1 - header.ny);
+        if end_y < 1
+            error('Region is entirely outside MRC');
+        end
+    else
+        end_y = region_size(2);
+    end
+
+    region_end(2) = region_start_(2) + end_y - start_y;
+
+    if region_start(3) < 1
+        start_z = 1 - region_start(3) + 1;
+        if start_z > region_size(3)
+            error('Region is entirely outside MRC');
+        end
+        region_start_(3) = 1;
+    else
+        start_z = 1;
+    end
+
+    if region_start(3) + region_size(3) - 1 > header.nz
+        end_z = region_size(3) - ...
+            (region_start(3) + region_size(3) - 1 - header.nz);
+        if end_z < 1
+            error('Region is entirely outside MRC');
+        end
+    else
+        end_z = region_size(3);
+    end
+
+    region_end(3) = region_start_(3) + end_z - start_z;
+
+    region(start_x:end_x, start_y:end_y, start_z:end_z) = ...
+        tomogram.Data.Value(region_start_(1):region_end(1), ...
+        region_start_(2):region_end(2), ...
+        region_start_(3):region_end(3));
+
+    region(isnan(region)) = mean(region(:), 'omitnan');
+end
+
+%% Window out a subvolume from an MRC File on disk using fread
+function region = window_fread(mrc_fn, header, region_start, region_size)
+    region = nan(region_size);
+    fullsize = [header.nx, header.ny, header.nz];
+    region_start_ = region_start;
+
+    if region_start(1) < 1
+        start_x = 1 - region_start(1) + 1;
+        if start_x > region_size(1)
+            error('Region is entirely outside MRC');
+        end
+        region_start_(1) = 1;
+    else
+        start_x = 1;
+    end
+
+    if region_start(1) + region_size(1) - 1 > header.nx
+        end_x = region_size(1) - ...
+            (region_start(1) + region_size(1) - 1 - header.nx);
+        if end_x < 1
+            error('Region is entirely outside MRC');
+        end
+    else
+        end_x = region_size(1);
+    end
+
+    dim_x = end_x - start_x + 1;
+
+    if region_start(2) < 1
+        start_y = 1 - region_start(2) + 1;
+        if start_y > region_size(2)
+            error('Region is entirely outside MRC');
+        end
+        region_start_(2) = 1;
+    else
+        start_y = 1;
+    end
+    
+    if region_start(2) + region_size(2) - 1 > header.ny
+        end_y = region_size(2) - ...
+            (region_start(2) + region_size(2) - 1 - header.ny);
+        if end_y < 1
+            error('Region is entirely outside MRC');
+        end
+    else
+        end_y = region_size(2);
+    end
+
+    dim_y = end_y - start_y + 1;
+
+    if region_start(3) < 1
+        start_z = 1 - region_start(3) + 1;
+        if start_z > region_size(3)
+            error('Region is entirely outside MRC');
+        end
+        region_start_(3) = 1;
+    else
+        start_z = 1;
+    end
+
+    if region_start(3) + region_size(3) - 1 > header.nz
+        end_z = region_size(3) - ...
+            (region_start(3) + region_size(3) - 1 - header.nz);
+        if end_z < 1
+            error('Region is entirely outside MRC');
+        end
+    else
+        end_z = region_size(3);
+    end
+
+    switch header.mode
+        case 0
+            precision = sprintf('%d*int8=>int8', dim_x);
+            skip = (header.nx - dim_x);
+            seek_skip = ((header.ny - dim_y) * header.nx);
+            offset = 1024 + header.next ...
+                + (sub2ind(fullsize, region_start_(1), region_start_(2), ...
+                region_start_(3)) - 1);
+        case 1
+            precision = sprintf('%d*int16=>int16', dim_x);
+            skip = (header.nx - dim_x) * 2;
+            seek_skip = ((header.ny - dim_y) * header.nx) * 2;
+            offset = 1024 + header.next ...
+                + ((sub2ind(fullsize, region_start_(1), region_start_(2), ...
+                region_start_(3)) - 1) * 2);
+        case 2
+            precision = sprintf('%d*single=>single', dim_x);
+            skip = (header.nx - dim_x) * 4;
+            seek_skip = ((header.ny - dim_y) * header.nx) * 4;
+            offset = 1024 + header.next ...
+                + ((sub2ind(fullsize, region_start_(1), region_start_(2), ...
+                region_start_(3)) - 1) * 4);
+        case 6
+            precision = sprintf('%d*uint16=>uint16', dim_x);
+            skip = (header.nx - dim_x) * 2;
+            seek_skip = ((header.ny - dim_y) * header.nx) * 2;
+            offset = 1024 + header.next ...
+                + ((sub2ind(fullsize, region_start_(1), region_start_(2), ...
+                region_start_(3)) - 1) * 2);
+        case 8
+            precision = sprintf('%d*uint32=>uint32', dim_x);
+            skip = (header.nx - dim_x) * 4;
+            seek_skip = ((header.ny - dim_y) * header.nx) * 4;
+            offset = 1024 + header.next ...
+                + ((sub2ind(fullsize, region_start_(1), region_start_(2), ...
+                region_start_(3)) - 1) * 4);
+        otherwise
+            error('Sorry, I cannot read this as an MRC-File !!!');
+    end
+
+    [comp_typ, maxsize, endian] = computer;
+    switch endian
+        case 'L'
+            system_format = 'ieee-le';
+        case 'B'
+            system_format = 'ieee-be';
+    end
+
+    fid = fopen(mrc_fn, 'r', system_format);
+    if fid == -1
+        error(['Cannot open: ' input_fn ' file']);
+    end;
+
+    fseek(fid, offset, -1);
+    for i = start_z:end_z
+        region(start_x:end_x, start_y:end_y, i) = fread(fid, [dim_x, dim_y], ...
+            precision, skip);
+        fseek(fid, seek_skip, 0);
+    end
+    fclose(fid);
+
+    region(isnan(region)) = mean(region(:), 'omitnan');
 end
