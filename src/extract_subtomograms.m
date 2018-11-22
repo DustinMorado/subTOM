@@ -162,8 +162,8 @@ function extract_subtomograms(tomogram_dir, scratch_dir, tomo_row, ...
                 error('Sorry, I cannot read this as an MRC-File !!!');
         end
 
-        tomogram = memmapfile(tomogram_fn, 'Offset', 1024, 'Format', ...
-            {dtype, [header.nx, header.ny, header.nz], 'Value'});
+        tomogram = memmapfile(tomogram_fn, 'Offset', 1024 + header.next, ...
+            'Format', {dtype, [header.nx, header.ny, header.nz], 'Value'});
     end
 
     delprog = '';
