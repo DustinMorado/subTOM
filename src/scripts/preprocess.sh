@@ -131,6 +131,10 @@ align_bin=1,2,3
 # probably want to change this to 2, otherwise it should be set to 1.
 sum_bin=1
 
+# Amount of scaling to apply to summed values before output. The default is 30
+# however serialEM applies one of 39.3?
+scale=39.3
+
 # Cutoff Frequency for the lowpass filter used in frame alignment. The unit is
 # absolute spatial frequency which goes from 0 to 0.5 relative to the pixelsize
 # of the input frames (not considering binning applied in alignment). The
@@ -314,6 +318,7 @@ then
         -PathToFramesInMdoc ${frame_dir} \\
         -PairwiseFrames -1 \\
         -AlignAndSumBinning 1,${sum_bin} \\
+        -TotalScalingOfData ${scale} \\
         -TestBinnings ${align_bin} \\
         -VaryFilter ${filter_radius2} \\
         -FilterSigma2 ${filter_sigma2} \\
@@ -369,6 +374,7 @@ then
         -PathToFramesInMdoc ${frame_dir} \\
         -PairwiseFrames -1 \\
         -AlignAndSumBinning 1,${sum_bin} \\
+        -TotalScalingOfData ${scale} \\
         -TestBinnings ${align_bin} \\
         -VaryFilter ${filter_radius2} \\
         -FilterSigma2 ${filter_sigma2} \\
