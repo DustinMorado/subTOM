@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 ################################################################################
 # This is a run script for preprocessing dose-fractionated electron
 # cryo-tomograhpy data and setting up an organized directory system for then
@@ -35,7 +36,6 @@ frame_dir=<FRAME_DIR>
 ################################################################################
 # Absolute path to the IMOD alignframes executable. The directory of this will
 # be used for the other IMOD programs used in the processing.
-#alignframes_exe=${bstore1}../LMB/software/imod_4.10.10_RHEL7-64_CUDA8.0/IMOD/bin/alignframes
 #alignframes_exe=$(which alignframes) # If you have alignframes in your path.
 alignframes_exe=<ALIGNFRAMES_EXE>
 
@@ -558,9 +558,9 @@ if [[ ${do_ctfplotter} -eq 1 && ! -f ${ts}/ctfplotter/${ts}_output.txt ]]
 then
     extracttilts ${ts}/${ts}_aligned.st ${ts}/ctfplotter/${ts}_aligned.rawtlt
     asf_def_lo=$(echo '' | awk -vrl=${min_res} -vpx=${apix} \\
-        '{printf("%f", px/dl)}')
+        '{printf("%f", px/rl)}')
     asf_def_hi=$(echo '' | awk -vrh=${max_res} -vpx=${apix} \\
-        '{printf("%f", px/dh)}')
+        '{printf("%f", px/rh)}')
     int_volt=$(printf "%.0f" ${voltage_kev})
     ctfplotter \\
         -InputStack ${ts}/${ts}_aligned.st \\
