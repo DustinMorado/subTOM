@@ -1,5 +1,4 @@
 #!/bin/bash
-set -x
 ################################################################################
 # This is a run script for preprocessing dose-fractionated electron
 # cryo-tomograhpy data and setting up an organized directory system for then
