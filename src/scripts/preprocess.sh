@@ -202,6 +202,12 @@ min_res=30.0
 # The highest wavelength in Angstroms to allow in fitting (maximum resolution)
 max_res=5.0
 
+# The lowest wavelength in Angstroms to allow in fitting in CTFPLOTTER
+min_res_ctfplotter=30.0
+
+# The highest wavelength in Angstroms to allow in fitting in CTFPLOTTER
+max_res_ctfplotter=5.0
+
 # The lowest defocus in Angstroms to scan.
 min_def=10000.0
 
@@ -217,11 +223,6 @@ astigmatism=1000.0
 # The tilt-axis angle of the tilt series. This is only needed if you are
 # estimating the CTF with ctfplotter.
 tilt_axis_angle=85.3
-
-# The expected defocus in nm to use for defocus estimation. This is only needed
-# if you are estimating the CTF with ctfplotter. A suggestion for this field is
-# to use the middle defocus of the range of defocii you collected
-expected_defocus=2500
 
 ################################################################################
 #                                                                              #
@@ -416,10 +417,6 @@ fi
         -OutputImageFile ${ts}/${ts}_dose-filt.st | \\
     tee ${ts}/alignframes/${ts}_dose-filt.out
 
-    extracttilts ${ts}/${ts}_dose-filt.st | \\
-    awk -vd=${dose_per_tilt} 'BEGIN { dose = 0 }
-        { printf("%6.2f\t%10.4f\n", $1, dose); dose += d }' | \\
-    sort -n -k 1,1 | awk '{print $2}' > ${ts}/${ts}_dose_list.csv
     newstack \\
         -ReorderByTiltAngle 1 \\
         -UseMdocFiles \\
@@ -458,10 +455,10 @@ yes
 no
 CTFFINDCARD
 
-    nz=\$(header -size ${ts}/${ts}_aligned.mrc | awk '{print $3}')
+    nz=\$(header -size ${ts}/${ts}_aligned.mrc | awk '{print \$3}')
     mz=\$((nz / 2 + 1))
     def_avg=\$(grep "^\${mz}" ${ts}/ctffind4/${ts}_output.txt | \\
-       awk '{ printf("%d", ($2 + $3) / 2) }')
+       awk '{ printf("%d", (\$2 + \$3) / 2) }')
     def_lo=\$((def_avg - 5000))
     def_hi=\$((def_avg + 5000))
 
@@ -556,10 +553,15 @@ fi
 if [[ ${do_ctfplotter} -eq 1 && ! -f ${ts}/ctfplotter/${ts}_output.txt ]]
 then
     extracttilts ${ts}/${ts}_aligned.st ${ts}/ctfplotter/${ts}_aligned.rawtlt
-    asf_def_lo=$(echo '' | awk -vrl=${min_res} -vpx=${apix} \\
-        '{printf("%f", px/rl)}')
-    asf_def_hi=$(echo '' | awk -vrh=${max_res} -vpx=${apix} \\
-        '{printf("%f", px/rh)}')
+    asf_def_lo=$(echo '' | awk -vrl=${min_res_ctfplotter} -vpx=${apix} '{
+        printf("%f", px/rl)}')
+
+    asf_def_hi=$(echo '' | awk -vrh=${max_res_ctfplotter} -vpx=${apix} '{
+        printf("%f", px/rh)}')
+
+    expected_defocus=\$(grep Target Defocus ${ts}/${ts}_aligned.st.mdoc | \\
+        head -n 1 | awk '{ printf("%f", \$3 * -1000) }')
+
     int_volt=$(printf "%.0f" ${voltage_kev})
     ctfplotter \\
         -InputStack ${ts}/${ts}_aligned.st \\
@@ -570,7 +572,7 @@ then
         -Voltage \${int_volt} \\
         -SphericalAberration ${cs} \\
         -AmplitudeContrast ${ac} \\
-        -ExpectedDefocus ${expected_defocus} \\
+        -ExpectedDefocus \${expected_defocus} \\
         -AutoFitRangeAndStep 0,0 \\
         -FrequencyRangeToFit \${asf_def_lo},\${asf_def_hi} \\
         -VaryExponentInFit \\
