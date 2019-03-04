@@ -559,7 +559,7 @@ then
     asf_def_hi=$(echo '' | awk -vrh=${max_res_ctfplotter} -vpx=${apix} '{
         printf("%f", px/rh)}')
 
-    expected_defocus=\$(grep Target Defocus ${ts}/${ts}_aligned.st.mdoc | \\
+    expected_defocus=\$(grep TargetDefocus ${ts}/${ts}_aligned.st.mdoc | \\
         head -n 1 | awk '{ printf("%f", \$3 * -1000) }')
 
     int_volt=$(printf "%.0f" ${voltage_kev})
