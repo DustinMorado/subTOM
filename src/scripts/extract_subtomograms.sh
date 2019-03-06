@@ -36,6 +36,9 @@ exec_dir=XXXINSTALLATION_DIRXXX/bin
 # subtomogram extraction executable
 extract_exe=${exec_dir}/extract_subtomograms
 
+# MOTL dump executable
+motl_dump_exe=${exec_dir}/motl_dump
+
 ################################################################################
 #                                MEMORY OPTIONS                                #
 ################################################################################
@@ -77,9 +80,6 @@ stats_fn_prefix=<STATS_FN_PREFIX>
 ################################################################################
 # Row number of allmotl for tomogram numbers.
 tomo_row=7
-
-# Total number of tomograms in allmotl file
-num_tomos=<NUM_TOMOS>
 
 ################################################################################
 #                             EXTRACTION OPTIONS                               #
@@ -144,6 +144,9 @@ if [[ ! -d $(dirname ${stats_fn_prefix}) ]]
 then
     mkdir -p $(dirname ${stats_fn_prefix})
 fi
+
+num_tomos=$(${motl_dump_exe} --row ${tomo_row} ${all_motl_fn} | \
+    sort -n | uniq | wc -l)
 
 cd ${oldpwd}
 job_name=${job_name}_extract_tomo_array

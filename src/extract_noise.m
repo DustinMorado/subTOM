@@ -327,11 +327,32 @@ function extract_noise(tomogram_dir, scratch_dir, tomo_row, ...
     check_em_file(noise_motl_fn, noise_motl);
 end
 
-%% disp_progbar
-% Display a progress bar
+%##############################################################################%
+%                                 DISP_PROGBAR                                 %
+%##############################################################################%
 function new_delprog = disp_progbar(tomogram_number, noise_count, num_noise, ...
         delprog)
+% DISP_PROGBAR displays a progress bar
+%     DISP_PROGBAR(
+%         TOMOGRAM_NUMBER,
+%         NOISE_COUNT,
+%         NUM_NOISE,
+%         DELPROG)
+%
+%     Writes out a progress bar of the status of the operation currently being
+%     done to the standard output. Here NUM_NOISE is the total number
+%     of operations that need to be completed and NOISE_COUNT is the current
+%     number of operations that have been completed. DELPROG, delete progress,
+%     is a string that keeps track of the amount of backspaces needed to erase
+%     the most recently written progress bar. TOMOGRAM_NUMBER is just for
+%     identifying the tomogram currently being processed to label the progress
+%     bar.
+%
+% Example:
+%   DISP_PROGBAR(1, 1000, 563, delprog);
+%
 
+% DRM 06-2018
     fmtstr = 'Tomogram %d: [%s%s] - %d%% - %d noise\n';
     count = round(noise_count / num_noise * 40);
     percent = round(noise_count / num_noise * 100);

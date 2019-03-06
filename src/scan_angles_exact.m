@@ -104,9 +104,19 @@ function scan_angles_exact(ptcl_start_idx, iteration, ali_batch_size, ...
 %     into class 2 and ignored in later processing, and particles with class
 %     ICLASS are the only particles processed.
 %
-%         - If ICLASS is 0 all particles will be considered. If ICLASS is
-%         nonzero than particles above THRESHOLD will be reassigned to class
-%         number ICLASS
+%         - If ICLASS is 0 all particles will be considered, and particles above
+%         THRESHOLD will be assigned to iclass of 1 and particles below
+%         THRESHOLD will be assigned to iclass of 2. If ICLASS is 1 or 2 then
+%         particles with iclass 0 will be skipped, particles of iclass 1 and 2
+%         will be aligned and particles with scores above THRESHOLD will be
+%         assigned to iclass 1 and particles with scores below THRESHOLD will be
+%         assigned to iclass 2. ICLASS of 2 does not make much sense but is set
+%         this way in case of user mistakes or misunderstandings. If ICLASS is
+%         greater than 2 then particles with iclass of 1, 2, and ICLASS will be
+%         aligned, and particles with a score above THRESHOLD will maintain
+%         their iclass if it is 1 or ICLASS, and particles with a previous
+%         iclass of 2 will be upgraded to an iclass of 1. Particles with a score
+%         below THRESHOLD will be assigned to iclass 2. 
 %
 %         - The class number is stored in the 20th field of the motive list.
 %
@@ -287,8 +297,8 @@ function scan_angles_exact(ptcl_start_idx, iteration, ali_batch_size, ...
 
         % Check if motl should be procesed based on class
         if     allmotl(20, ptcl_idx) ~= 1 ...
+            && allmotl(20, ptcl_idx) ~= 2 ...
             && allmotl(20, ptcl_idx) ~= iclass ...
-            && iclass ~= 0
 
             % Write out motl
             tom_emwrite(ptcl_motl_fn, allmotl(:, ptcl_idx));
@@ -456,8 +466,15 @@ function scan_angles_exact(ptcl_start_idx, iteration, ali_batch_size, ...
         allmotl(1, ptcl_idx) = max_ccc;
         allmotl(11:13, ptcl_idx) = new_ref_shift;
         allmotl(17:19, ptcl_idx) = new_ref_rot;
-        if max_ccc > threshold
-            allmotl(20, ptcl_idx) = iclass;
+        if max_ccc >= threshold
+            if iclass == 1 || iclass == 2 || iclass == 0
+                allmotl(20, ptcl_idx) = 1;
+            else
+                ptcl_class = allmotl(20, ptcl_idx);
+                if ptcl_class == 2
+                    allmotl(20, ptcl_idx) = 1;
+                end
+            end
         else
             allmotl(20, ptcl_idx) = 2;
         end

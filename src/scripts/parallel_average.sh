@@ -49,6 +49,9 @@ sum_exec=${exec_dir}/parallel_sums
 # Final Averaging executable
 avg_exec=${exec_dir}/weighted_average
 
+# MOTL dump executable
+motl_dump_exe=${exec_dir}/motl_dump
+
 ################################################################################
 #                                MEMORY OPTIONS                                #
 ################################################################################
@@ -88,12 +91,8 @@ skip_local_copy=1
 # all_motl_fn_prefix_iteration.em (define as integer e.g. iteration=1)
 iteration=<ITERATION>
 
-# Total number of particles
-num_ptcls=<NUM_PTCLS>
-
-# Number of particles in each parallel subtomogram averaging job
-avg_batch_size=<AVG_BATCH_SIZE>
-
+# Number of batches to split the parallel subtomogram averaging job into
+num_avg_batch=<NUM_AVG_BATCH>
 ################################################################################
 #                                 FILE OPTIONS                                 #
 ################################################################################
@@ -128,16 +127,14 @@ tomo_row=7
 
 # Particles with that number in position 20 of motivelist will be added to new
 # average (define as integer e.g. iclass=1). NOTES: Class 1 is ALWAYS added.
-# Negative classes and class 0 are never added.
-iclass=1
+# Negative classes and class 2 are never added.
+iclass=0
 
 ################################################################################
 #                                                                              #
 #                                END OF OPTIONS                                #
 #                                                                              #
 ################################################################################
-# Check number of jobs
-num_avg_batch=$(((num_ptcls + avg_batch_size - 1) / avg_batch_size))
 if [[ ${num_avg_batch} -gt ${max_jobs} ]]
 then
     echo " TOO MANY JOBS!!!!!  I QUIT!!!"
@@ -179,6 +176,9 @@ if [[ ! -d $(dirname ${weight_sum_fn_prefix}) ]]
 then
     mkdir -p $(dirname ${weight_sum_fn_prefix})
 fi
+
+num_ptcls=$(${motl_dump_exe} --size ${all_motl_fn_prefix}_${iteration}.em)
+avg_batch_size=$(((num_ptcls + num_avg_batch - 1) / num_avg_batch))
 
 cd ${oldpwd}
 job_name=${job_name}_paral_avg

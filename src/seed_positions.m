@@ -56,7 +56,7 @@ function seed_positions(input_motl_fn_prefix, output_motl_fn, spacing, ...
         tomo_idx = str2double(tomo_idx{1});
         motl(5, :) = tomo_idx;
         motl(7, :) = tomo_idx;
-        motl(20, :) = 1;
+        motl(20, :) = 0;
 
         if do_tubule
             for tube_idx = unique(motl(2, :))
