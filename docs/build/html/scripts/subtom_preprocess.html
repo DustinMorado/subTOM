@@ -1,0 +1,562 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>subtom_preprocess &mdash; subTOM 1.0.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="subtom_reconstruct" href="subtom_reconstruct.html" />
+    <link rel="prev" title="subtom_maskcorrected_fsc" href="subtom_maskcorrected_fsc.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> subTOM
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Table of Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../conventions.html">Conventions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Tutorial</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Links to Individual Script Documentation:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_alignment.html">subtom_alignment.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_average.html">subtom_average.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_cat_motls.html">subtom_cat_motls.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_clean_motl.html">subtom_clean_motl.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_compare_motls.html">subtom_compare_motls.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_even_odd_motl.html">subtom_even_odd_motl.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_extract_noise.html">subtom_extract_noise.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_extract_subtomograms.html">subtom_extract_subtomograms.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_maskcorrected_fsc.html">subtom_maskcorrected_fsc.sh</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">subtom_preprocess.sh</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#options">Options</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#directories">Directories</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#executables">Executables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#memory-options">Memory Options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#other-cluster-options">Other Cluster Options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#file-options">File Options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#beam-induced-motion-correction-options">Beam Induced Motion Correction Options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ctf-estimation-options">CTF Estimation Options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dose-filtering-options">Dose Filtering Options</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_reconstruct.html">subtom_reconstruct.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_scale_motl.html">subtom_scale_motl.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_seed_positions.html">subtom_seed_positions.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_split_motl_by_row.html">subtom_split_motl_by_row.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_transform_motl.html">subtom_transform_motl.sh</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Links to Individual Function Documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../functions/introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functions/subtom_cat_motls.html">subtom_cat_motls.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functions/subtom_clean_motl.html">subtom_clean_motl.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functions/subtom_compare_motls.html">subtom_compare_motls.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functions/subtom_even_odd_motl.html">subtom_even_odd_motl.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functions/subtom_extract_noise.html">subtom_extract_noise.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functions/subtom_extract_subtomograms.html">subtom_extract_subtomograms.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functions/subtom_maskcorrected_fsc.html">subtom_maskcorrected_fsc.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functions/subtom_parallel_sums.html">subtom_parallel_sums.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functions/subtom_scale_motl.html">subtom_scale_motl.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functions/subtom_scan_angles_exact.html">subtom_scan_angles_exact.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functions/subtom_seed_positions.html">subtom_seed_positions.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functions/subtom_split_motl_by_row.html">subtom_split_motl_by_row.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functions/subtom_transform_motl.html">subtom_transform_motl.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functions/subtom_weighted_average.html">subtom_weighted_average.m</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">subTOM</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>subtom_preprocess</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/scripts/subtom_preprocess.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="subtom-preprocess">
+<h1>subtom_preprocess<a class="headerlink" href="#subtom-preprocess" title="Permalink to this headline">¶</a></h1>
+<p>Aligns dose-fractionated data, sorts and stacks aligned frames, determines the
+defocus of the tilt-series using CTFFIND4, GCTF, or IMOD CTFPLOTTER and then
+dose-filters the tilt-series in prepartion for alignment using IMOD/eTomo.</p>
+<div class="section" id="options">
+<h2>Options<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="directories">
+<h3>Directories<a class="headerlink" href="#directories" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt>scratch_dir</dt><dd><p>Absolute path to the folder with the input to be processed.
+Other paths are relative to this one.</p>
+</dd>
+<dt>frame_dir</dt><dd><p>Relative path to the folder where the dose-fractionated movie frames are
+located.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="executables">
+<h3>Executables<a class="headerlink" href="#executables" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt>alignframes_exe</dt><dd><p>Absolute path to the IMOD alignframes executable. The directory of this will
+be used for the other IMOD programs used in the processing. Need version at
+least above 4.10.29</p>
+</dd>
+<dt>ctffind_exe</dt><dd><p>Absolute path to the CTFFIND4 executable. Needs version at least above 4.1.13.</p>
+</dd>
+<dt>gctf_exe</dt><dd><p>Absolute path to the GCTF executable. I wouldn’t use it because it rarely
+works but it seems a version of 1.06 sometimes doesn’t crash.</p>
+</dd>
+<dt>exec_dir</dt><dd><p>Directory for subTOM executables</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="memory-options">
+<h3>Memory Options<a class="headerlink" href="#memory-options" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt>mem_free</dt><dd><p>The amount of memory the job requires for alignment. This variable determines
+whether a number of CPUs will be requested to be dedicated for each job. At
+24G, one half of the CPUs on a node will be dedicated for each of the
+processes (12 CPUs). At 48G, all of the CPUs on the node will be dedicated for
+each of the processes (24 CPUs).</p>
+</dd>
+<dt>mem_max</dt><dd><p>The upper bound on the amount of memory the alignment job is allowed to use.
+If any of the processes request or require more memory than this, the queue
+will kill the process. This is more of an option for safety of the cluster to
+prevent the user from crashing the cluster requesting too much memory.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="other-cluster-options">
+<h3>Other Cluster Options<a class="headerlink" href="#other-cluster-options" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt>run_local</dt><dd><p>If the user wants to skip the cluster and run the job locally, this value
+should be set to 1.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="file-options">
+<h3>File Options<a class="headerlink" href="#file-options" title="Permalink to this headline">¶</a></h3>
+<dl>
+<dt>ts_fmt</dt><dd><p>The format string for the datasets to process. The string XXXIDXXXX will be
+replaced with the numbers specified between the range start_idx and end_idx.</p>
+<p>The raw sum tilt-series will have the name format ts_fmt.st, or ts_fmt.mrc, an
+extended data file ts_fmt.{mrc,st}.mdoc and could possibly have an associated
+log ts_fmt.log.</p>
+<p>Dose-fractionated movies of tilt-images are assumed to have the name format:
+ts_fmt_###_*.{mrc,tif} where ### is a running three-digit ID number for the
+tilt-image and * is the tilt-angle.</p>
+</dd>
+<dt>start_idx</dt><dd><p>The first tilt-series to operate on.</p>
+</dd>
+<dt>end_idx</dt><dd><p>The last tilt-series to operate on.</p>
+</dd>
+<dt>idx_fmt</dt><dd><p>The format string for the tomogram indexes. Likely two or three digit zero
+padding or maybe just flat integers.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="beam-induced-motion-correction-options">
+<h3>Beam Induced Motion Correction Options<a class="headerlink" href="#beam-induced-motion-correction-options" title="Permalink to this headline">¶</a></h3>
+<dl>
+<dt>do_aligned</dt><dd><p>If you want to run alignframes to generate the non-dose-weighted tiltseries
+set this option to 1 and if you want to skip this step set this option to 0.</p>
+</dd>
+<dt>do_doseweight</dt><dd><p>If you want to run alignframes to generate the dose-weighted tiltseries set
+this option to 1 and if you want to skip this step set this option to 0.</p>
+</dd>
+<dt>do_gain_correction</dt><dd><p>Determines whether or not gain-correction needs to be done on the frames. Set
+to 1 to apply gain-correction during motion-correction, and 0 to skip it.
+Normally TIFF format frames will be saved with compression and will be
+unnormalized, and should be gain-corrected. MRC format frames are generally
+already saved with gain-correction applied during collection, so it can be
+skipped here.</p>
+<p>A good rule of thumb, is if you have a dm4 file in your data you need to do
+gain-correction, and if you don’t see a dm4 file you do not.</p>
+</dd>
+<dt>gainref_fn</dt><dd><p>The path to the gain-reference file, this will only be used if gain_correction
+is going to be applied.</p>
+</dd>
+<dt>defects_fn</dt><dd><p>The path to the defects file, this is saved along with the gain-reference for
+unnormalized saved frames by SerialEM, and will only be used if
+gain-correction is going to be applied.</p>
+</dd>
+<dt>align_bin</dt><dd><p>Binning to apply to the frames when calculating the alignment, if you are
+using super-resolution you may want to change this to 2. The defaults from
+IMOD would be 3 for counted data and 6 for super-resolution data. Multiple
+binnings can be tested and the best one will be used to generate the final
+sum.</p>
+</dd>
+<dt>sum_bin</dt><dd><p>Binning to apply to the final sum. This is done using Fourier cropping as in
+MotionCorr and other similar programs. If you are using super-resolution you
+probably want to change this to 2, otherwise it should be set to 1.</p>
+</dd>
+<dt>scale</dt><dd><p>Amount of scaling to apply to summed values before output. The default is 30
+however serialEM applies one of 39.3?</p>
+</dd>
+<dt>filter_radius2</dt><dd><p>Cutoff Frequency for the lowpass filter used in frame alignment. The unit is
+absolute spatial frequency which goes from 0 to 0.5 relative to the pixelsize
+of the input frames (not considering binning applied in alignment). The
+default from IMOD is 0.06. Multiple radii can be used and the best filter will
+be selected for the actually used alignment.</p>
+</dd>
+<dt>filter_sigma2</dt><dd><p>Falloff for the lowpass filter used in frame alignment. Same units as above.
+The defaults from IMOD is 0.0086.</p>
+</dd>
+<dt>shift_limit</dt><dd><p>Limit on distance to search for correlation peak in unbinned pixels. The
+default from IMOD is 20.</p>
+</dd>
+<dt>do_refinement</dt><dd><p>If this is set to 1, alignframes will do an iterative refinement of the
+initially found frame alignment solution. The default in IMOD is to not do
+this refinement.</p>
+</dd>
+<dt>refine_iterations</dt><dd><p>The maximum number of refinement iterations to run.</p>
+</dd>
+<dt>refine_radius2</dt><dd><p>Cutoff Frequency for the lowpass filter used in refinement. The default in
+IMOD would be to use the same value used in alignment.</p>
+</dd>
+<dt>refine_shift_stop</dt><dd><p>The amount of shift at which refinement will stop in unbinned pixels.</p>
+</dd>
+<dt>truncate_above</dt><dd><p>Movies often contain hot pixels not removed from the pixel-defect mask either
+from x-rays or other factors and these throw off the later scaling of sums.
+Traditionally they would be removed in eTomo using the ccderaser command /
+step, but it has been found to go better to truncate them at the
+frame-alignment and summing step. To find a reasonable value to truncate above
+use the command ‘clip stats’ on several movies to find out where the values
+start to become outliers, it should be around 5-7 for 10 frame movies of about
+3e/A^2 on the K2.</p>
+</dd>
+<dt>extra_opts</dt><dd><p>If you want to use other options to alignframes specify them here.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="ctf-estimation-options">
+<h3>CTF Estimation Options<a class="headerlink" href="#ctf-estimation-options" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt>apix</dt><dd><p>The pixel size of the motion-corrected tilt-series in Angstroms.</p>
+</dd>
+<dt>do_ctffind4</dt><dd><p>If this is set to 1, the defocus will be estimated with CTFFIND4.</p>
+</dd>
+<dt>do_gctf</dt><dd><p>If this is set to 1, the defocus will be estimated with GCTF.</p>
+</dd>
+<dt>do_ctfplotter</dt><dd><p>If this is set to 1, the defocus will be estimated with CTFPLOTTER.</p>
+</dd>
+<dt>voltage_kev</dt><dd><p>The accelerating voltage of the microscope in KeV.</p>
+</dd>
+<dt>cs</dt><dd><p>The spherical aberration of the microscope in mm.</p>
+</dd>
+<dt>ac</dt><dd><p>The amount of amplitude contrast in the imaging system.</p>
+</dd>
+<dt>tile_size</dt><dd><p>The size of tile to operate on.</p>
+</dd>
+<dt>min_res</dt><dd><p>The lowest wavelength in Angstroms to allow in fitting (minimum resolution).</p>
+</dd>
+<dt>max_res</dt><dd><p>The highest wavelength in Angstroms to allow in fitting (maximum resolution).</p>
+</dd>
+<dt>min_res_ctfplotter</dt><dd><p>The lowest wavelength in Angstroms to allow in fitting in CTFPLOTTER.</p>
+</dd>
+<dt>max_res_ctfplotter</dt><dd><p>The highest wavelength in Angstroms to allow in fitting in CTFPLOTTER.</p>
+</dd>
+<dt>min_def</dt><dd><p>The lowest defocus in Angstroms to scan.</p>
+</dd>
+<dt>max_def</dt><dd><p>The highest defocus in Angstroms to scan.</p>
+</dd>
+<dt>def_step</dt><dd><p>The step size in Angstroms to scan defocus.</p>
+</dd>
+<dt>astigmatism</dt><dd><p>The amount of astigmatism to allow in Angstroms.</p>
+</dd>
+<dt>tilt_axis_angle</dt><dd><p>The tilt-axis angle of the tilt series. This is only needed if you are
+estimating the CTF with ctfplotter. You can find this value running the
+command ‘header’ on the raw sum tiltseries and looking at the first label
+(Titles) in the header.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="dose-filtering-options">
+<h3>Dose Filtering Options<a class="headerlink" href="#dose-filtering-options" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt>dose_per_tilt</dt><dd><p>The dose per micrograph in Electrons per square Angstrom.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">scratch_dir</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span><span class="s2">&quot;</span>
+
+<span class="nv">frame_dir</span><span class="o">=</span><span class="s2">&quot;Frames&quot;</span>
+
+<span class="nv">alignframes_exe</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span>which alignframes<span class="k">)</span><span class="s2">&quot;</span>
+
+<span class="nv">ctffind_exe</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span>which ctffind<span class="k">)</span><span class="s2">&quot;</span>
+
+<span class="nv">gctf_exe</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span>which Gctf<span class="k">)</span><span class="s2">&quot;</span>
+
+<span class="nv">exec_dir</span><span class="o">=</span><span class="s2">&quot;/net/dstore2/teraraid/dmorado/software/subTOM/bin&quot;</span>
+
+<span class="nv">mem_free</span><span class="o">=</span><span class="s2">&quot;1G&quot;</span>
+
+<span class="nv">mem_max</span><span class="o">=</span><span class="s2">&quot;64G&quot;</span>
+
+<span class="nv">run_local</span><span class="o">=</span><span class="m">1</span>
+
+<span class="nv">ts_fmt</span><span class="o">=</span><span class="s2">&quot;TS_XXXIDXXXX&quot;</span>
+
+<span class="nv">start_idx</span><span class="o">=</span><span class="m">1</span>
+
+<span class="nv">end_idx</span><span class="o">=</span><span class="m">1</span>
+
+<span class="nv">idx_fmt</span><span class="o">=</span><span class="s2">&quot;%02d&quot;</span>
+
+<span class="nv">do_aligned</span><span class="o">=</span><span class="m">1</span>
+
+<span class="nv">do_doseweight</span><span class="o">=</span><span class="m">1</span>
+
+<span class="nv">do_gain_correction</span><span class="o">=</span><span class="m">1</span>
+
+<span class="nv">gainref_fn</span><span class="o">=</span><span class="s2">&quot;Frames/gainref.dm4&quot;</span>
+
+<span class="nv">defects_fn</span><span class="o">=</span><span class="s2">&quot;Frames/defects.txt&quot;</span>
+
+<span class="nv">align_bin</span><span class="o">=</span><span class="m">1</span>,2,3
+
+<span class="nv">sum_bin</span><span class="o">=</span><span class="m">1</span>
+
+<span class="nv">scale</span><span class="o">=</span><span class="m">39</span>.3
+
+<span class="nv">filter_radius2</span><span class="o">=</span><span class="m">0</span>.167,0.125,0.10,0.06
+
+<span class="nv">filter_sigma2</span><span class="o">=</span><span class="m">0</span>.0086
+
+<span class="nv">shift_limit</span><span class="o">=</span><span class="m">20</span>
+
+<span class="nv">do_refinement</span><span class="o">=</span><span class="m">1</span>
+
+<span class="nv">refine_iterations</span><span class="o">=</span><span class="m">5</span>
+
+<span class="nv">refine_radius2</span><span class="o">=</span><span class="m">0</span>.167
+
+<span class="nv">refine_shift_stop</span><span class="o">=</span><span class="m">0</span>.1
+
+<span class="nv">truncate_above</span><span class="o">=</span><span class="m">7</span>
+
+<span class="nv">extra_opts</span><span class="o">=</span><span class="s1">&#39;&#39;</span>
+
+<span class="nv">apix</span><span class="o">=</span><span class="m">1</span>
+
+<span class="nv">do_ctffind4</span><span class="o">=</span><span class="m">1</span>
+
+<span class="nv">do_gctf</span><span class="o">=</span><span class="m">0</span>
+
+<span class="nv">do_ctfplotter</span><span class="o">=</span><span class="m">1</span>
+
+<span class="nv">voltage_kev</span><span class="o">=</span><span class="m">300</span>.0
+
+<span class="nv">cs</span><span class="o">=</span><span class="m">2</span>.7
+
+<span class="nv">ac</span><span class="o">=</span><span class="m">0</span>.07
+
+<span class="nv">tile_size</span><span class="o">=</span><span class="m">512</span>
+
+<span class="nv">min_res</span><span class="o">=</span><span class="m">30</span>.0
+
+<span class="nv">max_res</span><span class="o">=</span><span class="m">5</span>.0
+
+<span class="nv">min_res_ctfplotter</span><span class="o">=</span><span class="m">50</span>.0
+
+<span class="nv">max_res_ctfplotter</span><span class="o">=</span><span class="m">10</span>.0
+
+<span class="nv">min_def</span><span class="o">=</span><span class="m">10000</span>.0
+
+<span class="nv">max_def</span><span class="o">=</span><span class="m">60000</span>.0
+
+<span class="nv">def_step</span><span class="o">=</span><span class="m">100</span>.0
+
+<span class="nv">astigmatism</span><span class="o">=</span><span class="m">1000</span>.0
+
+<span class="nv">tilt_axis_angle</span><span class="o">=</span><span class="m">85</span>.3
+
+<span class="nv">dose_per_tilt</span><span class="o">=</span><span class="m">3</span>.5
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="subtom_reconstruct.html" class="btn btn-neutral float-right" title="subtom_reconstruct" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="subtom_maskcorrected_fsc.html" class="btn btn-neutral float-left" title="subtom_maskcorrected_fsc" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Dustin Reed Morado
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

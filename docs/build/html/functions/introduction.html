@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Functions &mdash; subTOM 0.5.0 documentation</title>
+  <title>Functions &mdash; subTOM 1.0.0 documentation</title>
   
 
   
@@ -17,34 +17,37 @@
   
 
   
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="cat_motls" href="cat_motls.html" />
-    <link rel="prev" title="transform_motl" href="../scripts/transform_motl.html" /> 
-
-  
-  <script src="../_static/js/modernizr.min.js"></script>
-
+    <link rel="next" title="subtom_cat_motls" href="subtom_cat_motls.html" />
+    <link rel="prev" title="subtom_transform_motl" href="../scripts/subtom_transform_motl.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -58,7 +61,7 @@
             
             
               <div class="version">
-                0.5
+                1.0
               </div>
             
           
@@ -91,41 +94,39 @@
 <p class="caption"><span class="caption-text">Links to Individual Script Documentation:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../scripts/introduction.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../scripts/cat_motls.html">cat_motls.sh</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../scripts/clean_motl.html">clean_motl.sh</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../scripts/compare_motls.html">compare_motls.sh</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../scripts/even_odd_motl.html">even_odd_motl.sh</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../scripts/extract_noise.html">extract_noise.sh</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../scripts/extract_subtomograms.html">extract_subtomograms.sh</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../scripts/maskcorrected_FSC.html">maskcorrected_FSC.sh</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../scripts/parallel_average.html">parallel_average.sh</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../scripts/preprocess.html">preprocess.sh</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../scripts/run_1.html">run_1.sh</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../scripts/run_nova.html">run_nova.sh</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../scripts/scale_motl.html">scale_motl.sh</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../scripts/seed_positions.html">seed_positions.sh</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../scripts/split_motl_by_row.html">split_motl_by_row.sh</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../scripts/transform_motl.html">transform_motl.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/subtom_alignment.html">subtom_alignment.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/subtom_average.html">subtom_average.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/subtom_cat_motls.html">subtom_cat_motls.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/subtom_clean_motl.html">subtom_clean_motl.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/subtom_compare_motls.html">subtom_compare_motls.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/subtom_even_odd_motl.html">subtom_even_odd_motl.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/subtom_extract_noise.html">subtom_extract_noise.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/subtom_extract_subtomograms.html">subtom_extract_subtomograms.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/subtom_maskcorrected_fsc.html">subtom_maskcorrected_fsc.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/subtom_preprocess.html">subtom_preprocess.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/subtom_reconstruct.html">subtom_reconstruct.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/subtom_scale_motl.html">subtom_scale_motl.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/subtom_seed_positions.html">subtom_seed_positions.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/subtom_split_motl_by_row.html">subtom_split_motl_by_row.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/subtom_transform_motl.html">subtom_transform_motl.sh</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Links to Individual Function Documentation:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="cat_motls.html">cat_motls.m</a></li>
-<li class="toctree-l1"><a class="reference internal" href="clean_motl.html">clean_motl.m</a></li>
-<li class="toctree-l1"><a class="reference internal" href="compare_motls.html">compare_motls.m</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dose_filter_tiltseries.html">dose_filter_tiltseries.m</a></li>
-<li class="toctree-l1"><a class="reference internal" href="even_odd_motl.html">even_odd_motl.m</a></li>
-<li class="toctree-l1"><a class="reference internal" href="extract_noise.html">extract_noise.m</a></li>
-<li class="toctree-l1"><a class="reference internal" href="extract_subtomograms.html">extract_subtomograms.m</a></li>
-<li class="toctree-l1"><a class="reference internal" href="join_motls.html">join_motls.m</a></li>
-<li class="toctree-l1"><a class="reference internal" href="maskcorrected_FSC.html">maskcorrected_FSC.m</a></li>
-<li class="toctree-l1"><a class="reference internal" href="parallel_sums.html">parallel_sums.m</a></li>
-<li class="toctree-l1"><a class="reference internal" href="scale_motl.html">scale_motl.m</a></li>
-<li class="toctree-l1"><a class="reference internal" href="scan_angles_exact.html">scan_angles_exact.m</a></li>
-<li class="toctree-l1"><a class="reference internal" href="seed_positions.html">seed_positions.m</a></li>
-<li class="toctree-l1"><a class="reference internal" href="split_motl_by_row.html">split_motl_by_row.m</a></li>
-<li class="toctree-l1"><a class="reference internal" href="weighted_average.html">weighted_average.m</a></li>
-<li class="toctree-l1"><a class="reference internal" href="transform_motl.html">transform_motl.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_cat_motls.html">subtom_cat_motls.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_clean_motl.html">subtom_clean_motl.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_compare_motls.html">subtom_compare_motls.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_even_odd_motl.html">subtom_even_odd_motl.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_extract_noise.html">subtom_extract_noise.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_extract_subtomograms.html">subtom_extract_subtomograms.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_maskcorrected_fsc.html">subtom_maskcorrected_fsc.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_parallel_sums.html">subtom_parallel_sums.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_scale_motl.html">subtom_scale_motl.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_scan_angles_exact.html">subtom_scan_angles_exact.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_seed_positions.html">subtom_seed_positions.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_split_motl_by_row.html">subtom_split_motl_by_row.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_transform_motl.html">subtom_transform_motl.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_weighted_average.html">subtom_weighted_average.m</a></li>
 </ul>
 
             
@@ -197,7 +198,7 @@ utilizes the TOM toolbox to do the actual processing of subvolumes alignment and
 averaging. Each function can be run itself in Matlab, which allows for users to
 copy and modify these functions in anyway that they see fit.</p>
 <p>Care has been taken to make sure the functions have at least upper-level
-documentation, which can be accessed using the <code class="docutils literal"><span class="pre">help</span></code> command in Matlab, and
+documentation, which can be accessed using the <code class="docutils literal notranslate"><span class="pre">help</span></code> command in Matlab, and
 is also included here for reference.</p>
 </div>
 
@@ -209,10 +210,10 @@ is also included here for reference.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="cat_motls.html" class="btn btn-neutral float-right" title="cat_motls" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="subtom_cat_motls.html" class="btn btn-neutral float-right" title="subtom_cat_motls" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../scripts/transform_motl.html" class="btn btn-neutral" title="transform_motl" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../scripts/subtom_transform_motl.html" class="btn btn-neutral float-left" title="subtom_transform_motl" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -221,7 +222,7 @@ is also included here for reference.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Dustin Reed Morado.
+        &copy; Copyright 2018, Dustin Reed Morado
 
     </p>
   </div>
@@ -238,33 +239,16 @@ is also included here for reference.</p>
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../',
-            VERSION:'0.5.0',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../_static/jquery.js"></script>
-      <script type="text/javascript" src="../_static/underscore.js"></script>
-      <script type="text/javascript" src="../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-  
-
-  <script type="text/javascript" src="../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

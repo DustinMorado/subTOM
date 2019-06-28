@@ -12,11 +12,13 @@ various sources.
 
 * **Beam-induced Motion Correction**
 
-  * The command ``alignframes`` which is a part of the IMOD_ package is used to do
-    the beam-induced motion correction of the movies. subTOM assumes that the
-    data is collected with SerialEM_ but the program should support MRC and TIFF
-    format movie-frames collected with other programs as well. However this
-    requires you to have your movies to have the following name-scheme:
+  * The command ``alignframes`` `alignframes man page
+    <https://bio3d.colorado.edu/imod/betaDoc/man/alignframes.html>`_ which is a
+    part of the `IMOD`_ package is used to do the beam-induced motion correction
+    of the movies. subTOM assumes that the data is collected with `SerialEM`_
+    but the program should support MRC and TIFF format movie-frames collected
+    with other programs as well. However this requires you to have your movies
+    to have the following name-scheme:
 
     - ``<BASENAME>_<FRAME_IDX>_<ANGLE>.<mrc|tif>``
 
@@ -28,21 +30,23 @@ various sources.
 
 * **Defocus Estimation**
 
-  * CTFFIND4_ is used to estimate the defocus in the corrected tilt-series.
+  * The programs `CTFFIND4`_, `GCTF`_, and `IMOD`_'s ``ctfplotter`` `ctfplotter
+    man page <https://bio3d.colorado.edu/imod/betaDoc/man/ctfplotter.html>`_
+    command can all be used to estimate the defocus in the corrected tilt-series
 
 * **Dose Filtering**
 
-  * subTOM has its own program to apply a dose-filter to the tilt-series based
-    on the accumulated dose of each tilt-image. This is the program
-    ``dose_filter_tiltseries``.
+  * The command ``alignframes`` which is part of the `IMOD`_ package is also
+    used to do the filtering of movies based on the accumulated dose of each
+    tilt-image.
 
 --------------
 CTF Correction
 --------------
 
-CTF correction is done in 3D using the program novaCTF_, and a run script
-``run_nova.sh`` is included to facilitate performing novaCTF in parallel and on an
-SGE cluster.
+CTF correction is done in 3D using the program `novaCTF`_, and a run script
+``run_nova.sh`` is included to facilitate performing novaCTF in parallel and on
+an SGE cluster.
 
 ----------------
 Particle Picking
@@ -196,3 +200,4 @@ homogeneous subsets within a heterogeneous dataset.
 .. _novaCTF: https://github.com/turonova/novaCTF
 .. _UCSF Chimera: https://www.cgl.ucsf.edu/chimera/
 .. _Volume Tracer: https://www.cgl.ucsf.edu/chimera/docs/ContributedSoftware/volumepathtracer/framevolpath.html
+.. _GCTF: https://www.mrc-lmb.cam.ac.uk/kzhang/Gctf

@@ -24,43 +24,41 @@ cryo-tomography data.
     :caption: Links to Individual Script Documentation:
 
     Introduction <scripts/introduction>
-    cat_motls.sh <scripts/cat_motls>
-    clean_motl.sh <scripts/clean_motl>
-    compare_motls.sh <scripts/compare_motls>
-    even_odd_motl.sh <scripts/even_odd_motl>
-    extract_noise.sh <scripts/extract_noise>
-    extract_subtomograms.sh <scripts/extract_subtomograms>
-    maskcorrected_FSC.sh <scripts/maskcorrected_FSC>
-    parallel_average.sh <scripts/parallel_average>
-    preprocess.sh <scripts/preprocess>
-    run_1.sh <scripts/run_1>
-    run_nova.sh <scripts/run_nova>
-    scale_motl.sh <scripts/scale_motl>
-    seed_positions.sh <scripts/seed_positions>
-    split_motl_by_row.sh <scripts/split_motl_by_row>
-    transform_motl.sh <scripts/transform_motl>
+    subtom_alignment.sh <scripts/subtom_alignment>
+    subtom_average.sh <scripts/subtom_average>
+    subtom_cat_motls.sh <scripts/subtom_cat_motls>
+    subtom_clean_motl.sh <scripts/subtom_clean_motl>
+    subtom_compare_motls.sh <scripts/subtom_compare_motls>
+    subtom_even_odd_motl.sh <scripts/subtom_even_odd_motl>
+    subtom_extract_noise.sh <scripts/subtom_extract_noise>
+    subtom_extract_subtomograms.sh <scripts/subtom_extract_subtomograms>
+    subtom_maskcorrected_fsc.sh <scripts/subtom_maskcorrected_fsc>
+    subtom_preprocess.sh <scripts/subtom_preprocess>
+    subtom_reconstruct.sh <scripts/subtom_reconstruct>
+    subtom_scale_motl.sh <scripts/subtom_scale_motl>
+    subtom_seed_positions.sh <scripts/subtom_seed_positions>
+    subtom_split_motl_by_row.sh <scripts/subtom_split_motl_by_row>
+    subtom_transform_motl.sh <scripts/subtom_transform_motl>
 
 .. toctree::
     :maxdepth: 1
     :caption: Links to Individual Function Documentation:
 
     Introduction <functions/introduction>
-    cat_motls.m <functions/cat_motls>
-    clean_motl.m <functions/clean_motl>
-    compare_motls.m <functions/compare_motls>
-    dose_filter_tiltseries.m <functions/dose_filter_tiltseries>
-    even_odd_motl.m <functions/even_odd_motl>
-    extract_noise.m <functions/extract_noise>
-    extract_subtomograms.m <functions/extract_subtomograms>
-    join_motls.m <functions/join_motls>
-    maskcorrected_FSC.m <functions/maskcorrected_FSC>
-    parallel_sums.m <functions/parallel_sums>
-    scale_motl.m <functions/scale_motl>
-    scan_angles_exact.m <functions/scan_angles_exact>
-    seed_positions.m <functions/seed_positions>
-    split_motl_by_row.m <functions/split_motl_by_row>
-    weighted_average.m <functions/weighted_average>
-    transform_motl.m <functions/transform_motl>
+    subtom_cat_motls.m <functions/subtom_cat_motls>
+    subtom_clean_motl.m <functions/subtom_clean_motl>
+    subtom_compare_motls.m <functions/subtom_compare_motls>
+    subtom_even_odd_motl.m <functions/subtom_even_odd_motl>
+    subtom_extract_noise.m <functions/subtom_extract_noise>
+    subtom_extract_subtomograms.m <functions/subtom_extract_subtomograms>
+    subtom_maskcorrected_fsc.m <functions/subtom_maskcorrected_fsc>
+    subtom_parallel_sums.m <functions/subtom_parallel_sums>
+    subtom_scale_motl.m <functions/subtom_scale_motl>
+    subtom_scan_angles_exact.m <functions/subtom_scan_angles_exact>
+    subtom_seed_positions.m <functions/subtom_seed_positions>
+    subtom_split_motl_by_row.m <functions/subtom_split_motl_by_row>
+    subtom_transform_motl.m <functions/subtom_transform_motl>
+    subtom_weighted_average.m <functions/subtom_weighted_average>
 
 Indices and tables
 ==================

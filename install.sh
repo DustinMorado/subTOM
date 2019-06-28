@@ -6,14 +6,31 @@ then
     exit 0
 fi
 
-if [[ ! -d ${1}/scripts ]]
+# Strip off trailing slashes if they exist
+install_dir="${1%/}"
+mcr_dir="${2%/}"
+
+if [[ ! -d "${install_dir}/scripts" ]]
 then
-    mkdir ${1}/scripts
+    mkdir "${install_dir}/scripts"
 fi
 
-for i in ${1}/src/scripts/*.sh
+if [[ ! -d "${install_dir}/bin/scripts" ]]
+then
+    mkdir "${install_dir}/bin/scripts"
+fi
+
+for script_fn in "${install_dir}/src/scripts/"*.sh
 do
-    sed -e "s:XXXINSTALLATION_DIRXXX:${1}:g" \
-        -e "s:XXXMCR_DIRXXX:${2}:g" \
-        ${i} > ${1}/scripts/$(basename ${i})
+    sed -e "s:XXXINSTALLATION_DIRXXX:${install_dir}:g" "${script_fn}" >\
+        "${install_dir}/scripts/$(basename "${script_fn}")"
+
+done
+
+for script_fn in "${install_dir}/src/scripts/bin/"*.sh
+do
+    sed -e "s:XXXMCR_DIRXXX:${mcr_dir}:g" "${script_fn}" >\
+        "${install_dir}/bin/scripts/$(basename "${script_fn}")"
+
+    chmod u+x "${install_dir}/bin/scripts/$(basename "${script_fn}")"
 done

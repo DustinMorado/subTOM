@@ -1,0 +1,469 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>subtom_reconstruct &mdash; subTOM 1.0.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="subtom_scale_motl" href="subtom_scale_motl.html" />
+    <link rel="prev" title="subtom_preprocess" href="subtom_preprocess.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> subTOM
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Table of Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../conventions.html">Conventions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Tutorial</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Links to Individual Script Documentation:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_alignment.html">subtom_alignment.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_average.html">subtom_average.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_cat_motls.html">subtom_cat_motls.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_clean_motl.html">subtom_clean_motl.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_compare_motls.html">subtom_compare_motls.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_even_odd_motl.html">subtom_even_odd_motl.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_extract_noise.html">subtom_extract_noise.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_extract_subtomograms.html">subtom_extract_subtomograms.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_maskcorrected_fsc.html">subtom_maskcorrected_fsc.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_preprocess.html">subtom_preprocess.sh</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">subtom_reconstruct.sh</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#options">Options</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#directories">Directories</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#executables">Executables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#memory-options">Memory Options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#other-cluster-options">Other Cluster Options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#file-options">File Options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#nova-ctf-options">Nova CTF Options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#imod-options">IMOD Options</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_scale_motl.html">subtom_scale_motl.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_seed_positions.html">subtom_seed_positions.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_split_motl_by_row.html">subtom_split_motl_by_row.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_transform_motl.html">subtom_transform_motl.sh</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Links to Individual Function Documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../functions/introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functions/subtom_cat_motls.html">subtom_cat_motls.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functions/subtom_clean_motl.html">subtom_clean_motl.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functions/subtom_compare_motls.html">subtom_compare_motls.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functions/subtom_even_odd_motl.html">subtom_even_odd_motl.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functions/subtom_extract_noise.html">subtom_extract_noise.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functions/subtom_extract_subtomograms.html">subtom_extract_subtomograms.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functions/subtom_maskcorrected_fsc.html">subtom_maskcorrected_fsc.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functions/subtom_parallel_sums.html">subtom_parallel_sums.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functions/subtom_scale_motl.html">subtom_scale_motl.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functions/subtom_scan_angles_exact.html">subtom_scan_angles_exact.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functions/subtom_seed_positions.html">subtom_seed_positions.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functions/subtom_split_motl_by_row.html">subtom_split_motl_by_row.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functions/subtom_transform_motl.html">subtom_transform_motl.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functions/subtom_weighted_average.html">subtom_weighted_average.m</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">subTOM</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>subtom_reconstruct</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/scripts/subtom_reconstruct.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="subtom-reconstruct">
+<h1>subtom_reconstruct<a class="headerlink" href="#subtom-reconstruct" title="Permalink to this headline">¶</a></h1>
+<p>This is a run script for the reconstruction and possibly also CTF correction
+processing of electron cryo-tomograhpy data by means of the program novaCTF.</p>
+<p>This script is meant to run on a local workstation but can also submit some of
+the processing to the cluster so that data can be preprocessed in parallel.
+However, note that the read/write density of operations in novaCTF is
+extremely large and therefore care should be taken to not overload systems, or
+be prepared to have a very slow connection to your filesystem.</p>
+<div class="section" id="options">
+<h2>Options<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="directories">
+<h3>Directories<a class="headerlink" href="#directories" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt>scratch_dir</dt><dd><p>Absolute path to the folder with the input to be processed.
+Other paths are relative to this one.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="executables">
+<h3>Executables<a class="headerlink" href="#executables" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt>novactf_exe</dt><dd><p>Absolute path to the novaCTF executable.</p>
+</dd>
+<dt>newstack_exe</dt><dd><p>Absolute path to the IMOD newstack executable. The directory of this will be
+used for the other IMOD programs used in the processing.</p>
+</dd>
+<dt>exec_dir</dt><dd><p>Directory for subTOM executables.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="memory-options">
+<h3>Memory Options<a class="headerlink" href="#memory-options" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt>mem_free</dt><dd><p>The amount of memory the job requires for alignment. This variable determines
+whether a number of CPUs will be requested to be dedicated for each job. At
+24G, one half of the CPUs on a node will be dedicated for each of the
+processes (12 CPUs). At 48G, all of the CPUs on the node will be dedicated for
+each of the processes (24 CPUs).</p>
+</dd>
+<dt>mem_max</dt><dd><p>The upper bound on the amount of memory the alignment job is allowed to use.
+If any of the processes request or require more memory than this, the queue
+will kill the process. This is more of an option for safety of the cluster to
+prevent the user from crashing the cluster requesting too much memory.</p>
+</dd>
+<dt>num_threads</dt><dd><p>Set this value to the number of jobs you want to run in the background before
+reconstruction. Should be the number of threads on the local system or cluster
+which for our system is 24 on the cluster and higher on the local systems, but
+there you should be polite!</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="other-cluster-options">
+<h3>Other Cluster Options<a class="headerlink" href="#other-cluster-options" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt>run_local</dt><dd><p>If the user wants to skip the cluster and run the job locally, this value
+should be set to 1.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="file-options">
+<h3>File Options<a class="headerlink" href="#file-options" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt>tomo_fmt</dt><dd><p>The format string for the datasets to process. The string XXXIDXXXX will be
+replaced with the numbers specified between the range start_idx and end_idx.</p>
+</dd>
+<dt>tomo_dir_fmt</dt><dd><p>The format string for the directory of datasets to process. The string
+XXXIDXXXX will be replaced with the numbers specified between the range
+start_idx and end_idx.</p>
+</dd>
+<dt>start_idx</dt><dd><p>The first tomogram to operate on.</p>
+</dd>
+<dt>end_idx</dt><dd><p>The last tomogram to operate on.</p>
+</dd>
+<dt>idx_fmt</dt><dd><p>The format string for the tomogram indexes. Likely two or three digit zero
+padding or maybe just flat integers.</p>
+</dd>
+<dt>do_rotate_tomo</dt><dd><p>Set this value to 1 if you want to use trimvol or clip rotx to rotate the
+tomogram from the PERPENDICULAR XZ generated tomograms to the standard XY
+PARALLEL orientation. Set this value to 0 if you want to skip this step which
+greatly speeds up processing and reduces the memory footprint, but at the cost
+of easy visualization of the tomogram.</p>
+</dd>
+<dt>do_trimvol</dt><dd><p>Set this value to 1 if you want to use “trimvol -rx” to flip the tomograms to
+the XY standard orientation from the XZ generated tomograms. Otherwise “clip
+rotx” will be used since it is much faster.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="nova-ctf-options">
+<h3>Nova CTF Options<a class="headerlink" href="#nova-ctf-options" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt>do_ctf</dt><dd><p>Set this value to 1 if you want to do 3D-CTF correction during the
+reconstruction of the tomograms. If this value is set to 0 NovaCTF will still
+be used but it will generate tomograms largely identical to IMOD’s WBP.</p>
+</dd>
+<dt>correction_type</dt><dd><p>Type of CTF correction to perform.</p>
+</dd>
+<dt>defocus_file_format</dt><dd><p>File format for the defocus list. Use ctffind4 for CTFFIND4, imod for
+CTFPLOTTER and gctf for Gctf.</p>
+</dd>
+<dt>defocus_file</dt><dd><p>Where the defocus list file is located. The string XXXIDXXXX will be replaced
+with the formatted tomogram index, i.e. XXXIDXXXX_output.txt will be turned
+into 01_output.txt.</p>
+</dd>
+<dt>pixel_size</dt><dd><p>The pixel size of the tilt series in nanometers. <em>Note NANOMETERS!</em></p>
+</dd>
+<dt>defocus_step</dt><dd><p>The strip size in nanometers to perform CTF correction in novaCTF refer to the
+paper for more information on this value and sensible defaults.</p>
+</dd>
+<dt>correct_astigmatism</dt><dd><p>Do you want to correct astigmatism 1 for yes 0 for no.</p>
+</dd>
+<dt>defocus_shift_file</dt><dd><p>If you want to shift the defocus for some reason away from the center of the
+mass of the tomogram provide a defocus_shifts file with the shifts. See the
+paper for more information on this value. If you do not want to use this
+option leave the value “”.</p>
+</dd>
+<dt>amplitude_contrast</dt><dd><p>The amplitude contrast for CTF correction.</p>
+</dd>
+<dt>cs</dt><dd><p>The spherical aberration of the microscope in mm for CTF correction.</p>
+</dd>
+<dt>voltage</dt><dd><p>The voltage in KeV of the microscope for CTF correction.</p>
+</dd>
+<dt>do_radial</dt><dd><p>Set this value to 1 if you want to radial filter the projections before
+reconstruction. This corresponds to the W (weighted) in WBP, which is commonly
+what you want to do, however if you want to only back-project without the
+weighting set this value to 0.</p>
+</dd>
+<dt>radial_cutoff</dt><dd><p>The parameters of RADIAL from the tilt manpage in IMOD that describes the
+radial filter used to weight before back-projection.</p>
+</dd>
+<dt>radial_falloff</dt><dd><p>The parameters of RADIAL from the tilt manpage in IMOD that describes the
+radial filter used to weight before back-projection.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="imod-options">
+<h3>IMOD Options<a class="headerlink" href="#imod-options" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt>erase_radius</dt><dd><p>The radius in pixels to erase when removing the gold fiducials from the
+aligned tilt-series stacks. Be careful that the value you give is appropriate
+for the unbinned aligned stack, which may be different than the value used in
+eTomo on the binned version.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">scratch_dir</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span><span class="s2">&quot;</span>
+
+<span class="nv">novactf_exe</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span>which novaCTF<span class="k">)</span><span class="s2">&quot;</span>
+
+<span class="nv">newstack_exe</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span>which newstack<span class="k">)</span><span class="s2">&quot;</span>
+
+<span class="nv">exec_dir</span><span class="o">=</span><span class="s2">&quot;/net/dstore2/teraraid/dmorado/software/subTOM/bin&quot;</span>
+
+<span class="nv">mem_free</span><span class="o">=</span><span class="s2">&quot;1G&quot;</span>
+
+<span class="nv">mem_max</span><span class="o">=</span><span class="s2">&quot;64G&quot;</span>
+
+<span class="nv">num_threads</span><span class="o">=</span><span class="m">1</span>
+
+<span class="nv">run_local</span><span class="o">=</span><span class="m">0</span>
+
+<span class="nv">tomo_fmt</span><span class="o">=</span><span class="s2">&quot;TS_XXXIDXXXX_dose-filt&quot;</span>
+
+<span class="nv">tomo_dir_fmt</span><span class="o">=</span><span class="s2">&quot;TS_XXXIDXXXX&quot;</span>
+
+<span class="nv">start_idx</span><span class="o">=</span><span class="m">1</span>
+
+<span class="nv">end_idx</span><span class="o">=</span><span class="m">1</span>
+
+<span class="nv">idx_fmt</span><span class="o">=</span><span class="s2">&quot;%02d&quot;</span>
+
+<span class="nv">do_rotate_vol</span><span class="o">=</span><span class="m">1</span>
+
+<span class="nv">do_trimvol</span><span class="o">=</span><span class="m">0</span>
+
+<span class="nv">do_ctf</span><span class="o">=</span><span class="m">1</span>
+
+<span class="nv">correction_type</span><span class="o">=</span><span class="s2">&quot;multiplication&quot;</span>
+
+<span class="nv">defocus_file_format</span><span class="o">=</span><span class="s2">&quot;imod&quot;</span>
+
+<span class="nv">defocus_file</span><span class="o">=</span><span class="s2">&quot;ctfplotter/TS_XXXIDXXXX_output.txt&quot;</span>
+
+<span class="nv">pixel_size</span><span class="o">=</span><span class="m">0</span>.1
+
+<span class="nv">defocus_step</span><span class="o">=</span><span class="m">15</span>
+
+<span class="nv">correct_astigmatism</span><span class="o">=</span><span class="m">1</span>
+
+<span class="nv">defocus_shift_file</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+
+<span class="nv">amplitude_contrast</span><span class="o">=</span><span class="m">0</span>.07
+
+<span class="nv">cs</span><span class="o">=</span><span class="m">2</span>.7
+
+<span class="nv">voltage</span><span class="o">=</span><span class="m">300</span>
+
+<span class="nv">do_radial</span><span class="o">=</span><span class="m">1</span>
+
+<span class="nv">radial_cutoff</span><span class="o">=</span><span class="m">0</span>.35
+
+<span class="nv">radial_falloff</span><span class="o">=</span><span class="m">0</span>.035
+
+<span class="nv">erase_radius</span><span class="o">=</span><span class="m">32</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="subtom_scale_motl.html" class="btn btn-neutral float-right" title="subtom_scale_motl" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="subtom_preprocess.html" class="btn btn-neutral float-left" title="subtom_preprocess" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Dustin Reed Morado
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
