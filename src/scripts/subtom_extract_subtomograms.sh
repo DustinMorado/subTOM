@@ -32,7 +32,7 @@ exec_dir="XXXINSTALLATION_DIRXXX/bin"
 extract_exe="${exec_dir}/alignment/subtom_extract_subtomograms"
 
 # MOTL dump executable
-motl_dump_exe="${exec_dir}/MOTL/motl_dump"
+motl_dump_exec="${exec_dir}/MOTL/motl_dump"
 
 ################################################################################
 #                                MEMORY OPTIONS                                #

@@ -367,9 +367,6 @@ printf "| %-25s | %25s |\n" "iteration" "${iteration}" >> subTOM_protocol.md
 printf "| %-25s | %25s |\n" "num_avg_batch" "${num_avg_batch}" >>\
     subTOM_protocol.md
 
-printf "| %-25s | %25s |\n" "num_avg_batch" "${num_avg_batch}" >>\
-    subTOM_protocol.md
-
 printf "| %-25s | %25s |\n" "all_motl_fn" \
     "${all_motl_fn_prefix}_${iteration}.em" >> subTOM_protocol.md
 

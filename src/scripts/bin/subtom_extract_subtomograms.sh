@@ -37,7 +37,7 @@ then
     mkdir -p "${stats_dir}"
 fi
 
-num_tomos=$("${motl_dump_exe}" \
+num_tomos=$("${motl_dump_exec}" \
     --row ${tomo_row} \
     "${scratch_dir}/${all_motl_fn_prefix}_${iteration}.em" | \
     sort -n | uniq | wc -l)
@@ -196,6 +196,8 @@ do
         tail "log_${job_name}"
     fi
 
+    echo -e "\nSTATUS Update: Subtomogram Extraction\n"
+    echo -e "\t${num_complete} tomograms extracted out of ${num_tomos}\n"
     sleep 60s
 done
 
@@ -250,7 +252,7 @@ printf "| %-25s | %25s |\n" "exec_dir" "${exec_dir}" >> subTOM_protocol.md
 printf "| %-25s | %25s |\n" "extract_exe" "${extract_exe}" >>\
     subTOM_protocol.md
 
-printf "| %-25s | %25s |\n" "motl_dump_exe" "${motl_dump_exe}" >>\
+printf "| %-25s | %25s |\n" "motl_dump_exec" "${motl_dump_exec}" >>\
     subTOM_protocol.md
 
 printf "| %-25s | %25s |\n" "mem_free" "${mem_free}" >> subTOM_protocol.md

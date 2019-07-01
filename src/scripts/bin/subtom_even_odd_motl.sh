@@ -38,6 +38,10 @@ then
     then
         mkdir -p "${output_motl_dir}"
     fi
+
+    output_motl_fn_="${scratch_dir}/${output_motl_fn}"
+else
+    output_motl_fn_=""
 fi
 
 if [[ -n "${even_motl_fn}" ]]
@@ -48,6 +52,10 @@ then
     then
         mkdir -p "${even_motl_dir}"
     fi
+
+    even_motl_fn_="${scratch_dir}/${even_motl_fn}"
+else
+    even_motl_fn_=""
 fi
 
 if [[ -n "${odd_motl_fn}" ]]
@@ -58,6 +66,10 @@ then
     then
         mkdir -p "${odd_motl_dir}"
     fi
+
+    odd_motl_fn_="${scratch_dir}/${odd_motl_fn}"
+else
+    odd_motl_fn_=""
 fi
 
 ldpath="XXXMCR_DIRXXX/runtime/glnxa64"
@@ -72,11 +84,11 @@ export MCR_CACHE_ROOT="${mcr_cache_dir}"
     input_motl_fn \
     "${scratch_dir}/${input_motl_fn}" \
     output_motl_fn \
-    "${scratch_dir}/${output_motl_fn}" \
+    "${output_motl_fn_}" \
     even_motl_fn \
-    "${scratch_dir}/${even_motl_fn}" \
+    "${even_motl_fn_}" \
     odd_motl_fn \
-    "${scratch_dir}/${odd_motl_fn}"\
+    "${odd_motl_fn_}" \
     split_row \
     ${split_row} \
 
