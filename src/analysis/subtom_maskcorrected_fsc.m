@@ -368,7 +368,7 @@ function subtom_maskcorrected_fsc(varargin)
 %                               START PROCESSING                               %
 %##############################################################################%
 
-    % This is the filename we use to check against all the boxsizes for correct
+    % This is the filename we use to check against all the box sizes for correct
     % sizing.
     check_fn = ref_a_fn;
 
@@ -376,10 +376,10 @@ function subtom_maskcorrected_fsc(varargin)
     ref_a = getfield(tom_emread(ref_a_fn), 'Value');
     ref_b = getfield(tom_emread(ref_b_fn), 'Value');
 
-    % Get the boxsize from the first reference.
+    % Get the box size from the first reference.
     box_size = size(ref_a);
 
-    % Make sure the boxsizes of both references are equal.
+    % Make sure the box sizes of both references are equal.
     if ~all(size(ref_b) == box_size)
         try
             error('subTOM:volDimError', ...
@@ -521,7 +521,7 @@ function subtom_maskcorrected_fsc(varargin)
 
         % Because the map needs to stay centro-symmetric we have to do some ugly
         % code to randomize the phases and this depends on whether or not the
-        % boxsize is odd or even since this affects the number of unique
+        % box size is odd or even since this affects the number of unique
         % frequencies in the Fourier transform.
 
         % This should be the indices in the Fourier Transform that belong to a
@@ -698,8 +698,9 @@ function subtom_maskcorrected_fsc(varargin)
     end
 
     fsc_axes = axes(fsc_fig);
-    fsc_xticks = 1:3:n_shells;
-    fsc_resolutions = (box_size(1) * pixelsize) ./ (fsc_xticks - 1);
+    fsc_xrange = [0:cartesian_origin] ./ (box_size(1) * pixelsize);
+    fsc_xticks = [0:3:cartesian_origin] ./ (box_size(1) * pixelsize);
+    fsc_resolutions = 1 ./ fsc_xticks;
     fsc_xlabels = arrayfun(@(x) sprintf('%6.2f', x), fsc_resolutions, ...
         'UniformOutput', 0);
 
@@ -707,18 +708,18 @@ function subtom_maskcorrected_fsc(varargin)
     fsc_ylabels = arrayfun(@(x) sprintf('%6.3f', x), fsc_yticks, ...
         'UniformOutput', 0);
 
-    plot(fsc_axes, 1:n_shells, unmasked_fsc, 'LineStyle', ':', ...
+    plot(fsc_axes, fsc_xrange, unmasked_fsc, 'LineStyle', ':', ...
         'Color', 'b', 'DisplayName', 'Unmasked FSC');
 
     hold(fsc_axes, 'on');
 
-    plot(fsc_axes, 1:n_shells, masked_fsc, 'LineStyle', '--', ...
+    plot(fsc_axes, fsc_xrange, masked_fsc, 'LineStyle', '--', ...
         'Color', 'b', 'DisplayName', 'Masked FSC');
 
-    plot(fsc_axes, 1:n_shells, rand_fsc, 'LineStyle', '-.', ...
+    plot(fsc_axes, fsc_xrange, rand_fsc, 'LineStyle', '-.', ...
         'Color', 'b', 'DisplayName', 'Phase Randomized FSC');
 
-    plot(1:n_shells, corrected_fsc, 'LineStyle', '-', ...
+    plot(fsc_axes, fsc_xrange, corrected_fsc, 'LineStyle', '-', ...
         'Color', 'b', 'DisplayName', 'Corrected FSC');
 
     title(fsc_axes, sprintf('Final Resolution = %6.2f \x212B', resolution_a));
@@ -736,6 +737,7 @@ function subtom_maskcorrected_fsc(varargin)
     set(fsc_fig, 'Position', [0, 0, 800, 600]);
     saveas(fsc_fig, sprintf('%s_FSC', output_fn_prefix), 'fig');
     saveas(fsc_fig, sprintf('%s_FSC', output_fn_prefix), 'pdf');
+    saveas(fsc_fig, sprintf('%s_FSC', output_fn_prefix), 'png');
 
     if ~plot_fsc
         close(fsc_fig);

@@ -210,10 +210,10 @@ phi_angle_step=("0")
 phi_angle_shells=("0")
 
 # High pass filter cutoff (in transform units (pixels): calculate as
-# (boxsize*pixelsize)/(resolution_real) (define as integer e.g. high_pass_fp=2)
+# (box_size*pixelsize)/(resolution_real) (define as integer e.g. high_pass_fp=2)
 # Leave the parentheses and if the number of values is less than the number of
-# iterations the last value will be repeated to the correct length
-# e.g. high_pass_fp=(1 1 2 3)
+# iterations the last value will be repeated to the correct length e.g.
+# high_pass_fp=(1 1 2 3)
 high_pass_fp=("0")
 
 # High pass filter falloff sigma (in transform units (pixels): describes a
@@ -224,10 +224,10 @@ high_pass_fp=("0")
 high_pass_sigma=("2")
 
 # Low pass filter (in transform units (pixels): calculate as
-# (boxsize*pixelsize)/(resolution_real) (define as integer e.g.
-# low_pass_fp=30), has a Gaussian dropoff of ~2 pixels
-# Leave the parentheses and if the number of values is less than the number of
-# iterations the last value will be repeated to the correct length
+# (box_size*pixelsize)/(resolution_real) (define as integer e.g.
+# low_pass_fp=30).  Leave the parentheses and if the number of values is less
+# than the number of iterations the last value will be repeated to the correct
+# length
 low_pass_fp=("0")
 
 # Low pass filter falloff sigma (in transform units (pixels): describes a

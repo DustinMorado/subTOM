@@ -104,9 +104,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../scripts/subtom_extract_subtomograms.html">subtom_extract_subtomograms.sh</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../scripts/subtom_maskcorrected_fsc.html">subtom_maskcorrected_fsc.sh</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../scripts/subtom_preprocess.html">subtom_preprocess.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/subtom_plot_filter.html">subtom_plot_filter.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/subtom_plot_scanned_angles.html">subtom_plot_scanned_angles.sh</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../scripts/subtom_reconstruct.html">subtom_reconstruct.sh</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../scripts/subtom_scale_motl.html">subtom_scale_motl.sh</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../scripts/subtom_seed_positions.html">subtom_seed_positions.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/subtom_shape.html">subtom_shape.sh</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../scripts/subtom_split_motl_by_row.html">subtom_split_motl_by_row.sh</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../scripts/subtom_transform_motl.html">subtom_transform_motl.sh</a></li>
 </ul>
@@ -125,9 +128,12 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="subtom_maskcorrected_fsc.html">subtom_maskcorrected_fsc.m</a></li>
 <li class="toctree-l1"><a class="reference internal" href="subtom_parallel_sums.html">subtom_parallel_sums.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_plot_filter.html">subtom_plot_filter.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_plot_scanned_angles.html">subtom_plot_scanned_angles.m</a></li>
 <li class="toctree-l1"><a class="reference internal" href="subtom_scale_motl.html">subtom_scale_motl.m</a></li>
 <li class="toctree-l1"><a class="reference internal" href="subtom_scan_angles_exact.html">subtom_scan_angles_exact.m</a></li>
 <li class="toctree-l1"><a class="reference internal" href="subtom_seed_positions.html">subtom_seed_positions.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_shape.html">subtom_shape.m</a></li>
 <li class="toctree-l1"><a class="reference internal" href="subtom_split_motl_by_row.html">subtom_split_motl_by_row.m</a></li>
 <li class="toctree-l1"><a class="reference internal" href="subtom_transform_motl.html">subtom_transform_motl.m</a></li>
 <li class="toctree-l1"><a class="reference internal" href="subtom_weighted_average.html">subtom_weighted_average.m</a></li>
@@ -206,7 +212,7 @@
     <span class="s">&#39;all_motl_fn_prefix&#39;</span><span class="p">,</span> <span class="n">all_motl_fn_prefix</span> <span class="p">(</span><span class="s">&#39;combinedmotl/allmotl&#39;</span><span class="p">),</span>
     <span class="s">&#39;stats_fn_prefix&#39;</span><span class="p">,</span> <span class="n">stats_fn_prefix</span> <span class="p">(</span><span class="s">&#39;subtomograms/stats/tomo&#39;</span><span class="p">),</span>
     <span class="s">&#39;iteration&#39;</span><span class="p">,</span> <span class="n">iteration</span> <span class="p">(</span><span class="mi">1</span><span class="p">),</span>
-    <span class="s">&#39;boxsize&#39;</span><span class="p">,</span> <span class="n">boxsize</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span>
+    <span class="s">&#39;box_size&#39;</span><span class="p">,</span> <span class="n">box_size</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span>
     <span class="s">&#39;process_idx&#39;</span><span class="p">,</span> <span class="n">process_idx</span> <span class="p">(</span><span class="mi">1</span><span class="p">),</span>
     <span class="s">&#39;reextract&#39;</span><span class="p">,</span> <span class="n">reextract</span> <span class="p">(</span><span class="mi">0</span><span class="p">),</span>
     <span class="s">&#39;preload_tomogram&#39;</span><span class="p">,</span> <span class="n">preload_tomogram</span> <span class="p">(</span><span class="mi">1</span><span class="p">),</span>
@@ -216,7 +222,7 @@
 </div>
 <p>Takes the tomograms given in <code class="docutils literal notranslate"><span class="pre">tomogram_dir</span></code> and extracts subtomograms
 specified in <code class="docutils literal notranslate"><span class="pre">all_motl_fn_prefix</span></code> _#.m where # corresponds to <code class="docutils literal notranslate"><span class="pre">iteration</span></code>
-with size <code class="docutils literal notranslate"><span class="pre">boxsize</span></code> into <code class="docutils literal notranslate"><span class="pre">scratch_dir</span></code> with the name formats
+with size <code class="docutils literal notranslate"><span class="pre">box_size</span></code> into <code class="docutils literal notranslate"><span class="pre">scratch_dir</span></code> with the name formats
 <code class="docutils literal notranslate"><span class="pre">subtomo_fn_prefix</span></code> _#.em where # corresponds to the entry in field 4 in
 <code class="docutils literal notranslate"><span class="pre">all_motl_fn_prefix</span></code> _#.em zero-padded to have at least <code class="docutils literal notranslate"><span class="pre">subtomo_digits</span></code>
 digits.</p>
@@ -249,7 +255,7 @@ in extraction.</p>
     <span class="s">&#39;all_motl_fn_prefix&#39;</span><span class="p">,</span> <span class="s">&#39;combinedmotl/allmotl&#39;</span><span class="p">,</span> <span class="c">...</span>
     <span class="s">&#39;stats_fn_prefix&#39;</span><span class="p">,</span> <span class="s">&#39;subtomograms/stats/tomo&#39;</span><span class="p">,</span> <span class="c">...</span>
     <span class="s">&#39;iteration&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;boxsize&#39;</span><span class="p">,</span> <span class="mi">36</span><span class="p">,</span> <span class="c">...</span>
+    <span class="s">&#39;box_size&#39;</span><span class="p">,</span> <span class="mi">36</span><span class="p">,</span> <span class="c">...</span>
     <span class="s">&#39;process_idx&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="c">...</span>
     <span class="s">&#39;reextract&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="c">...</span>
     <span class="s">&#39;preload_tomogram&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="c">...</span>

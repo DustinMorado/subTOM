@@ -127,8 +127,8 @@ tomogram_dir
   Absolute path to the folder where the tomograms are stored. If you are not
   edge cleaning leave this set to "".
 
-boxsize
-  What is the boxsize of the particle that will be extracted from the tomogram,
+box_size
+  What is the box size of the particle that will be extracted from the tomogram,
   which is necessary to specify to be able to edge clean.
 
 write_stats
@@ -177,6 +177,6 @@ Example
 
     tomogram_dir="/net/dstore2/teraraid/dmorado/subTOM_tutorial/data/tomos/bin8"
 
-    boxsize=36
+    box_size=36
 
     write_stats=1

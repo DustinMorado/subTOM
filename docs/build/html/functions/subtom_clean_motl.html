@@ -104,9 +104,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../scripts/subtom_extract_subtomograms.html">subtom_extract_subtomograms.sh</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../scripts/subtom_maskcorrected_fsc.html">subtom_maskcorrected_fsc.sh</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../scripts/subtom_preprocess.html">subtom_preprocess.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/subtom_plot_filter.html">subtom_plot_filter.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/subtom_plot_scanned_angles.html">subtom_plot_scanned_angles.sh</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../scripts/subtom_reconstruct.html">subtom_reconstruct.sh</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../scripts/subtom_scale_motl.html">subtom_scale_motl.sh</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../scripts/subtom_seed_positions.html">subtom_seed_positions.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/subtom_shape.html">subtom_shape.sh</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../scripts/subtom_split_motl_by_row.html">subtom_split_motl_by_row.sh</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../scripts/subtom_transform_motl.html">subtom_transform_motl.sh</a></li>
 </ul>
@@ -125,9 +128,12 @@
 <li class="toctree-l1"><a class="reference internal" href="subtom_extract_subtomograms.html">subtom_extract_subtomograms.m</a></li>
 <li class="toctree-l1"><a class="reference internal" href="subtom_maskcorrected_fsc.html">subtom_maskcorrected_fsc.m</a></li>
 <li class="toctree-l1"><a class="reference internal" href="subtom_parallel_sums.html">subtom_parallel_sums.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_plot_filter.html">subtom_plot_filter.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_plot_scanned_angles.html">subtom_plot_scanned_angles.m</a></li>
 <li class="toctree-l1"><a class="reference internal" href="subtom_scale_motl.html">subtom_scale_motl.m</a></li>
 <li class="toctree-l1"><a class="reference internal" href="subtom_scan_angles_exact.html">subtom_scan_angles_exact.m</a></li>
 <li class="toctree-l1"><a class="reference internal" href="subtom_seed_positions.html">subtom_seed_positions.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_shape.html">subtom_shape.m</a></li>
 <li class="toctree-l1"><a class="reference internal" href="subtom_split_motl_by_row.html">subtom_split_motl_by_row.m</a></li>
 <li class="toctree-l1"><a class="reference internal" href="subtom_transform_motl.html">subtom_transform_motl.m</a></li>
 <li class="toctree-l1"><a class="reference internal" href="subtom_weighted_average.html">subtom_weighted_average.m</a></li>
@@ -212,7 +218,7 @@
     <span class="s">&#39;cluster_size&#39;</span><span class="p">,</span> <span class="n">cluster_size</span> <span class="p">(</span><span class="mi">1</span><span class="p">),</span>
     <span class="s">&#39;do_edge&#39;</span><span class="p">,</span> <span class="n">do_edge</span> <span class="p">(</span><span class="mi">0</span><span class="p">),</span>
     <span class="s">&#39;tomogram_dir&#39;</span><span class="p">,</span> <span class="n">tomogram_dir</span> <span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">),</span>
-    <span class="s">&#39;boxsize&#39;</span><span class="p">,</span> <span class="n">boxsize</span> <span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s">&#39;box_size&#39;</span><span class="p">,</span> <span class="n">box_size</span> <span class="p">(</span><span class="mi">0</span><span class="p">),</span>
     <span class="s">&#39;write_stats&#39;</span><span class="p">,</span> <span class="n">write_stats</span> <span class="p">(</span><span class="mi">0</span><span class="p">),</span>
     <span class="s">&#39;output_stats_fn&#39;</span><span class="p">,</span> <span class="n">output_stats_fn</span> <span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">))</span>
 </pre></div>
@@ -231,7 +237,7 @@ and only the particle with the highest CCC, will be kept. If
 least <code class="docutils literal notranslate"><span class="pre">cluster_size</span></code> neighbor particles within <code class="docutils literal notranslate"><span class="pre">cluster_distance</span></code> to be kept
 after cleaning. Finally if <code class="docutils literal notranslate"><span class="pre">do_edge</span></code> evaluates to true as a boolean then the
 program will look for a tomogram in <code class="docutils literal notranslate"><span class="pre">tomogram_dir</span></code>, and if a particle of
-boxsize <code class="docutils literal notranslate"><span class="pre">boxsize</span></code> would extend outside of the tomogram it will be removed.</p>
+box size <code class="docutils literal notranslate"><span class="pre">box_size</span></code> would extend outside of the tomogram it will be removed.</p>
 <div class="section" id="example">
 <h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">subtom_clean_motl</span><span class="p">(</span><span class="c">...</span>
@@ -248,7 +254,7 @@ boxsize <code class="docutils literal notranslate"><span class="pre">boxsize</sp
     <span class="s">&#39;cluster_size, 2, ...</span>
 <span class="s">    &#39;</span><span class="n">do_edge</span><span class="o">&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="c">...</span>
     <span class="s">&#39;tomogram_dir&#39;</span><span class="p">,</span> <span class="s">&#39;../../tomos/bin8&#39;</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;boxsize&#39;</span><span class="p">,</span> <span class="mi">36</span><span class="p">,</span> <span class="c">...</span>
+    <span class="s">&#39;box_size&#39;</span><span class="p">,</span> <span class="mi">36</span><span class="p">,</span> <span class="c">...</span>
     <span class="s">&#39;write_stats&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="c">...</span>
     <span class="s">&#39;output_stats_fn&#39;</span><span class="p">,</span> <span class="s">&#39;combinedmotl/allmotl_3_cleaned_stats.csv&#39;</span><span class="p">)</span>
 </pre></div>

@@ -96,7 +96,7 @@ printf "# Concatenate Motive Lists\n" >> subTOM_protocol.md
 printf -- "--------------------------\n" >> subTOM_protocol.md
 printf "| %-25s | %25s |\n" "OPTION" "VALUE" >> subTOM_protocol.md
 printf "|:--------------------------" >> subTOM_protocol.md
-printf "|--------------------------:|\n" >> subTOM_protocol.md
+printf "|:--------------------------|\n" >> subTOM_protocol.md
 printf "| %-25s | %25s |\n" "scratch_dir" "${scratch_dir}" >> subTOM_protocol.md
 printf "| %-25s | %25s |\n" "mcr_cache_dir" "${mcr_cache_dir}" >>\
     subTOM_protocol.md

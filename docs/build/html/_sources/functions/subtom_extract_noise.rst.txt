@@ -14,7 +14,7 @@ Extract noise amplitude spectra on the cluster.
         'all_motl_fn_prefix', all_motl_fn_prefix ('combinedmotl/allmotl'),
         'noise_motl_fn_prefix', noise_motl_fn_prefix ('combinedmotl/noisemotl'),
         'iteration', iteration (1),
-        'boxsize', boxsize (-1),
+        'box_size', box_size (-1),
         'just_extract', just_extract (0),
         'ptcl_overlap_factor', ptcl_overlap_factor (0),
         'noise_overlap_factor', noise_overlap_factor (0),
@@ -36,7 +36,7 @@ tomogram that will be processed is selected by ``process_idx``. Motive lists
 with the positions used to generate the amplitude spectrum are written with the
 name format ``noise_motl_fn_prefix`` _#.em.
 
-``num_noise`` Noise volumes of size ``boxsize`` are first identified that do not
+``num_noise`` Noise volumes of size ``box_size`` are first identified that do not
 clash with the subtomogram positions in the input motive list or other already
 selected noise volumes. ``ptcl_overlap_factor`` and ``noise_overlap_factor``
 define how much overlap selected noise volumes can have with subtomograms and
@@ -78,7 +78,7 @@ Example
         'all_motl_fn_prefix', 'combinedmotl/allmotl', ...
         'noise_motl_prefix', 'combinedmotl/noisemotl', ...
         'iteration', 1, ...
-        'boxsize', 36, ...
+        'box_size', 36, ...
         'just_extract', 0, ...
         'ptcl_overlap_factor', 0.0, ...
         'noise_overlap_factor, 0.75, ...

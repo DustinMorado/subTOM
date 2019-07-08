@@ -121,7 +121,7 @@ tomo_row
 Extraction Options
 ------------------
 
-boxsize
+box_size
   Size of subtomogram in pixels
 
 subtomo_digits
@@ -196,7 +196,7 @@ Example
 
     tomo_row=7
 
-    boxsize=128
+    box_size=128
 
     subtomo_digits=1
 

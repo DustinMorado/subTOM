@@ -280,12 +280,15 @@ function sharpened_reference = subtom_sharpen(varargin)
         end
 
         sharpen_axes = axes(sharpen_fig);
-        sharpen_xticks = 1:3:n_shells;
-        sharpen_resolutions = (box_size(1) * pixelsize) ./ (sharpen_xticks - 1);
+        sharpen_xrange = [0:(n_shells - 1)] ./ (box_size(1) * pixelsize);
+        sharpen_xticks = [0:3:(n_shells - 1)] ./ (box_size(1) * pixelsize);
+        sharpen_resolutions = 1 ./ sharpen_xticks;
         sharpen_xlabels = arrayfun(@(x) sprintf('%6.2f', x), ...
             sharpen_resolutions, 'UniformOutput', 0);
 
-        plot(sharpen_axes, 1:n_shells, sharpen_curve, 'DisplayName', 'sharpen');
+        plot(sharpen_axes, sharpen_xrange, sharpen_curve, ...
+            'DisplayName', 'sharpen');
+
         hold(sharpen_axes, 'on');
         % plot(sharpen_axes, 1:n_shells, exp_curve, 'DisplayName', 'exp\_filter');
         % plot(sharpen_axes, 1:n_shells, fsc, 'DisplayName', 'FSC');
@@ -298,7 +301,7 @@ function sharpened_reference = subtom_sharpen(varargin)
         xticks(sharpen_axes, sharpen_xticks);
         xticklabels(sharpen_axes, sharpen_xlabels);
         sharpen_axes.XTickLabelRotation = 45;
-        xlim(sharpen_axes, [1,n_shells]);
+        xlim(sharpen_axes, [sharpen_xrange(1), sharpen_xrange(end)]);
         grid(sharpen_axes, 'on');
         legend(sharpen_axes, 'Location', 'southoutside', ...
             'Orientation', 'horizontal');
@@ -311,6 +314,7 @@ function sharpened_reference = subtom_sharpen(varargin)
             output_fn = sprintf('%s_sharp_%d', output_fn_prefix, -B_factor);
             saveas(sharpen_fig, output_fn, 'fig');
             saveas(sharpen_fig, output_fn, 'pdf');
+            saveas(sharpen_fig, output_fn, 'png');
         end
 
         if ~plot_sharpen

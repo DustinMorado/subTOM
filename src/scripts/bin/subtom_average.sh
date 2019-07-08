@@ -41,6 +41,13 @@ then
         mkdir -p "${local_dir}"
     fi
 
+    local_all_motl_dir="$(dirname "${local_dir}/${all_motl_fn_prefix}")"
+
+    if [[ ! -d "${local_all_motl_dir}" ]]
+    then
+        mkdir -p "${local_all_motl_dir}"
+    fi
+
     local_ref_dir="$(dirname "${local_dir}/${ref_fn_prefix}")"
 
     if [[ ! -d "${local_ref_dir}" ]]
@@ -61,13 +68,15 @@ then
     mkdir -p "${mcr_cache_dir}"
 fi
 
-ref_fn="${ref_fn_prefix}_${iteration}.em"
-ref_dir="${scratch_dir}/$(dirname "${ref_fn_prefix}")"
-ref_base="$(basename "${ref_fn_prefix}")_${iteration}"
+all_motl_dir="${scratch_dir}/$(dirname "${all_motl_fn_prefix}")"
+all_motl_base="$(basename "${all_motl_fn_prefix}")"
 
-if [[ -f "${scratch_dir}/${ref_fn}" ]]
+ref_dir="${scratch_dir}/$(dirname "${ref_fn_prefix}")"
+ref_base="$(basename "${ref_fn_prefix}")"
+
+if [[ -f "${ref_dir}/${ref_base}_${iteration}.em" ]]
 then
-    echo "${scratch_dir}/${ref_fn} already complete. SKIPPING"
+    echo "${ref_dir}/${ref_base}_${iteration}.em already complete. SKIPPING"
     exit 0
 fi
 
@@ -76,10 +85,8 @@ then
     mkdir -p "${ref_dir}"
 fi
 
-weight_sum_fn_1="${weight_sum_fn_prefix}_debug_${iteration}.em"
-weight_sum_fn_2="${weight_sum_fn_prefix}_debug_inv_${iteration}.em"
 weight_sum_dir="${scratch_dir}/$(dirname "${weight_sum_fn_prefix}")"
-weight_sum_base="$(basename "${weight_sum_fn_prefix}")_${iteration}"
+weight_sum_base="$(basename "${weight_sum_fn_prefix}")"
 
 if [[ ! -d "${weight_sum_dir}" ]]
 then
@@ -197,7 +204,9 @@ export LD_LIBRARY_PATH="\${ldpath}"
 ###    "log_${job_name_sums}_${job_idx}"
 PSUMJOB
 
-    num_complete=$(find "${ref_dir}" -name "${ref_base}_[0-9]*.em" | wc -l)
+    num_complete=$(find "${ref_dir}" -regex \
+        ".*/${ref_base}_${iteration}_[0-9]+.em" | wc -l)
+
     num_complete_prev=0
     unchanged_count=0
 
@@ -220,7 +229,8 @@ echo "STARTING Parallel Average in Iteration Number: ${iteration}"
 
 while [[ ${num_complete} -lt ${num_avg_batch} ]]
 do
-    num_complete=$(find "${ref_dir}" -name "${ref_base}_[0-9]*.em" | wc -l)
+    num_complete=$(find "${ref_dir}" -regex \
+        ".*/${ref_base}_${iteration}_[0-9]+.em" | wc -l)
 
     if [[ ${num_complete} -eq ${num_complete_prev} ]]
     then
@@ -325,13 +335,31 @@ rm -rf "${mcr_cache_dir_avg}"
 
 if [[ ${skip_local_copy} -ne 1 ]]
 then
-    cp "${scratch_dir}/${ref_fn}" "${local_dir}/${ref_fn}"
-    cp "${scratch_dir}/${weight_sum_fn_1}" "${local_dir}/${weight_sum_fn_1}"
-    cp "${scratch_dir}/${weight_sum_fn_2}" "${local_dir}/${weight_sum_fn_2}"
+    find "${all_motl_dir}" -regex \
+        ".*/${all_motl_base}_${iteration}.em" -print0 |\
+        xargs -0 -I {} cp -- {} "${local_all_motl_dir}/."
+
+    find "${ref_dir}" -regex \
+        ".*/${ref_base}_${iteration}.em" -print0 |\
+        xargs -0 -I {} cp -- {} "${local_ref_dir}/."
+
+    find "${ref_dir}" -regex \
+        ".*/${ref_base}_debug_raw_${iteration}.em" -print0 |\
+        xargs -0 -I {} cp -- {} "${local_ref_dir}/."
+
+    find "${weight_sum_dir}" -regex \
+        ".*/${weight_sum_base}_debug_${iteration}.em" -print0 |\
+        xargs -0 -I {} cp -- {} "${local_weight_sum_dir}/."
+
+    find "${weight_sum_dir}" -regex \
+        ".*/${weight_sum_base}_debug_inv_${iteration}.em" -print0 |\
+        xargs -0 -I {} cp -- {} "${local_weight_sum_dir}/."
+
 fi
 
-find "${ref_dir}" -name "${ref_base}_[0-9]*.em" -delete
-find "${weight_sum_dir}" -name "${weight_sum_base}_[0-9]*.em" -delete
+find "${ref_dir}" -regex ".*/${ref_base}_${iteration}_[0-9]+.em" -delete
+find "${weight_sum_dir}" -regex \
+    ".*/${weight_sum_base}_${iteration}_[0-9]+.em" -delete
 
 echo "FINISHED Final Average in Iteration Number: ${iteration}"
 echo "AVERAGE DONE IN ITERATION NUMBER ${iteration}"
@@ -345,7 +373,7 @@ printf "# Generate Average Iteration %d\n" "${iteration}" >> subTOM_protocol.md
 printf -- "-------------------------------\n" >> subTOM_protocol.md
 printf "| %-25s | %25s |\n" "OPTION" "VALUE" >> subTOM_protocol.md
 printf "|:--------------------------" >> subTOM_protocol.md
-printf "|--------------------------:|\n" >> subTOM_protocol.md
+printf "|:--------------------------|\n" >> subTOM_protocol.md
 printf "| %-25s | %25s |\n" "scratch_dir" "${scratch_dir}" >> subTOM_protocol.md
 printf "| %-25s | %25s |\n" "local_dir" "${local_dir}" >> subTOM_protocol.md
 printf "| %-25s | %25s |\n" "mcr_cache_dir" "${mcr_cache_dir}" >>\
@@ -367,10 +395,10 @@ printf "| %-25s | %25s |\n" "iteration" "${iteration}" >> subTOM_protocol.md
 printf "| %-25s | %25s |\n" "num_avg_batch" "${num_avg_batch}" >>\
     subTOM_protocol.md
 
-printf "| %-25s | %25s |\n" "all_motl_fn" \
-    "${all_motl_fn_prefix}_${iteration}.em" >> subTOM_protocol.md
+printf "| %-25s | %25s |\n" "all_motl_fn_prefix" "${all_motl_fn_prefix}" >>\
+    subTOM_protocol.md
 
-printf "| %-25s | %25s |\n" "ref_fn" "${ref_fn}" >>\
+printf "| %-25s | %25s |\n" "ref_fn_prefix" "${ref_fn_prefix}" >>\
     subTOM_protocol.md
 
 printf "| %-25s | %25s |\n" "ptcl_fn_prefix" "${ptcl_fn_prefix}" >>\

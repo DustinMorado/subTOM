@@ -84,7 +84,7 @@ tomo_row="7"
 #                             EXTRACTION OPTIONS                               #
 ################################################################################
 # Size of subtomogram in pixels
-boxsize="128"
+box_size="128"
 
 # Leading zeros for subtomograms, for AV3, use 1. Other numbers are useful for
 # DYNAMO.

@@ -210,7 +210,7 @@ phi_angle_shells
   iterations the last value will be repeated to the correct length.
 
 high_pass_fp
-  High pass filter cutoff (in transform units (pixels): calculate as (boxsize *
+  High pass filter cutoff (in transform units (pixels): calculate as (box_size *
   pixelsize) / (resolution_real) (define as integer).
   Leave the parentheses and if the number of values is less than the number of
   iterations the last value will be repeated to the correct length.
@@ -222,7 +222,7 @@ high_pass_sigma
   iterations the last value will be repeated to the correct length.
 
 low_pass_fp
-  Low pass filter (in transform units (pixels): calculate as (boxsize *
+  Low pass filter (in transform units (pixels): calculate as (box_size *
   pixelsize) / (resolution_real) (define as integer).
   Leave the parentheses and if the number of values is less than the number of
   iterations the last value will be repeated to the correct length.

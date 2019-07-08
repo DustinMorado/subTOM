@@ -48,18 +48,18 @@ then
         mkdir -p "${local_dir}"
     fi
 
-    local_ref_dir="$(dirname "${local_dir}/${ref_fn_prefix}")"
-
-    if [[ ! -d "${local_ref_dir}" ]]
-    then
-        mkdir -p "${local_ref_dir}"
-    fi
-
     local_all_motl_dir="$(dirname "${local_dir}/${all_motl_fn_prefix}")"
 
     if [[ ! -d "${local_all_motl_dir}" ]]
     then
         mkdir -p "${local_all_motl_dir}"
+    fi
+
+    local_ref_dir="$(dirname "${local_dir}/${ref_fn_prefix}")"
+
+    if [[ ! -d "${local_ref_dir}" ]]
+    then
+        mkdir -p "${local_ref_dir}"
     fi
 
     local_weight_sum_dir="$(dirname "${local_dir}/${weight_sum_fn_prefix}")"
@@ -75,11 +75,23 @@ then
     mkdir -p "${mcr_cache_dir}"
 fi
 
-weight_sum_dir="$(dirname "${weight_sum_fn_prefix}")"
+all_motl_dir="${scratch_dir}/$(dirname "${all_motl_fn_prefix}")"
+all_motl_base="$(basename "${all_motl_fn_prefix}")"
 
-if [[ ! -d "${scratch_dir}/${weight_sum_dir}" ]]
+ref_dir="${scratch_dir}/$(dirname "${ref_fn_prefix}")"
+ref_base="$(basename "${ref_fn_prefix}")"
+
+if [[ ! -d "${ref_dir}" ]]
 then
-    mkdir -p "${scratch_dir}/${weight_sum_dir}"
+    mkdir -p "${ref_dir}"
+fi
+
+weight_sum_dir="${scratch_dir}/$(dirname "${weight_sum_fn_prefix}")"
+weight_sum_base="$(basename "${weight_sum_fn_prefix}")"
+
+if [[ ! -d "${weight_sum_dir}" ]]
+then
+    mkdir -p "${weight_sum_dir}"
 fi
 
 if [[ ${mem_free_ali%G} -ge 48 ]]
@@ -198,21 +210,11 @@ for ((iteration = start_iteration, array_idx = 0; \
 do
     avg_iteration="$((iteration + 1))"
 
-    all_motl_fn="${all_motl_fn_prefix}_${avg_iteration}.em"
-    all_motl_dir="${scratch_dir}/$(dirname "${all_motl_fn_prefix}")"
-    all_motl_base="$(basename "${all_motl_fn_prefix}")_${avg_iteration}"
+    all_motl_fn="${scratch_dir}/${all_motl_fn_prefix}_${avg_iteration}.em"
+    ref_fn="${scratch_dir}/${ref_fn_prefix}_${avg_iteration}.em"
 
-    ref_fn="${ref_fn_prefix}_${avg_iteration}.em"
-    ref_dir="${scratch_dir}/$(dirname "${ref_fn_prefix}")"
-    ref_base="$(basename "${ref_fn_prefix}")_${avg_iteration}"
-
-    weight_sum_fn_1="${weight_sum_fn_prefix}_debug_${avg_iteration}.em"
-    weight_sum_fn_2="${weight_sum_fn_prefix}_debug_inv_${avg_iteration}.em"
-    weight_sum_dir="${scratch_dir}/$(dirname "${weight_sum_fn_prefix}")"
-    weight_sum_base="$(basename "${weight_sum_fn_prefix}")_${avg_iteration}"
-
-    output_diffs_fn="${all_motl_fn_prefix}_${iteration}_${avg_iteration}"
-    output_diffs_fn="${output_diffs_fn}_diff.csv"
+    output_diffs_fn="${scratch_dir}/${all_motl_fn_prefix}"
+    output_diffs_fn="${output_diffs_fn}_${iteration}_${avg_iteration}_diff.csv"
 
     job_name_ali="${job_name}_scan_angles_exact_${iteration}"
 
@@ -260,7 +262,7 @@ do
 #                            SUBTOMOGRAM ALIGNMENT                             #
 ################################################################################
 
-    if [[ ! -f "${scratch_dir}/${all_motl_fn}" ]]
+    if [[ ! -f "${all_motl_fn}" ]]
     then
         echo "STARTING Alignment in Iteration Number: ${iteration}"
 
@@ -367,8 +369,8 @@ export LD_LIBRARY_PATH="\${ldpath}"
 ###"log_${job_name_ali}_${job_idx}"
 ALIJOB
 
-            num_complete=$(find "${all_motl_dir}" \
-                -name "${all_motl_base}_[0-9]*.em" | wc -l)
+            num_complete=$(find "${all_motl_dir}" -regex \
+                ".*/${all_motl_base}_${avg_iteration}_[0-9]+.em" | wc -l)
 
             num_complete_prev=0
             unchanged_count=0
@@ -391,8 +393,8 @@ ALIJOB
 
         while [[ ${num_complete} -lt ${num_ali_batch} ]]
         do
-            num_complete=$(find "${all_motl_dir}" \
-                -name "${all_motl_base}_[0-9]*.em" | wc -l)
+            num_complete=$(find "${all_motl_dir}" -regex \
+                ".*/${all_motl_base}_${avg_iteration}_[0-9]+.em" | wc -l)
 
             if [[ ${num_complete} -eq ${num_complete_prev} ]]
             then
@@ -485,7 +487,7 @@ ALIJOB
             write_motl \
             "1" \
             output_motl_fn \
-            "${scratch_dir}/${all_motl_fn}" \
+            "${all_motl_fn}" \
             write_star \
             "0" \
             output_star_fn \
@@ -504,22 +506,26 @@ ALIJOB
 
         if [[ ${skip_local_copy} -ne 1 ]]
         then
-            cp "${scratch_dir}/${all_motl_fn}" "${local_dir}/${all_motl_fn}"
+            find "${all_motl_dir}" -regex \
+                ".*/${all_motl_base}_${avg_iteration}.em" -print0 |\
+                xargs -0 -I {} cp -- {} "${local_all_motl_dir}/."
+
         fi
 
-        find "${all_motl_dir}" -name "${all_motl_base}_[0-9]*.em" -delete
+        find "${all_motl_dir}" -regex \
+            ".*/${all_motl_base}_${avg_iteration}_[0-9]+.em" -delete
 
         echo "FINISHED Alignment in Iteration Number: ${iteration}"
     else
         echo "SKIPPED Alignment in Iteration Number: ${iteration}"
-        echo "${scratch_dir}/${all_motl_fn} already exists."
+        echo "${all_motl_fn} already exists."
     fi
 
 ################################################################################
 #                              PARALLEL AVERAGING                              #
 ################################################################################
 
-    if [[ ! -f "${scratch_dir}/${ref_fn}" ]]
+    if [[ ! -f "${ref_fn}" ]]
     then
         echo "STARTING Averaging in Iteration Number: ${avg_iteration}"
 
@@ -599,8 +605,8 @@ export LD_LIBRARY_PATH="\${ldpath}"
 ###"log_${job_name_sums}_${job_idx}"
 PSUMJOB
 
-            num_complete=$(find "${ref_dir}" \
-                -name "${ref_base}_[0-9]*.em" | wc -l)
+            num_complete=$(find "${ref_dir}" -regex \
+                ".*/${ref_base}_${avg_iteration}_[0-9]+.em" | wc -l)
 
             num_complete_prev=0
             unchanged_count=0
@@ -624,8 +630,8 @@ PSUMJOB
 
         while [[ ${num_complete} -lt ${num_avg_batch} ]]
         do
-            num_complete=$(find "${ref_dir}" \
-                -name "${ref_base}_[0-9]*.em" | wc -l)
+            num_complete=$(find "${ref_dir}" -regex \
+                ".*/${ref_base}_${avg_iteration}_[0-9]+.em" | wc -l)
 
             if [[ ${num_complete} -eq ${num_complete_prev} ]]
             then
@@ -728,22 +734,34 @@ PSUMJOB
 
         if [[ ${skip_local_copy} -ne 1 ]]
         then
-            cp "${scratch_dir}/${ref_fn}" "${local_dir}/${ref_fn}"
-            cp "${scratch_dir}/${weight_sum_fn_1}" \
-                "${local_dir}/${weight_sum_fn_1}"
+            find "${ref_dir}" -regex \
+                ".*/${ref_base}_${avg_iteration}.em" -print0 |\
+                xargs -0 -I {} cp -- {} "${local_ref_dir}/."
 
-            cp "${scratch_dir}/${weight_sum_fn_2}" \
-                "${local_dir}/${weight_sum_fn_2}"
+            find "${ref_dir}" -regex \
+                ".*/${ref_base}_debug_raw_${avg_iteration}.em" -print0 |\
+                xargs -0 -I {} cp -- {} "${local_ref_dir}/."
+
+            find "${weight_sum_dir}" -regex \
+                ".*/${weight_sum_base}_debug_${avg_iteration}.em" -print0 |\
+                xargs -0 -I {} cp -- {} "${local_weight_sum_dir}/."
+
+            find "${weight_sum_dir}" -regex \
+                ".*/${weight_sum_base}_debug_inv_${avg_iteration}.em" \
+                -print0 | xargs -0 -I {} cp -- {} "${local_weight_sum_dir}/."
 
         fi
 
-        find "${ref_dir}" -name "${ref_base}_[0-9]*.em" -delete
-        find "${weight_sum_dir}" -name "${weight_sum_base}_[0-9]*.em" -delete
+        find "${ref_dir}" -regex \
+            ".*/${ref_base}_${avg_iteration}_[0-9]+.em" -delete
+
+        find "${weight_sum_dir}" -regex \
+            ".*/${weight_sum_base}_${avg_iteration}_[0-9]+.em" -delete
 
         echo "FINISHED Averaging in Iteration Number: ${avg_iteration}"
     else
         echo "SKIPPED Averaging in Iteration Number: ${iteration}"
-        echo "${scratch_dir}/${ref_fn} already exists."
+        echo "${ref_fn} already exists."
     fi
 
 ################################################################################
@@ -778,7 +796,7 @@ PSUMJOB
             write_diffs \
             1 \
             output_diffs_fn \
-            "${scratch_dir}/${output_diffs_fn}"
+            "${output_diffs_fn}"
 
         rm -rf "\${mcr_cache_dir}"
 
@@ -788,8 +806,9 @@ PSUMJOB
 
         if [[ ${skip_local_copy} -ne 1 ]]
         then
-            cp "${scratch_dir}/${output_diffs_fn}" \
-                "${local_dir}/${output_diffs_fn}"
+            find "${all_motl_dir}" -regex \
+                ".*/${all_motl_base}_${iteration}_${avg_iteration}_diff.csv" \
+                -print0 | xargs -0 -I {} cp -- {} "${local_all_motl_dir}/."
 
         fi
     fi
@@ -805,7 +824,7 @@ PSUMJOB
     printf -- "--------------------------------\n" >> subTOM_protocol.md
     printf "| %-25s | %25s |\n" "OPTION" "VALUE" >> subTOM_protocol.md
     printf "|:--------------------------" >> subTOM_protocol.md
-    printf "|--------------------------:|\n" >> subTOM_protocol.md
+    printf "|:--------------------------|\n" >> subTOM_protocol.md
     printf "| %-25s | %25s |\n" "scratch_dir" "${scratch_dir}" >>\
         subTOM_protocol.md
 
@@ -858,17 +877,20 @@ PSUMJOB
     printf "| %-25s | %25s |\n" "skip_local_copy" "${skip_local_copy}" >>\
         subTOM_protocol.md
 
+    printf "| %-25s | %25s |\n" "iteration" "${iteration}" >>\
+        subTOM_protocol.md
+
     printf "| %-25s | %25s |\n" "num_ali_batch" "${num_ali_batch}" >>\
         subTOM_protocol.md
 
     printf "| %-25s | %25s |\n" "num_avg_batch" "${num_avg_batch}" >>\
         subTOM_protocol.md
 
-    printf "| %-25s | %25s |\n" "all_motl_fn" \
-        "${all_motl_fn_prefix}_${iteration}.em" >> subTOM_protocol.md
+    printf "| %-25s | %25s |\n" "all_motl_fn_prefix" "${all_motl_fn_prefix}" >>\
+        subTOM_protocol.md
 
-    printf "| %-25s | %25s |\n" "ref_fn" \
-        "${ref_fn_prefix}_${iteration}.em" >> subTOM_protocol.md
+    printf "| %-25s | %25s |\n" "ref_fn_prefix" ${ref_fn_prefix} >>\
+        subTOM_protocol.md
 
     printf "| %-25s | %25s |\n" "ptcl_fn_prefix" "${ptcl_fn_prefix}" >>\
         subTOM_protocol.md
@@ -965,6 +987,6 @@ PSUMJOB
         printf("| %-50s | %25f |\n", "Output CCC Std. Dev.", $20);
         printf("| %-50s | %25f |\n", "Output Min. CCC", $21);
         printf("| %-50s | %25f |\n\n", "Output Max. CCC", $22);
-    }}' "${scratch_dir}/${output_diffs_fn}" >> subTOM_protocol.md
+    }}' "${output_diffs_fn}" >> subTOM_protocol.md
 
 done

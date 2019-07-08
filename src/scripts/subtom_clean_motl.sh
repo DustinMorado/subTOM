@@ -80,7 +80,7 @@ do_distance=0
 # Particles that are less than this distance in pixels from another particle
 # will be cleaned with the particle with the highest CCC kept while the others
 # are removed from the output MOTL file.
-distance_cutoff=0
+distance_cutoff=1
 
 # If the following is set to 1 then the MOTL will be cleaned by a clustering
 # criteria that enforces kept particles to exist as clusters. This can be useful
@@ -110,9 +110,9 @@ do_edge=0
 # edge cleaning leave this set to "".
 tomogram_dir=""
 
-# What is the boxsize of the particle that will be extracted from the tomogram,
+# What is the box size of the particle that will be extracted from the tomogram,
 # which is necessary to specify to be able to edge clean.
-boxsize=128
+box_size=128
 
 # If the following is 1 then the details of how many particles were cleaned in
 # each stage will be written out, if 0 then not.

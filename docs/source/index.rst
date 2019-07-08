@@ -34,9 +34,12 @@ cryo-tomography data.
     subtom_extract_subtomograms.sh <scripts/subtom_extract_subtomograms>
     subtom_maskcorrected_fsc.sh <scripts/subtom_maskcorrected_fsc>
     subtom_preprocess.sh <scripts/subtom_preprocess>
+    subtom_plot_filter.sh <scripts/subtom_plot_filter>
+    subtom_plot_scanned_angles.sh <scripts/subtom_plot_scanned_angles>
     subtom_reconstruct.sh <scripts/subtom_reconstruct>
     subtom_scale_motl.sh <scripts/subtom_scale_motl>
     subtom_seed_positions.sh <scripts/subtom_seed_positions>
+    subtom_shape.sh <scripts/subtom_shape>
     subtom_split_motl_by_row.sh <scripts/subtom_split_motl_by_row>
     subtom_transform_motl.sh <scripts/subtom_transform_motl>
 
@@ -53,9 +56,12 @@ cryo-tomography data.
     subtom_extract_subtomograms.m <functions/subtom_extract_subtomograms>
     subtom_maskcorrected_fsc.m <functions/subtom_maskcorrected_fsc>
     subtom_parallel_sums.m <functions/subtom_parallel_sums>
+    subtom_plot_filter.m <functions/subtom_plot_filter>
+    subtom_plot_scanned_angles.m <functions/subtom_plot_scanned_angles>
     subtom_scale_motl.m <functions/subtom_scale_motl>
     subtom_scan_angles_exact.m <functions/subtom_scan_angles_exact>
     subtom_seed_positions.m <functions/subtom_seed_positions>
+    subtom_shape.m <functions/subtom_shape>
     subtom_split_motl_by_row.m <functions/subtom_split_motl_by_row>
     subtom_transform_motl.m <functions/subtom_transform_motl>
     subtom_weighted_average.m <functions/subtom_weighted_average>

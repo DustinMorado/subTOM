@@ -9,7 +9,7 @@ function subtom_extract_noise(varargin)
 %         'all_motl_fn_prefix', ALL_MOTL_FN_PREFIX,
 %         'noise_motl_fn_prefix', NOISE_MOTL_FN_PREFIX,
 %         'iteration', ITERATION,
-%         'boxsize', BOXSIZE,
+%         'box_size', BOX_SIZE,
 %         'just_extract', JUST_EXTRACT,
 %         'ptcl_overlap_factor', PTCL_OVERLAP_FACTOR,
 %         'noise_overlap_factor', NOISE_OVERLAP_FACTOR,
@@ -30,7 +30,7 @@ function subtom_extract_noise(varargin)
 %     lists with the positions used to generate the amplitude spectrum are
 %     written with the name format NOISE_MOTL_FN_PREFIX_#.em.
 %
-%     NUM_NOISE Noise volumes of size BOXSIZE are first identified that do not
+%     NUM_NOISE Noise volumes of size BOX_SIZE are first identified that do not
 %     clash with the subtomogram positions in ALL_MOTL_FN or other already
 %     selected noise volumes. PTCL_OVERLAP_FACTOR and NOISE_OVERLAP_FACTOR
 %     define how much overlap selected noise volumes can have with subtomograms
@@ -77,7 +77,7 @@ function subtom_extract_noise(varargin)
     addParameter(fn_parser, 'all_motl_fn_prefix', 'combinedmotl/allmotl');
     addParameter(fn_parser, 'noise_motl_fn_prefix', 'combinedmotl/noisemotl');
     addParameter(fn_parser, 'iteration', 1);
-    addParameter(fn_parser, 'boxsize', -1);
+    addParameter(fn_parser, 'box_size', -1);
     addParameter(fn_parser, 'just_extract', 0);
     addParameter(fn_parser, 'ptcl_overlap_factor', 0);
     addParameter(fn_parser, 'noise_overlap_factor', 0);
@@ -198,16 +198,16 @@ function subtom_extract_noise(varargin)
         rethrow(ME);
     end
 
-    boxsize = fn_parser.Results.boxsize;
+    box_size = fn_parser.Results.box_size;
 
-    if ischar(boxsize)
-        boxsize = str2double(boxsize);
+    if ischar(box_size)
+        box_size = str2double(box_size);
     end
 
     try
-        validateattributes(boxsize, {'numeric'}, ...
+        validateattributes(box_size, {'numeric'}, ...
             {'scalar', 'nonnan', 'integer', '>', 0}, ...
-            'subtom_extract_noise', 'boxsize');
+            'subtom_extract_noise', 'box_size');
 
     catch ME
         fprintf(2, '%s - %s\n', ME.identifier, ME.message);
@@ -494,7 +494,7 @@ function subtom_extract_noise(varargin)
 
         % Extract the subtomograms for each tomogram
         fprintf(1, 'Starting Noise Extraction and Amp. Spec. Calculation\n');
-        noise_ampspec = extract_noise_ampspec(boxsize, tomogram_fn, ...
+        noise_ampspec = extract_noise_ampspec(box_size, tomogram_fn, ...
             noise_motl, preload_tomogram, use_tom_red, use_memmap);
 
         tom_emwrite(noise_ampspec_fn, noise_ampspec);
@@ -525,23 +525,23 @@ function subtom_extract_noise(varargin)
     noise_mask = ones(round(tomogram_size ./ bin_factor));
 
     % Noise absolute minimum tomogram limits
-    extract_boxsize = boxsize;
-    boxsize = max(round(boxsize / bin_factor), 1);
-    noise_mask(1:boxsize, :, :) = 0;
-    noise_mask(:, 1:boxsize, :) = 0;
-    noise_mask(:, :, 1:boxsize) = 0;
+    extract_box_size = box_size;
+    box_size = max(round(box_size / bin_factor), 1);
+    noise_mask(1:box_size, :, :) = 0;
+    noise_mask(:, 1:box_size, :) = 0;
+    noise_mask(:, :, 1:box_size) = 0;
 
     % Noise absolute maximum tomogram limits
-    noise_mask(size(noise_mask, 1) - (boxsize - 1):end, :, :) = 0;
-    noise_mask(:, size(noise_mask, 2) - (boxsize - 1):end, :) = 0;
-    noise_mask(:, :, size(noise_mask, 3) - (boxsize - 1):end) = 0;
+    noise_mask(size(noise_mask, 1) - (box_size - 1):end, :, :) = 0;
+    noise_mask(:, size(noise_mask, 2) - (box_size - 1):end, :) = 0;
+    noise_mask(:, :, size(noise_mask, 3) - (box_size - 1):end) = 0;
 
-    % We define mask size as a factor of the boxsize which defines the amount of
-    % overlap we allow between particles and noise particles. Values less than
-    % zero will create extra padding between particles, while values greater
-    % than zero will allow some overlap
-    ptcl_masksize = max(round(boxsize * (1 - ptcl_overlap_factor)), 1);
-    noise_masksize = max(round(boxsize * (1 - noise_overlap_factor)), 1);
+    % We define mask size as a factor of the box size which defines the amount
+    % of overlap we allow between particles and noise particles. Values less
+    % than zero will create extra padding between particles, while values
+    % greater than zero will allow some overlap
+    ptcl_masksize = max(round(box_size * (1 - ptcl_overlap_factor)), 1);
+    noise_masksize = max(round(box_size * (1 - noise_overlap_factor)), 1);
 
     % For each particle we clear out the mask around the particle
     for ptcl_idx = 1:size(motl, 2)
@@ -642,7 +642,7 @@ function subtom_extract_noise(varargin)
     % Extract the subtomograms for each tomogram
     fprintf(1, 'Starting Noise Extraction and Amp. Spec. Calculation\n');
     noise_motl = noise_motl(:, noise_motl(20, :) == 1);
-    noise_ampspec = extract_noise_ampspec(extract_boxsize, tomogram_fn, ...
+    noise_ampspec = extract_noise_ampspec(extract_box_size, tomogram_fn, ...
         noise_motl, preload_tomogram, use_tom_red, use_memmap);
 
     tom_emwrite(noise_ampspec_fn, noise_ampspec);
@@ -660,18 +660,18 @@ end
 %##############################################################################%
 %                            EXTRACT_NOISE_AMPSPEC                             %
 %##############################################################################%
-function noise_ampspec_avg = extract_noise_ampspec(boxsize, tomogram_fn, ...
+function noise_ampspec_avg = extract_noise_ampspec(box_size, tomogram_fn, ...
     motl_vec, preload_tomogram, use_tom_red, use_memmap)
 % EXTRACT_NOISE_AMPSPEC Calculate average noise amplitude spectrum.
 %     EXTRACT_NOISE_AMPSPEC(
-%         BOXSIZE,
+%         BOX_SIZE,
 %         TOMOGRAM_FN,
 %         MOTL_VEC,
 %         PRELOAD_TOMOGRAM,
 %         USE_TOM_RED,
 %         USE_MEMMAP)
 %
-%     Extracts subvolumes with the cube length BOXSIZE from the tomogram given
+%     Extracts subvolumes with the cube length BOX_SIZE from the tomogram given
 %     by the filename TOMOGRAM_FN. The positions of the subvolumes is given in
 %     the motive list MOTL_VEC. PRELOAD_TOMOGRAM, USE_TOM_RED, and USE_MEMMAP
 %     describe flags that describe how the subvolumes are extracted using
@@ -681,7 +681,7 @@ function noise_ampspec_avg = extract_noise_ampspec(boxsize, tomogram_fn, ...
 %     extract_noise_ampspec(128, ./data/tomos/bin1/01.rec, noise_motl, 1, 0, 0);
 
     % Initialize amplitude spectrum volume
-    noise_ampspec_sum = zeros(boxsize, boxsize, boxsize);
+    noise_ampspec_sum = zeros(box_size, box_size, box_size);
     num_noise = size(motl_vec, 2);
     tomogram_number = max(motl_vec(5, 1), motl_vec(7, 1));
 
@@ -725,11 +725,11 @@ function noise_ampspec_avg = extract_noise_ampspec(boxsize, tomogram_fn, ...
     op_type = 'particles';
     tic;
 
-    noise_size = repmat(boxsize, 1, 3);
+    noise_size = repmat(box_size, 1, 3);
 
     for idx = 1:num_noise
         noise_pos = transpose(motl_vec(8:10, idx));
-        noise_start = round(noise_pos - (boxsize / 2));
+        noise_start = round(noise_pos - (box_size / 2));
 
         % Input the bottom,left,rear corner of the box and the box edge
         % dimensions. The extact the volume and convert to double.
@@ -766,7 +766,7 @@ function noise_ampspec_avg = extract_noise_ampspec(boxsize, tomogram_fn, ...
 
     % Relion gets unhappy with the origin of the FFT having a zero value so we
     % apply a 3x3 median filter in the origin plane to the origin
-    center = boxsize / 2 + 1;
+    center = box_size / 2 + 1;
     noise_ampspec_avg(center, center, center) = (...
           noise_ampspec_avg(center    , center    , center) ...
         + noise_ampspec_avg(center    , center + 1, center) ...

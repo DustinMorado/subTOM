@@ -9,7 +9,7 @@ function subtom_extract_subtomograms(varargin)
 %         'all_motl_fn_prefix', ALL_MOTL_FN_PREFIX, 
 %         'stats_fn_prefix', STATS_FN_PREFIX, 
 %         'iteration', ITERATION,
-%         'boxsize', BOXSIZE, 
+%         'box_size', BOX_SIZE, 
 %         'process_idx', PROCESS_IDX, 
 %         'reextract', REEXTRACT,
 %         'preload_tomogram', PRELOAD_TOMOGRAM,
@@ -18,9 +18,10 @@ function subtom_extract_subtomograms(varargin)
 %
 %     Takes the tomograms given in TOMOGRAM_DIR and extracts subtomograms
 %     specified in ALL_MOTL_FN_PREFIX_#.m where # corresponds to ITERATION with
-%     size BOXSIZE into SCRATCH_DIR with the name formats SUBTOMO_FN_PREFIX_#.em
-%     where # corresponds to the entry in field 4 in ALL_MOTL_FN_PREFIX_#.em
-%     zero-padded to have at least SUBTOMO_DIGITS digits.
+%     size BOX_SIZE into SCRATCH_DIR with the name formats
+%     SUBTOMO_FN_PREFIX_#.em where # corresponds to the entry in field 4 in
+%     ALL_MOTL_FN_PREFIX_#.em zero-padded to have at least SUBTOMO_DIGITS
+%     digits.
 %
 %     Tomograms are specified by the field TOMO_ROW in motive list
 %     ALL_MOTL_FN_PREFIX_#.em, and the tomogram that will be processed is
@@ -64,7 +65,7 @@ function subtom_extract_subtomograms(varargin)
     addParameter(fn_parser, 'all_motl_fn_prefix', 'combinedmotl/allmotl');
     addParameter(fn_parser, 'stats_fn_prefix', 'subtomograms/stats/tomo');
     addParameter(fn_parser, 'iteration', 1);
-    addParameter(fn_parser, 'boxsize', -1);
+    addParameter(fn_parser, 'box_size', -1);
     addParameter(fn_parser, 'process_idx', 1);
     addParameter(fn_parser, 'reextract', 0);
     addParameter(fn_parser, 'preload_tomogram', 1);
@@ -182,16 +183,16 @@ function subtom_extract_subtomograms(varargin)
         rethrow(ME);
     end
 
-    boxsize = fn_parser.Results.boxsize;
+    box_size = fn_parser.Results.box_size;
 
-    if ischar(boxsize)
-        boxsize = str2double(boxsize);
+    if ischar(box_size)
+        box_size = str2double(box_size);
     end
 
     try
-        validateattributes(boxsize, {'numeric'}, ...
+        validateattributes(box_size, {'numeric'}, ...
             {'scalar', 'nonnan', 'integer', '>', 0}, ...
-            'subtom_extract_subtomograms', 'boxsize');
+            'subtom_extract_subtomograms', 'box_size');
 
     catch ME
         fprintf(2, '%s - %s\n', ME.identifier, ME.message);
@@ -444,7 +445,7 @@ function subtom_extract_subtomograms(varargin)
     op_type = 'particles';
     tic;
 
-    subtomo_size = repmat(boxsize, 1, 3);
+    subtomo_size = repmat(box_size, 1, 3);
     for subtomo_idx = 1:num_ptcls
 
         % First check if the subtomogram already exists
@@ -462,7 +463,7 @@ function subtom_extract_subtomograms(varargin)
         end
 
         subtomo_position = motl(8:10, subtomo_idx);
-        subtomo_start = round(subtomo_position - (boxsize / 2));
+        subtomo_start = round(subtomo_position - (box_size / 2));
 
         if preload_tomogram && use_tom_red
             subtomo = double(tom_red(tomogram, subtomo_start, subtomo_size));

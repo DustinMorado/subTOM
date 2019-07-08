@@ -1,0 +1,344 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>subtom_shape &mdash; subTOM 1.0.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="subtom_split_motl_by_row" href="subtom_split_motl_by_row.html" />
+    <link rel="prev" title="subtom_seed_positions" href="subtom_seed_positions.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> subTOM
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Table of Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../conventions.html">Conventions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Tutorial</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Links to Individual Script Documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/subtom_alignment.html">subtom_alignment.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/subtom_average.html">subtom_average.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/subtom_cat_motls.html">subtom_cat_motls.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/subtom_clean_motl.html">subtom_clean_motl.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/subtom_compare_motls.html">subtom_compare_motls.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/subtom_even_odd_motl.html">subtom_even_odd_motl.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/subtom_extract_noise.html">subtom_extract_noise.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/subtom_extract_subtomograms.html">subtom_extract_subtomograms.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/subtom_maskcorrected_fsc.html">subtom_maskcorrected_fsc.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/subtom_preprocess.html">subtom_preprocess.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/subtom_plot_filter.html">subtom_plot_filter.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/subtom_plot_scanned_angles.html">subtom_plot_scanned_angles.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/subtom_reconstruct.html">subtom_reconstruct.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/subtom_scale_motl.html">subtom_scale_motl.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/subtom_seed_positions.html">subtom_seed_positions.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/subtom_shape.html">subtom_shape.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/subtom_split_motl_by_row.html">subtom_split_motl_by_row.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/subtom_transform_motl.html">subtom_transform_motl.sh</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Links to Individual Function Documentation:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_cat_motls.html">subtom_cat_motls.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_clean_motl.html">subtom_clean_motl.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_compare_motls.html">subtom_compare_motls.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_even_odd_motl.html">subtom_even_odd_motl.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_extract_noise.html">subtom_extract_noise.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_extract_subtomograms.html">subtom_extract_subtomograms.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_maskcorrected_fsc.html">subtom_maskcorrected_fsc.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_parallel_sums.html">subtom_parallel_sums.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_plot_filter.html">subtom_plot_filter.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_plot_scanned_angles.html">subtom_plot_scanned_angles.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_scale_motl.html">subtom_scale_motl.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_scan_angles_exact.html">subtom_scan_angles_exact.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_seed_positions.html">subtom_seed_positions.m</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">subtom_shape.m</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#example">Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_split_motl_by_row.html">subtom_split_motl_by_row.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_transform_motl.html">subtom_transform_motl.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_weighted_average.html">subtom_weighted_average.m</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">subTOM</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>subtom_shape</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/functions/subtom_shape.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="subtom-shape">
+<h1>subtom_shape<a class="headerlink" href="#subtom-shape" title="Permalink to this headline">¶</a></h1>
+<p>Produces a volume of a simple shape for masking.</p>
+<div class="highlight-Matlab notranslate"><div class="highlight"><pre><span></span><span class="n">subtom_shape</span><span class="p">(</span>
+    <span class="s">&#39;shape&#39;</span><span class="p">,</span> <span class="n">shape</span> <span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">),</span>
+    <span class="s">&#39;box_size&#39;</span><span class="p">,</span> <span class="n">box_size</span> <span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">),</span>
+    <span class="s">&#39;radius&#39;</span><span class="p">,</span> <span class="n">radius</span> <span class="p">(</span><span class="n">box_size</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="s">&#39;outer_radius&#39;</span><span class="p">,</span> <span class="n">outer_radius</span> <span class="p">(</span><span class="n">box_size</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="s">&#39;inner_radius&#39;</span><span class="p">,</span> <span class="n">inner_radius</span> <span class="p">(</span><span class="n">outer_radius</span> <span class="o">-</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="s">&#39;radius_x&#39;</span><span class="p">,</span> <span class="n">radius_x</span> <span class="p">(</span><span class="n">box_size</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="s">&#39;radius_y&#39;</span><span class="p">,</span> <span class="n">radius_y</span> <span class="p">(</span><span class="n">box_size</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="s">&#39;radius_z&#39;</span><span class="p">,</span> <span class="n">radius_z</span> <span class="p">(</span><span class="n">box_size</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="s">&#39;outer_radius_x&#39;</span><span class="p">,</span> <span class="n">outer_radius_x</span> <span class="p">(</span><span class="n">box_size</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="s">&#39;outer_radius_y&#39;</span><span class="p">,</span> <span class="n">outer_radius_y</span> <span class="p">(</span><span class="n">box_size</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="s">&#39;outer_radius_z&#39;</span><span class="p">,</span> <span class="n">outer_radius_z</span> <span class="p">(</span><span class="n">box_size</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="s">&#39;inner_radius_x&#39;</span><span class="p">,</span> <span class="n">inner_radius_x</span> <span class="p">(</span><span class="n">outer_radius_x</span> <span class="o">-</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="s">&#39;inner_radius_y&#39;</span><span class="p">,</span> <span class="n">inner_radius_y</span> <span class="p">(</span><span class="n">outer_radius_y</span> <span class="o">-</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="s">&#39;inner_radius_z&#39;</span><span class="p">,</span> <span class="n">inner_radius_z</span> <span class="p">(</span><span class="n">outer_radius_z</span> <span class="o">-</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="s">&#39;length_x&#39;</span><span class="p">,</span> <span class="n">length_x</span> <span class="p">(</span><span class="n">box_size</span><span class="p">),</span>
+    <span class="s">&#39;length_y&#39;</span><span class="p">,</span> <span class="n">length_y</span> <span class="p">(</span><span class="n">box_size</span><span class="p">),</span>
+    <span class="s">&#39;length_z&#39;</span><span class="p">,</span> <span class="n">length_z</span> <span class="p">(</span><span class="n">box_size</span><span class="p">),</span>
+    <span class="s">&#39;height&#39;</span><span class="p">,</span> <span class="n">height</span> <span class="p">(</span><span class="n">box_size</span><span class="p">),</span>
+    <span class="s">&#39;center_x&#39;</span><span class="p">,</span> <span class="n">center_x</span> <span class="p">(</span><span class="nb">floor</span><span class="p">(</span><span class="n">box_size</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="s">&#39;center_y&#39;</span><span class="p">,</span> <span class="n">center_y</span> <span class="p">(</span><span class="nb">floor</span><span class="p">(</span><span class="n">box_size</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="s">&#39;center_z&#39;</span><span class="p">,</span> <span class="n">center_z</span> <span class="p">(</span><span class="nb">floor</span><span class="p">(</span><span class="n">box_size</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="s">&#39;shift_x&#39;</span><span class="p">,</span> <span class="n">shift_x</span> <span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s">&#39;shift_y&#39;</span><span class="p">,</span> <span class="n">shift_y</span> <span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s">&#39;shift_z&#39;</span><span class="p">,</span> <span class="n">shift_z</span> <span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s">&#39;rotate_phi&#39;</span><span class="p">,</span> <span class="n">rotate_phi</span> <span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s">&#39;rotate_psi&#39;</span><span class="p">,</span> <span class="n">rotate_psi</span> <span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s">&#39;rotate_theta&#39;</span><span class="p">,</span> <span class="n">rotate_theta</span> <span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s">&#39;sigma&#39;</span><span class="p">,</span> <span class="n">sigma</span> <span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s">&#39;ref_fn&#39;</span><span class="p">,</span> <span class="n">ref_fn</span> <span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">),</span>
+    <span class="s">&#39;output_fn&#39;</span><span class="p">,</span> <span class="n">output_fn</span> <span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Creates a volume of a simple shape, with the volume being a cube of <code class="docutils literal notranslate"><span class="pre">box_size</span></code>
+length, and writes out the volume as <code class="docutils literal notranslate"><span class="pre">output_fn</span></code>. This volume is generally
+used for masking.  The shape in the volume is defined by <code class="docutils literal notranslate"><span class="pre">shape</span></code> and can be
+one of several strings, the available shapes are ‘sphere’, ‘sphere_shell’,
+‘ellipsoid’, ‘ellipsoid_shell’, ‘cylinder’, ‘tube’, ‘elliptic_cylinder’,
+‘elliptic_tube’, and ‘cuboid’. For each shape there are a number of options
+available to define the shape.</p>
+<p>For each shape an optional gaussian smooth edge can be added by defining
+<code class="docutils literal notranslate"><span class="pre">sigma</span></code>.</p>
+<p>For each shape an optional transform can also be applied to the shape by
+specifying a shift through the options <code class="docutils literal notranslate"><span class="pre">shift_x</span></code>, <code class="docutils literal notranslate"><span class="pre">shift_y</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">shift_z</span></code>, and the shapes initial center can be specified by <code class="docutils literal notranslate"><span class="pre">center_x</span></code>,
+<code class="docutils literal notranslate"><span class="pre">center_y</span></code>, <code class="docutils literal notranslate"><span class="pre">center_z</span></code>.  Rotations to the shape are applied through the
+options <code class="docutils literal notranslate"><span class="pre">rotate_phi</span></code>, <code class="docutils literal notranslate"><span class="pre">rotate_psi</span></code>, and <code class="docutils literal notranslate"><span class="pre">rotate_theta</span></code>. Rotations are done
+about the center and shifts are applied after any given rotation.</p>
+<p>Finally another volume can be given by passing the option <code class="docutils literal notranslate"><span class="pre">ref_fn</span></code> and the
+shape will be applied to the volume, which can aid in testing how the shape
+masks the underlying density.</p>
+<p>If shape is ‘sphere’, the shape is defined by <code class="docutils literal notranslate"><span class="pre">radius</span></code>.</p>
+<p>If shape is ‘sphere_shell’, the shape is defined by <code class="docutils literal notranslate"><span class="pre">inner_radius</span></code> and
+<code class="docutils literal notranslate"><span class="pre">outer_radius</span></code>.</p>
+<p>If shape is ‘ellipsoid’, the shape is defined by <code class="docutils literal notranslate"><span class="pre">radius_x</span></code>, <code class="docutils literal notranslate"><span class="pre">radius_y</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">radius_z</span></code>.</p>
+<p>If shape is ‘ellipsoid_shell’, the shape is defined by <code class="docutils literal notranslate"><span class="pre">inner_radius_x</span></code>,
+<code class="docutils literal notranslate"><span class="pre">inner_radius_y</span></code>, <code class="docutils literal notranslate"><span class="pre">inner_radius_z</span></code>, <code class="docutils literal notranslate"><span class="pre">outer_radius_x</span></code>, <code class="docutils literal notranslate"><span class="pre">outer_radius_y</span></code>,
+and <code class="docutils literal notranslate"><span class="pre">outer_radius_z</span></code>.</p>
+<p>If shape is ‘cylinder’, the shape is defined by <code class="docutils literal notranslate"><span class="pre">radius</span></code> and <code class="docutils literal notranslate"><span class="pre">height</span></code>.</p>
+<p>If shape is ‘tube’, the shape is defined by <code class="docutils literal notranslate"><span class="pre">inner_radius</span></code>, <code class="docutils literal notranslate"><span class="pre">outer_radius</span></code>,
+and <code class="docutils literal notranslate"><span class="pre">height</span></code>.</p>
+<p>If shape is ‘elliptic_cylinder’, the shape is defined by <code class="docutils literal notranslate"><span class="pre">radius_x</span></code>,
+<code class="docutils literal notranslate"><span class="pre">radius_y</span></code>, and <code class="docutils literal notranslate"><span class="pre">height</span></code>.</p>
+<p>If shape is ‘elliptic_tube’, the shape is defined by <code class="docutils literal notranslate"><span class="pre">inner_radius_x</span></code>,
+<code class="docutils literal notranslate"><span class="pre">inner_radius_y</span></code>, <code class="docutils literal notranslate"><span class="pre">outer_radius_x</span></code>, <code class="docutils literal notranslate"><span class="pre">outer_radius_y</span></code>, and <code class="docutils literal notranslate"><span class="pre">height</span></code>.</p>
+<p>Finally if shape is ‘cuboid’, the shape is defined by <code class="docutils literal notranslate"><span class="pre">length_x</span></code>,
+<code class="docutils literal notranslate"><span class="pre">length_y</span></code>, and <code class="docutils literal notranslate"><span class="pre">length_z</span></code>.</p>
+<div class="section" id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-Matlab notranslate"><div class="highlight"><pre><span></span><span class="n">subtom_shape</span><span class="p">(</span><span class="c">...</span>
+    <span class="s">&#39;shape&#39;</span><span class="p">,</span> <span class="s">&#39;sphere&#39;</span><span class="p">,</span> <span class="c">...</span>
+    <span class="s">&#39;box_size&#39;</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="c">...</span>
+    <span class="s">&#39;radius&#39;</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="c">...</span>
+    <span class="s">&#39;sigma&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="c">...</span>
+    <span class="s">&#39;output_fn&#39;</span><span class="p">,</span> <span class="s">&#39;otherinputs/mask.em&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="see-also">
+<h2>See Also<a class="headerlink" href="#see-also" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="subtom_plot_filter.html"><span class="doc">subtom_plot_filter</span></a></p></li>
+<li><p><a class="reference internal" href="subtom_plot_scanned_angles.html"><span class="doc">subtom_plot_scanned_angles</span></a></p></li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="subtom_split_motl_by_row.html" class="btn btn-neutral float-right" title="subtom_split_motl_by_row" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="subtom_seed_positions.html" class="btn btn-neutral float-left" title="subtom_seed_positions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Dustin Reed Morado
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

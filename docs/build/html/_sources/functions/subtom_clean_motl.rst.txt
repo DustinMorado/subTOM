@@ -20,7 +20,7 @@ Cleans a given MOTL file based on distance and or CC scores.
         'cluster_size', cluster_size (1),
         'do_edge', do_edge (0),
         'tomogram_dir', tomogram_dir (''),
-        'boxsize', boxsize (0),
+        'box_size', box_size (0),
         'write_stats', write_stats (0),
         'output_stats_fn', output_stats_fn (''))
 
@@ -38,7 +38,7 @@ and only the particle with the highest CCC, will be kept. If
 least ``cluster_size`` neighbor particles within ``cluster_distance`` to be kept
 after cleaning. Finally if ``do_edge`` evaluates to true as a boolean then the
 program will look for a tomogram in ``tomogram_dir``, and if a particle of
-boxsize ``boxsize`` would extend outside of the tomogram it will be removed.
+box size ``box_size`` would extend outside of the tomogram it will be removed.
 
 -------
 Example
@@ -60,7 +60,7 @@ Example
         'cluster_size, 2, ...
         'do_edge', 1, ...
         'tomogram_dir', '../../tomos/bin8', ...
-        'boxsize', 36, ...
+        'box_size', 36, ...
         'write_stats', 1, ...
         'output_stats_fn', 'combinedmotl/allmotl_3_cleaned_stats.csv')
 

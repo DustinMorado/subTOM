@@ -15,7 +15,7 @@ function subtom_clean_motl(varargin)
 %         'cluster_size', CLUSTER_SIZE,
 %         'do_edge', DO_EDGE,
 %         'tomogram_dir', TOMOGRAM_DIR,
-%         'boxsize', BOXSIZE,
+%         'box_size', BOX_SIZE,
 %         'write_stats', WRITE_STATS,
 %         'output_stats_fn', OUTPUT_STATS_FN)
 %
@@ -33,7 +33,7 @@ function subtom_clean_motl(varargin)
 %     least CLUSTER_SIZE neighbor particles within CLUSTER_DISTANCE to be kept
 %     after cleaning. Finally if DO_EDGE evaluates to true as a boolean then the
 %     program will look for a tomogram in TOMOGRAM_DIR, and if a particle of
-%     boxsize BOXSIZE would extend outside of the tomogram it will be removed.
+%     box_size BOX_SIZE would extend outside of the tomogram it will be removed.
 %
 
 % DRM 05-2019
@@ -58,7 +58,7 @@ function subtom_clean_motl(varargin)
     addParameter(fn_parser, 'cluster_size', '1');
     addParameter(fn_parser, 'do_edge', '0');
     addParameter(fn_parser, 'tomogram_dir', '');
-    addParameter(fn_parser, 'boxsize', '0');
+    addParameter(fn_parser, 'box_size', '0');
     addParameter(fn_parser, 'write_stats', '0');
     addParameter(fn_parser, 'output_stats_fn', '');
     parse(fn_parser, varargin{:});
@@ -329,16 +329,16 @@ function subtom_clean_motl(varargin)
         end
     end
 
-    boxsize = fn_parser.Results.boxsize;
+    box_size = fn_parser.Results.box_size;
 
-    if ischar(boxsize)
-        boxsize = str2double(boxsize);
+    if ischar(box_size)
+        box_size = str2double(box_size);
     end
 
     try
-        validateattributes(boxsize, {'numeric'}, ...
+        validateattributes(box_size, {'numeric'}, ...
             {'scalar', 'nonnan', 'nonnegative'}, ...
-            'subtom_clean_motl', 'boxsize');
+            'subtom_clean_motl', 'box_size');
 
     catch ME
         fprintf(2, '%s - %s\n', ME.identifier, ME.message);
@@ -445,18 +445,18 @@ function subtom_clean_motl(varargin)
                 tom_readmrcheader(tomogram_fn), 'Header'), 'MRC');
 
             % Define the center of the box
-            origin_offset = floor(boxsize / 2);
+            origin_offset = floor(box_size / 2);
 
             % Calculate all of the region starts and ends for every particle
             % within the tomogram.
             start_x = motl_(8,  :) - origin_offset;
-            end_x = start_x + (boxsize - 1);
+            end_x = start_x + (box_size - 1);
 
             start_y = motl_(9,  :) - origin_offset;
-            end_y = start_y + (boxsize - 1);
+            end_y = start_y + (box_size - 1);
 
             start_z = motl_(10, :) - origin_offset;
-            end_z = start_z + (boxsize - 1);
+            end_z = start_z + (box_size - 1);
 
             % Find the current number of particles in the motive list
             num_ptcls = size(motl_, 2);

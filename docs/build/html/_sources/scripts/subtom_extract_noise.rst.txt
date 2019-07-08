@@ -113,7 +113,7 @@ tomo_row
 Extraction Options
 ------------------
 
-boxsize
+box_size
   Size of subtomogram in pixels
 
 just_extract
@@ -126,7 +126,7 @@ ptcl_overlap_factor
   Numbers less than 0 will allow for larger than a box size spacing between
   noise and a particle. Numbers greater than 0 will allow for some overlap
   between noise and a particle. For example 0.5 will allow 50% overlap between
-  the noise and the particle, which can be useful when the boxsize is much
+  the noise and the particle, which can be useful when the box size is much
   larger than the particle.
 
 noise_overlap_factor
@@ -206,7 +206,7 @@ Example
 
     tomo_row=7
 
-    boxsize=128
+    box_size=128
 
     just_extract=0
 

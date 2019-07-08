@@ -14,7 +14,7 @@ Extract subtomograms on the cluster.
         'all_motl_fn_prefix', all_motl_fn_prefix ('combinedmotl/allmotl'),
         'stats_fn_prefix', stats_fn_prefix ('subtomograms/stats/tomo'),
         'iteration', iteration (1),
-        'boxsize', boxsize (-1),
+        'box_size', box_size (-1),
         'process_idx', process_idx (1),
         'reextract', reextract (0),
         'preload_tomogram', preload_tomogram (1),
@@ -23,7 +23,7 @@ Extract subtomograms on the cluster.
 
 Takes the tomograms given in ``tomogram_dir`` and extracts subtomograms
 specified in ``all_motl_fn_prefix`` _#.m where # corresponds to ``iteration``
-with size ``boxsize`` into ``scratch_dir`` with the name formats
+with size ``box_size`` into ``scratch_dir`` with the name formats
 ``subtomo_fn_prefix`` _#.em where # corresponds to the entry in field 4 in
 ``all_motl_fn_prefix`` _#.em zero-padded to have at least ``subtomo_digits``
 digits.
@@ -64,7 +64,7 @@ Example
         'all_motl_fn_prefix', 'combinedmotl/allmotl', ...
         'stats_fn_prefix', 'subtomograms/stats/tomo', ...
         'iteration', 1, ...
-        'boxsize', 36, ...
+        'box_size', 36, ...
         'process_idx', 1, ...
         'reextract', 0, ...
         'preload_tomogram', 1, ...

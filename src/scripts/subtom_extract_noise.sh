@@ -94,7 +94,7 @@ tomo_row="7"
 #                             EXTRACTION OPTIONS                               #
 ################################################################################
 # Size of subtomogram in pixels
-boxsize="128"
+box_size="128"
 
 # If you already have noise MOTL lists calculated which may contain less than
 # the total number of requested noise, but just want the code to do the
@@ -105,7 +105,7 @@ just_extract="0"
 # Numbers less than 0 will allow for larger than a box size spacing between
 # noise and a particle. Numbers greater than 0 will allow for some overlap
 # between noise and a particle. For example 0.5 will allow 50% overlap between
-# the noise and the particle, which can be useful when the boxsize is much
+# the noise and the particle, which can be useful when the box size is much
 # larger than the particle.
 ptcl_overlap_factor="0"
 

@@ -118,9 +118,12 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="subtom_maskcorrected_fsc.html">subtom_maskcorrected_fsc.sh</a></li>
 <li class="toctree-l1"><a class="reference internal" href="subtom_preprocess.html">subtom_preprocess.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_plot_filter.html">subtom_plot_filter.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_plot_scanned_angles.html">subtom_plot_scanned_angles.sh</a></li>
 <li class="toctree-l1"><a class="reference internal" href="subtom_reconstruct.html">subtom_reconstruct.sh</a></li>
 <li class="toctree-l1"><a class="reference internal" href="subtom_scale_motl.html">subtom_scale_motl.sh</a></li>
 <li class="toctree-l1"><a class="reference internal" href="subtom_seed_positions.html">subtom_seed_positions.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_shape.html">subtom_shape.sh</a></li>
 <li class="toctree-l1"><a class="reference internal" href="subtom_split_motl_by_row.html">subtom_split_motl_by_row.sh</a></li>
 <li class="toctree-l1"><a class="reference internal" href="subtom_transform_motl.html">subtom_transform_motl.sh</a></li>
 </ul>
@@ -135,9 +138,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../functions/subtom_extract_subtomograms.html">subtom_extract_subtomograms.m</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../functions/subtom_maskcorrected_fsc.html">subtom_maskcorrected_fsc.m</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../functions/subtom_parallel_sums.html">subtom_parallel_sums.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functions/subtom_plot_filter.html">subtom_plot_filter.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functions/subtom_plot_scanned_angles.html">subtom_plot_scanned_angles.m</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../functions/subtom_scale_motl.html">subtom_scale_motl.m</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../functions/subtom_scan_angles_exact.html">subtom_scan_angles_exact.m</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../functions/subtom_seed_positions.html">subtom_seed_positions.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functions/subtom_shape.html">subtom_shape.m</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../functions/subtom_split_motl_by_row.html">subtom_split_motl_by_row.m</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../functions/subtom_transform_motl.html">subtom_transform_motl.m</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../functions/subtom_weighted_average.html">subtom_weighted_average.m</a></li>
@@ -334,7 +340,7 @@ value starting from 1, while 7 contains the correct corresponding tomogram.</p>
 <div class="section" id="extraction-options">
 <h3>Extraction Options<a class="headerlink" href="#extraction-options" title="Permalink to this headline">¶</a></h3>
 <dl class="simple">
-<dt>boxsize</dt><dd><p>Size of subtomogram in pixels</p>
+<dt>box_size</dt><dd><p>Size of subtomogram in pixels</p>
 </dd>
 <dt>subtomo_digits</dt><dd><p>Leading zeros for subtomograms, for AV3, use 1. Other numbers are useful for
 DYNAMO.</p>
@@ -402,7 +408,7 @@ being extracted on the cluster.</p>
 
 <span class="nv">tomo_row</span><span class="o">=</span><span class="m">7</span>
 
-<span class="nv">boxsize</span><span class="o">=</span><span class="m">128</span>
+<span class="nv">box_size</span><span class="o">=</span><span class="m">128</span>
 
 <span class="nv">subtomo_digits</span><span class="o">=</span><span class="m">1</span>
 

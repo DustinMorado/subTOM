@@ -123,22 +123,20 @@ export LD_LIBRARY_PATH="\${ldpath}"
     "${noise_extract_exe}" \\
         tomogram_dir \\
         "${tomogram_dir}" \\
-        scratch_dir \\
-        "${scratch_dir}" \\
         tomo_row \\
         "${tomo_row}" \\
         ampspec_fn_prefix \\
-        "${ampspec_fn_prefix}" \\
+        "${scratch_dir}/${ampspec_fn_prefix}" \\
         binary_fn_prefix \\
-        "${binary_fn_prefix}" \\
+        "${scratch_dir}/${binary_fn_prefix}" \\
         all_motl_fn_prefix \\
-        "${all_motl_fn_prefix}" \\
+        "${scratch_dir}/${all_motl_fn_prefix}" \\
         noise_motl_fn_prefix \\
-        "${noise_motl_fn_prefix}" \\
+        "${scratch_dir}/${noise_motl_fn_prefix}" \\
         iteration \\
         "${iteration}" \\
-        boxsize \\
-        "${boxsize}" \\
+        box_size \\
+        "${box_size}" \\
         just_extract \\
         "${just_extract}" \\
         ptcl_overlap_factor \\
@@ -184,11 +182,11 @@ then
     check_count=$(find "${ampspec_dir}" \
         -newer "${ampspec_dir}/empty_file" \
         -and \
-        -name "${ampspec_base}_[0-9]*.em" | wc -l)
+        -regex ".*/${ampspec_base}_[0-9]+.em" | wc -l)
 
 else
-    check_count=$(find "${ampspec_dir}" -name \
-        "${ampspec_base}_[0-9]*.em" | wc -l)
+    check_count=$(find "${ampspec_dir}" -regex \
+        ".*/${ampspec_base}_[0-9]+.em" | wc -l)
 
 fi
 
@@ -200,11 +198,11 @@ do
         check_count=$(find "${ampspec_dir}" \
             -newer "${ampspec_dir}/empty_file" \
             -and \
-            -name "${ampspec_base}_[0-9]*.em" | wc -l)
+            -regex ".*/${ampspec_base}_[0-9]+.em" | wc -l)
 
     else
-        check_count=$(find "${ampspec_dir}" -name \
-            "${ampspec_base}_[0-9]*.em" | wc -l)
+        check_count=$(find "${ampspec_dir}" -regex \
+            ".*/${ampspec_base}_[0-9]+.em" | wc -l)
 
     fi
 
@@ -262,7 +260,7 @@ printf "# Extract Noise\n" >> subTOM_protocol.md
 printf -- "---------------\n" >> subTOM_protocol.md
 printf "| %-25s | %25s |\n" "OPTION" "VALUE" >> subTOM_protocol.md
 printf "|:--------------------------" >> subTOM_protocol.md
-printf "|--------------------------:|\n" >> subTOM_protocol.md
+printf "|:--------------------------|\n" >> subTOM_protocol.md
 printf "| %-25s | %25s |\n" "tomogram_dir" "${tomogram_dir}" >>\
     subTOM_protocol.md
 
@@ -284,8 +282,8 @@ printf "| %-25s | %25s |\n" "mem_max" "${mem_max}" >> subTOM_protocol.md
 printf "| %-25s | %25s |\n" "job_name" "${job_name}" >> subTOM_protocol.md
 printf "| %-25s | %25s |\n" "run_local" "${run_local}" >> subTOM_protocol.md
 printf "| %-25s | %25s |\n" "iteration" "${iteration}" >> subTOM_protocol.md
-printf "| %-25s | %25s |\n" "all_motl_fn" \
-    "${all_motl_fn_prefix}_${iteration}.em" >> subTOM_protocol.md
+printf "| %-25s | %25s |\n" "all_motl_fn_prefix" "${all_motl_fn_prefix}" >>\
+    subTOM_protocol.md
 
 printf "| %-25s | %25s |\n" "noise_motl_fn_prefix" "${noise_motl_fn_prefix}" >>\
     subTOM_protocol.md
@@ -297,7 +295,7 @@ printf "| %-25s | %25s |\n" "binary_fn_prefix" "${binary_fn_prefix}" >>\
     subTOM_protocol.md
 
 printf "| %-25s | %25s |\n" "tomo_row" "${tomo_row}" >> subTOM_protocol.md
-printf "| %-25s | %25s |\n" "boxsize" "${boxsize}" >> subTOM_protocol.md
+printf "| %-25s | %25s |\n" "box_size" "${box_size}" >> subTOM_protocol.md
 printf "| %-25s | %25s |\n" "just_extract" "${just_extract}" >>\
     subTOM_protocol.md
 

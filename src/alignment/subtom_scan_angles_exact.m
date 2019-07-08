@@ -46,8 +46,8 @@ function subtom_scan_angles_exact(varargin)
 %           and if APPLY_MASK evaluates to true as a boolean, then this mask is
 %           also applied to the particle. A sphere mask is applied to the
 %           particle to reduces the artifacts caused by the box-edges on the
-%           comparison. This sphere has a diameter that is 80% the boxsize and
-%           falls of with a sigma that is 15% half the boxsize.
+%           comparison. This sphere has a diameter that is 80% the box size and
+%           falls of with a sigma that is 15% half the box size.
 %
 %             - The mask is rotated and shifted with the currently existing
 %               alignment parameters for the particle as to best center the mask

@@ -112,22 +112,20 @@ export LD_LIBRARY_PATH="\${ldpath}"
     "${extract_exe}" \\
         tomogram_dir \\
         "${tomogram_dir}" \\
-        scratch_dir \\
-        "${scratch_dir}" \\
         tomo_row \\
         "${tomo_row}" \\
         subtomo_fn_prefix \\
-        "${subtomo_fn_prefix}" \\
+        "${scratch_dir}/${subtomo_fn_prefix}" \\
         subtomo_digits \\
         "${subtomo_digits}" \\
         all_motl_fn_prefix \\
-        "${all_motl_fn_prefix}" \\
+        "${scratch_dir}/${all_motl_fn_prefix}" \\
         stats_fn_prefix \\
-        "${stats_fn_prefix}" \\
+        "${scratch_dir}/${stats_fn_prefix}" \\
         iteration \\
         "${iteration}" \\
-        boxsize \\
-        "${boxsize}" \\
+        box_size \\
+        "${box_size}" \\
         process_idx \\
         "\${SGE_TASK_ID}" \\
         reextract \\
@@ -165,9 +163,10 @@ then
     check_count=$(find "${stats_dir}" \
         -newer "${stats_dir}/empty_file" \
         -and \
-        -name "${stats_base}_[0-9]*.csv" | wc -l)
+        -regex ".*/${stats_base}_[0-9]+.csv" | wc -l)
 else
-    check_count=$(find "${stats_dir}" -name "${stats_base}_[0-9]*.csv" | wc -l)
+    check_count=$(find "${stats_dir}" -regex \
+        ".*/${stats_base}_[0-9]+.csv" | wc -l)
 fi
 
 # Wait for jobs to finish
@@ -178,10 +177,10 @@ do
         check_count=$(find "${stats_dir}" \
             -newer "${stats_dir}/empty_file" \
             -and \
-            -name "${stats_base}_[0-9]*.csv" | wc -l)
+            -regex ".*/${stats_base}_[0-9]+.csv" | wc -l)
     else
-        check_count=$(find "${stats_dir}" -name \
-            "${stats_base}_[0-9]*.csv" | wc -l)
+        check_count=$(find "${stats_dir}" -regex \
+            ".*/${stats_base}_[0-9]+.csv" | wc -l)
     fi
 
     if [[ -f "error_${job_name}" ]]
@@ -197,7 +196,7 @@ do
     fi
 
     echo -e "\nSTATUS Update: Subtomogram Extraction\n"
-    echo -e "\t${num_complete} tomograms extracted out of ${num_tomos}\n"
+    echo -e "\t${check_count} tomograms extracted out of ${num_tomos}\n"
     sleep 60s
 done
 
@@ -238,7 +237,7 @@ printf "# Extract Subtomograms\n" >> subTOM_protocol.md
 printf -- "----------------------\n" >> subTOM_protocol.md
 printf "| %-25s | %25s |\n" "OPTION" "VALUE" >> subTOM_protocol.md
 printf "|:--------------------------" >> subTOM_protocol.md
-printf "|--------------------------:|\n" >> subTOM_protocol.md
+printf "|:--------------------------|\n" >> subTOM_protocol.md
 printf "| %-25s | %25s |\n" "tomogram_dir" "${tomogram_dir}" >>\
     subTOM_protocol.md
 
@@ -260,8 +259,8 @@ printf "| %-25s | %25s |\n" "mem_max" "${mem_max}" >> subTOM_protocol.md
 printf "| %-25s | %25s |\n" "job_name" "${job_name}" >> subTOM_protocol.md
 printf "| %-25s | %25s |\n" "run_local" "${run_local}" >> subTOM_protocol.md
 printf "| %-25s | %25s |\n" "iteration" "${iteration}" >> subTOM_protocol.md
-printf "| %-25s | %25s |\n" "all_motl_fn" \
-    "${all_motl_fn_prefix}_${iteration}.em" >> subTOM_protocol.md
+printf "| %-25s | %25s |\n" "all_motl_fn_prefix" "${all_motl_fn_prefix}" >>\
+    subTOM_protocol.md
 
 printf "| %-25s | %25s |\n" "subtomo_fn_prefix" "${subtomo_fn_prefix}" >>\
     subTOM_protocol.md
@@ -270,7 +269,7 @@ printf "| %-25s | %25s |\n" "stats_fn_prefix" "${stats_fn_prefix}" >>\
     subTOM_protocol.md
 
 printf "| %-25s | %25s |\n" "tomo_row" "${tomo_row}" >> subTOM_protocol.md
-printf "| %-25s | %25s |\n" "boxsize" "${boxsize}" >> subTOM_protocol.md
+printf "| %-25s | %25s |\n" "box_size" "${box_size}" >> subTOM_protocol.md
 printf "| %-25s | %25s |\n" "subtomo_digits" "${subtomo_digits}" >>\
     subTOM_protocol.md
 

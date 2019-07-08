@@ -1,0 +1,394 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>subtom_plot_filter &mdash; subTOM 1.0.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="subtom_plot_scanned_angles" href="subtom_plot_scanned_angles.html" />
+    <link rel="prev" title="subtom_preprocess" href="subtom_preprocess.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> subTOM
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Table of Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../conventions.html">Conventions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Tutorial</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Links to Individual Script Documentation:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_alignment.html">subtom_alignment.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_average.html">subtom_average.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_cat_motls.html">subtom_cat_motls.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_clean_motl.html">subtom_clean_motl.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_compare_motls.html">subtom_compare_motls.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_even_odd_motl.html">subtom_even_odd_motl.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_extract_noise.html">subtom_extract_noise.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_extract_subtomograms.html">subtom_extract_subtomograms.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_maskcorrected_fsc.html">subtom_maskcorrected_fsc.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_preprocess.html">subtom_preprocess.sh</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">subtom_plot_filter.sh</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#options">Options</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#directories">Directories</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#variables">Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#file-options">File Options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#plot-filter-options">Plot Filter Options</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_plot_scanned_angles.html">subtom_plot_scanned_angles.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_reconstruct.html">subtom_reconstruct.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_scale_motl.html">subtom_scale_motl.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_seed_positions.html">subtom_seed_positions.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_shape.html">subtom_shape.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_split_motl_by_row.html">subtom_split_motl_by_row.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_transform_motl.html">subtom_transform_motl.sh</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Links to Individual Function Documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../functions/introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functions/subtom_cat_motls.html">subtom_cat_motls.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functions/subtom_clean_motl.html">subtom_clean_motl.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functions/subtom_compare_motls.html">subtom_compare_motls.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functions/subtom_even_odd_motl.html">subtom_even_odd_motl.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functions/subtom_extract_noise.html">subtom_extract_noise.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functions/subtom_extract_subtomograms.html">subtom_extract_subtomograms.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functions/subtom_maskcorrected_fsc.html">subtom_maskcorrected_fsc.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functions/subtom_parallel_sums.html">subtom_parallel_sums.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functions/subtom_plot_filter.html">subtom_plot_filter.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functions/subtom_plot_scanned_angles.html">subtom_plot_scanned_angles.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functions/subtom_scale_motl.html">subtom_scale_motl.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functions/subtom_scan_angles_exact.html">subtom_scan_angles_exact.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functions/subtom_seed_positions.html">subtom_seed_positions.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functions/subtom_shape.html">subtom_shape.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functions/subtom_split_motl_by_row.html">subtom_split_motl_by_row.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functions/subtom_transform_motl.html">subtom_transform_motl.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functions/subtom_weighted_average.html">subtom_weighted_average.m</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">subTOM</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>subtom_plot_filter</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/scripts/subtom_plot_filter.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="subtom-plot-filter">
+<h1>subtom_plot_filter<a class="headerlink" href="#subtom-plot-filter" title="Permalink to this headline">¶</a></h1>
+<p>Plots the filter applied to the reference from a user-specified set of band-pass
+settings. The filter can also be plotted in conjunction with a CTF root square
+function and a B-factor described exponential decay falloff curve. The plot can
+also be saved to disk.</p>
+<p>This utility script uses one MATLAB compiled scripts below:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../functions/subtom_plot_filter.html"><span class="doc">subtom_plot_filter</span></a></p></li>
+</ul>
+<div class="section" id="options">
+<h2>Options<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="directories">
+<h3>Directories<a class="headerlink" href="#directories" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt>scratch_dir</dt><dd><p>Absolute path to the folder with the input to be processed.
+Other paths are relative to this one.</p>
+</dd>
+<dt>mcr_cache_dir</dt><dd><p>Absolute path to MCR directory for the processing.</p>
+</dd>
+<dt>exec_dir</dt><dd><p>Directory for executables</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="variables">
+<h3>Variables<a class="headerlink" href="#variables" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt>plot_filter_exec</dt><dd><p>Plot filter executable.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="file-options">
+<h3>File Options<a class="headerlink" href="#file-options" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt>output_fn_prefix</dt><dd><p>Relative path and name prefix of the output plot. If you want to skip this
+output file leave this set to “”.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="plot-filter-options">
+<h3>Plot Filter Options<a class="headerlink" href="#plot-filter-options" title="Permalink to this headline">¶</a></h3>
+<dl>
+<dt>box_size</dt><dd><p>Size of the volume in pixels. The volume will be a cube with this side length.</p>
+</dd>
+<dt>pixelsize</dt><dd><p>Pixelsize of the data in Angstroms.</p>
+</dd>
+<dt>high_pass_fp</dt><dd><blockquote>
+<div><p>High pass filter cutoff (in transform units (pixels): calculate as:</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">high_pass_fp</span> <span class="p">=</span> <span class="p">(</span><span class="n">box_size</span> <span class="o">*</span> <span class="n">pixelsize</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">high_pass_A</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>(define as integer e.g. high_pass_fp=2)</p>
+</dd>
+<dt>high_pass_sigma</dt><dd><p>High pass filter falloff sigma (in transform units (pixels): describes a
+Gaussian sigma for the falloff of the high-pass filter past the cutoff above.</p>
+</dd>
+<dt>low_pass_fp</dt><dd><blockquote>
+<div><p>Low pass filter cutoff (in transform units (pixels): calculate as:</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">low_pass_fp</span> <span class="p">=</span> <span class="p">(</span><span class="n">box_size</span> <span class="o">*</span> <span class="n">pixelsize</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">low_pass_A</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>(define as integer e.g. low_pass_fp=48)</p>
+</dd>
+<dt>low_pass_sigma</dt><dd><p>Low pass filter falloff sigma (in transform units (pixels): describes a
+Gaussian sigma for the falloff of the low-pass filter past the cutoff above.</p>
+</dd>
+<dt>defocus</dt><dd><p>Defocus to plot along with band-pass filter in Angstroms with underfocus being
+positive. The graphic will include a line for the CTF root square and how it
+is attenuated by the band-pass which can be useful for understanding how
+amplitudes are modified by the filter. If you do not want to use this option
+just leave it set to “0” or “”.</p>
+</dd>
+<dt>voltage</dt><dd><p>Voltage in keV used for calculating the CTF. If you do not want to plot a CTF
+function leave this set to “” or “300”.</p>
+</dd>
+<dt>cs</dt><dd><p>Spherical aberration in mm used for calculating the CTF. If you do not want to
+plot a CTF function leave this set to “” or “0.0”.</p>
+</dd>
+<dt>ac</dt><dd><p>Amplitude contrast as a fraction of contrast (i.e. between 0 and 1) used for
+calculating the CTF. If you do not want to plot a CTF function leave this set
+to “” or “1”.</p>
+</dd>
+<dt>phase_shift</dt><dd><p>Phase shift in degrees used for calculating the CTF. If you do not want to
+plot a CTF function leave this set to “” or “0”.</p>
+</dd>
+<dt>b_factor</dt><dd><p>B-Factor describing the falloff of signal in the data by a multitude of
+amplitude decay factors. The graphic will include a line for the falloff and
+how it interacts with both the CTF if one was given and the band-pass filter.
+If you do not want to use this option just leave it set to “” or “0”</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">scratch_dir</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span><span class="s2">&quot;</span>
+
+<span class="nv">mcr_cache_dir</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">scratch_dir</span><span class="si">}</span><span class="s2">/mcr&quot;</span>
+
+<span class="nv">exec_dir</span><span class="o">=</span><span class="s2">&quot;/net/dstore2/teraraid/dmorado/software/subTOM/bin&quot;</span>
+
+<span class="nv">plot_filter_exec</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">exec_dir</span><span class="si">}</span><span class="s2">/utils/subtom_plot_filter&quot;</span>
+
+<span class="nv">output_fn_prefix</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+
+<span class="nv">box_size</span><span class="o">=</span><span class="s2">&quot;192&quot;</span>
+
+<span class="nv">pixelsize</span><span class="o">=</span><span class="s2">&quot;1.35&quot;</span>
+
+<span class="nv">high_pass_fp</span><span class="o">=</span><span class="s2">&quot;1&quot;</span>
+
+<span class="nv">high_pass_sigma</span><span class="o">=</span><span class="s2">&quot;2&quot;</span>
+
+<span class="nv">low_pass_fp</span><span class="o">=</span><span class="s2">&quot;48&quot;</span>
+
+<span class="nv">low_pass_sigma</span><span class="o">=</span><span class="s2">&quot;3&quot;</span>
+
+<span class="nv">defocus</span><span class="o">=</span><span class="s2">&quot;15000&quot;</span>
+
+<span class="nv">voltage</span><span class="o">=</span><span class="s2">&quot;300&quot;</span>
+
+<span class="nv">cs</span><span class="o">=</span><span class="s2">&quot;2.7&quot;</span>
+
+<span class="nv">ac</span><span class="o">=</span><span class="s2">&quot;0.07&quot;</span>
+
+<span class="nv">phase_shift</span><span class="o">=</span><span class="s2">&quot;0.0&quot;</span>
+
+<span class="nv">b_factor</span><span class="o">=</span><span class="s2">&quot;-130&quot;</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="subtom_plot_scanned_angles.html" class="btn btn-neutral float-right" title="subtom_plot_scanned_angles" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="subtom_preprocess.html" class="btn btn-neutral float-left" title="subtom_preprocess" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Dustin Reed Morado
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

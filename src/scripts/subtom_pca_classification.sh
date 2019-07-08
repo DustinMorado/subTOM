@@ -187,7 +187,7 @@ calculate_ccmatrix=1
 tomo_row=7
 
 # High pass filter (in transform units (pixels): calculate as
-# (boxsize*pixelsize)/(resolution_real) (define as an integer e.g.
+# (box_size*pixelsize)/(resolution_real) (define as an integer e.g.
 # high_pass_fp=2) the filter has a Gaussian drop-off in Fourier pixels specified
 # by high_pass_sigma below.
 high_pass_fp=<HIGH_PASS_FP>
@@ -196,7 +196,7 @@ high_pass_fp=<HIGH_PASS_FP>
 high_pass_sigma=2
 
 # Low pass filter (in transform units (pixels): calculate as
-# (boxsize*pixelsize)/(resolution_real) (define as integer e.g.
+# (box_size*pixelsize)/(resolution_real) (define as integer e.g.
 # low_pass_fp=30), the filter has a Gaussian drop-off in Fourier pixels
 # specified by low_pass_sigma below.
 low_pass_fp=<LOW_PASS_FP>

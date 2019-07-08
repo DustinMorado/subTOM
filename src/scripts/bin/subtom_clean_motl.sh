@@ -82,8 +82,8 @@ export MCR_CACHE_ROOT="${mcr_cache_dir}"
     ${do_edge} \
     tomogram_dir \
     "${tomogram_dir}" \
-    boxsize \
-    ${boxsize} \
+    box_size \
+    ${box_size} \
     write_stats \
     ${write_stats} \
     output_stats_fn \
@@ -100,7 +100,7 @@ printf "# Clean Motive List\n" >> subTOM_protocol.md
 printf -- "-------------------\n" >> subTOM_protocol.md
 printf "| %-25s | %25s |\n" "OPTION" "VALUE" >> subTOM_protocol.md
 printf "|:--------------------------" >> subTOM_protocol.md
-printf "|--------------------------:|\n" >> subTOM_protocol.md
+printf "|:--------------------------|\n" >> subTOM_protocol.md
 printf "| %-25s | %25s |\n" "scratch_dir" "${scratch_dir}" >>\
     subTOM_protocol.md
 
@@ -139,8 +139,8 @@ printf "| %-25s | %25s |\n" "do_edge" "${do_edge}" >> subTOM_protocol.md
 printf "| %-25s | %25s |\n" "tomogram_dir" "${tomogram_dir}" >>\
     subTOM_protocol.md
 
-printf "| %-25s | %25s |\n\n" "boxsize" "${boxsize}" >> subTOM_protocol.md
-printf "| %-25s | %25s |\n" "write_stats" "${write_stats}" >>\
+printf "| %-25s | %25s |\n" "box_size" "${box_size}" >> subTOM_protocol.md
+printf "| %-25s | %25s |\n\n" "write_stats" "${write_stats}" >>\
     subTOM_protocol.md
 
 if [[ "${write_stats}" -eq 1 ]]
