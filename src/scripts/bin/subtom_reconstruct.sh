@@ -135,7 +135,7 @@ fi
 
 if [[ ${do_ctf} -eq 1 ]]
 then
-    cat <<NEWSTCOM>newst.com
+    cat <<NEWSTCOM>subtom_newst.com
 \$${imod_exe_dir}/newstack -StandardInput
 InputFile XXXTOMOGRAMXXX_ctfcorr.st_XXXNUMBERXXX
 OutputFile XXXTOMOGRAMXXX_ctfcorr.ali_XXXNUMBERXXX
@@ -147,7 +147,7 @@ NearestNeighbor
 NEWSTCOM
 
 else
-    cat <<NEWSTCOM>newst.com
+    cat <<NEWSTCOM>subtom_newst.com
 \$${imod_exe_dir}/newstack -StandardInput
 InputFile XXXTOMOGRAMXXX.st
 OutputFile XXXTOMOGRAMXXX.ali
@@ -162,7 +162,7 @@ fi
 
 if [[ ${do_ctf} -eq 1 ]]
 then
-    cat <<GOLDERASECOM>eraser.com
+    cat <<GOLDERASECOM>subtom_eraser.com
 \$${imod_exe_dir}/ccderaser -StandardInput
 InputFile XXXTOMOGRAMXXX_ctfcorr.ali_XXXNUMBERXXX
 OutputFile XXXTOMOGRAMXXX_erased.ali_XXXNUMBERXXX
@@ -175,7 +175,7 @@ CircleObjects /
 GOLDERASECOM
 
 else
-    cat <<GOLDERASECOM>eraser.com
+    cat <<GOLDERASECOM>subtom_eraser.com
 \$${imod_exe_dir}/ccderaser -StandardInput
 InputFile XXXTOMOGRAMXXX.ali
 OutputFile XXXTOMOGRAMXXX_erased.ali
@@ -232,8 +232,8 @@ do
 
     # If we are doing CTF correction then at this point all we can do is
     # nova_defocus.com script, but if we are just doing WBP then we can do the
-    # newst.com, eraser.com, and if we are filtering then nova_filter.com as
-    # well.
+    # subtom_newst.com, subtom_eraser.com, and if we are filtering then
+    # nova_filter.com as well.
     if [[ ${do_ctf} -eq 1 ]]
     then
         sed \
@@ -246,11 +246,11 @@ do
         sed \
             -e "s/XXXTOMOGRAMXXX/${tomo}/g" \
             -e "s/XXXFULLIMAGEXXX/${fullimage}/g" \
-            newst.com > "${tomo_dir}/newst.com"
+            subtom_newst.com > "${tomo_dir}/subtom_newst.com"
 
         sed \
             -e "s/XXXTOMOGRAMXXX/${tomo}/g" \
-            eraser.com > "${tomo_dir}/eraser.com"
+            subtom_eraser.com > "${tomo_dir}/subtom_eraser.com"
 
         if [[ ${do_radial} -eq 1 ]]
         then
@@ -311,12 +311,12 @@ do
                 -e "s/XXXTOMOGRAMXXX/${tomo}/g" \
                 -e "s/XXXNUMBERXXX/${dstep}/g" \
                 -e "s/XXXFULLIMAGEXXX/${fullimage}/g" \
-                newst.com > "${tomo_dir}/newst.com_${dstep}"
+                subtom_newst.com > "${tomo_dir}/subtom_newst.com_${dstep}"
 
             sed \
                 -e "s/XXXTOMOGRAMXXX/${tomo}/g" \
                 -e "s/XXXNUMBERXXX/${dstep}/g" \
-                eraser.com > "${tomo_dir}/eraser.com_${dstep}"
+                subtom_eraser.com > "${tomo_dir}/subtom_eraser.com_${dstep}"
 
         done
     fi
@@ -333,7 +333,7 @@ then
     rm nova_filter.com
 fi
 
-rm nova_reconstruct.com newst.com eraser.com
+rm nova_reconstruct.com subtom_newst.com subtom_eraser.com
 
 ################################################################################
 #                                                                              #
@@ -403,8 +403,8 @@ for dstep in \$(seq 0 ${nsteps})
 do
     (
         "${novactf_exe}" -param nova_ctfcorr.com_\${dstep}
-        "${imod_exe_dir}/submfg" newst.com_\${dstep}
-        "${imod_exe_dir}/submfg" eraser.com_\${dstep}
+        "${imod_exe_dir}/submfg" subtom_newst.com_\${dstep}
+        "${imod_exe_dir}/submfg" subtom_eraser.com_\${dstep}
         "${imod_exe_dir}/mrctaper" -t 100 "${tomo}_erased.ali_\${dstep}"
         "${imod_exe_dir}/clip" flipyz "${tomo}_erased.ali_\${dstep}" \\
             "${tomo}_flipped.ali_\${dstep}"
@@ -435,7 +435,7 @@ RECONSTRUCT
         then
             cat<<RECONSTRUCT>>"${script_fn}"
 
-"${imod_exe_dir}/trimvol" -rx "${tomo}.rec" "${tomo}.bin1.rec"
+"${imod_exe_dir}/trimvol" -rx "${tomo}.rec" "${tomo}.ctf.bin1.rec"
 rm "${tomo}.rec"
 RECONSTRUCT
 
@@ -443,28 +443,28 @@ RECONSTRUCT
         then
             cat<<RECONSTRUCT>>"${script_fn}"
 
-"${imod_exe_dir}/clip" rotx "${tomo}.rec" "${tomo}.bin1.rec"
+"${imod_exe_dir}/clip" rotx "${tomo}.rec" "${tomo}.ctf.bin1.rec"
 rm ${tomo}.rec
 RECONSTRUCT
 
         else
             cat<<RECONSTRUCT>>"${script_fn}"
 
-mv "${tomo}.rec" "${tomo}.bin1.rec"
+mv "${tomo}.rec" "${tomo}.ctf.bin1.rec"
 RECONSTRUCT
 
         fi
 
         cat<<RECONSTRUCT>>"${script_fn}"
 
-"${imod_exe_dir}/binvol" -bin 2 -antialias 5 "${tomo}.bin1.rec" \\
-    "${tomo}.bin2.rec"
+"${imod_exe_dir}/binvol" -bin 2 -antialias 5 "${tomo}.ctf.bin1.rec" \\
+    "${tomo}.ctf.bin2.rec"
 
-"${imod_exe_dir}/binvol" -bin 2 -antialias 5 "${tomo}.bin2.rec" \\
-    "${tomo}.bin4.rec"
+"${imod_exe_dir}/binvol" -bin 2 -antialias 5 "${tomo}.ctf.bin2.rec" \\
+    "${tomo}.ctf.bin4.rec"
 
-"${imod_exe_dir}/binvol" -bin 2 -antialias 5 "${tomo}.bin4.rec" \\
-    "${tomo}.bin8.rec"
+"${imod_exe_dir}/binvol" -bin 2 -antialias 5 "${tomo}.ctf.bin4.rec" \\
+    "${tomo}.ctf.bin8.rec"
 RECONSTRUCT
 
     else
@@ -485,8 +485,8 @@ echo \${HOSTNAME}
 
 cd ${tomo_dir}
 
-"${imod_exe_dir}/submfg" newst.com
-"${imod_exe_dir}/submfg" eraser.com
+"${imod_exe_dir}/submfg" subtom_newst.com
+"${imod_exe_dir}/submfg" subtom_eraser.com
 "${imod_exe_dir}/mrctaper" -t 100 "${tomo}_erased.ali"
 "${imod_exe_dir}/clip" flipyz "${tomo}_erased.ali" "${tomo}_flipped.ali"
 RECONSTRUCT
@@ -506,33 +506,33 @@ RECONSTRUCT
         if [[ ${do_rotate_tomo} -eq 1 && ${do_trimvol} -eq 1 ]]
         then
             cat<<RECONSTRUCT>>"${script_fn}"
-"${imod_exe_dir}/trimvol" -rx "${tomo}.rec" "${tomo}.bin1.rec"
+"${imod_exe_dir}/trimvol" -rx "${tomo}.rec" "${tomo}.nonctf.bin1.rec"
 rm "${tomo}.rec"
 RECONSTRUCT
 
         elif [[ ${do_rotate_tomo} -eq 1 ]]
         then
             cat<<RECONSTRUCT>>"${script_fn}"
-"${imod_exe_dir}/clip" rotx "${tomo}.rec" "${tomo}.bin1.rec"
+"${imod_exe_dir}/clip" rotx "${tomo}.rec" "${tomo}.nonctf.bin1.rec"
 rm "${tomo}.rec"
 RECONSTRUCT
 
         else
             cat<<RECONSTRUCT>>"${script_fn}"
-mv "${tomo}.rec" "${tomo}.bin1.rec"
+mv "${tomo}.rec" "${tomo}.nonctf.bin1.rec"
 RECONSTRUCT
 
         fi
 
         cat<<RECONSTRUCT>>"${script_fn}"
-"${imod_exe_dir}/binvol" -bin 2 -antialias 5 "${tomo}.bin1.rec" \\
-    "${tomo}.bin2.rec"
+"${imod_exe_dir}/binvol" -bin 2 -antialias 5 "${tomo}.nonctf.bin1.rec" \\
+    "${tomo}.nonctf.bin2.rec"
 
-"${imod_exe_dir}/binvol" -bin 2 -antialias 5 "${tomo}.bin2.rec" \\
-    "${tomo}.bin4.rec"
+"${imod_exe_dir}/binvol" -bin 2 -antialias 5 "${tomo}.nonctf.bin2.rec" \\
+    "${tomo}.nonctf.bin4.rec"
 
-"${imod_exe_dir}/binvol" -bin 2 -antialias 5 "${tomo}.bin4.rec" \\
-    "${tomo}.bin8.rec"
+"${imod_exe_dir}/binvol" -bin 2 -antialias 5 "${tomo}.nonctf.bin4.rec" \\
+    "${tomo}.nonctf.bin8.rec"
 RECONSTRUCT
 
     fi
