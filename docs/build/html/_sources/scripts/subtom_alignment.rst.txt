@@ -76,7 +76,7 @@ mem_free_avg
 mem_max_avg
   The upper bound on the amount of memory the averaging job is allowed to use.
 
-OTHER CLUSTER OPTIONS
+Other Cluster Options
 ---------------------
 
 job_name

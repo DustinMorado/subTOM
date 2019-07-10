@@ -1,0 +1,276 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>B-Factor by Subsets &mdash; subTOM 1.0.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="subtom_b_factor_by_subsets" href="../../scripts/subtom_b_factor_by_subsets.html" />
+    <link rel="prev" title="subtom_weighted_average" href="../subtom_weighted_average.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> subTOM
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Table of Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../conventions.html">Conventions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Links to Individual Script Documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/subtom_alignment.html">subtom_alignment.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/subtom_average.html">subtom_average.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/subtom_cat_motls.html">subtom_cat_motls.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/subtom_clean_motl.html">subtom_clean_motl.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/subtom_compare_motls.html">subtom_compare_motls.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/subtom_even_odd_motl.html">subtom_even_odd_motl.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/subtom_extract_noise.html">subtom_extract_noise.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/subtom_extract_subtomograms.html">subtom_extract_subtomograms.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/subtom_maskcorrected_fsc.html">subtom_maskcorrected_fsc.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/subtom_preprocess.html">subtom_preprocess.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/subtom_plot_filter.html">subtom_plot_filter.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/subtom_plot_scanned_angles.html">subtom_plot_scanned_angles.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/subtom_reconstruct.html">subtom_reconstruct.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/subtom_scale_motl.html">subtom_scale_motl.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/subtom_seed_positions.html">subtom_seed_positions.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/subtom_shape.html">subtom_shape.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/subtom_split_motl_by_row.html">subtom_split_motl_by_row.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/subtom_transform_motl.html">subtom_transform_motl.sh</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Links to Individual Function Documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../subtom_cat_motls.html">subtom_cat_motls.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../subtom_clean_motl.html">subtom_clean_motl.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../subtom_compare_motls.html">subtom_compare_motls.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../subtom_even_odd_motl.html">subtom_even_odd_motl.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../subtom_extract_noise.html">subtom_extract_noise.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../subtom_extract_subtomograms.html">subtom_extract_subtomograms.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../subtom_maskcorrected_fsc.html">subtom_maskcorrected_fsc.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../subtom_parallel_sums.html">subtom_parallel_sums.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../subtom_plot_filter.html">subtom_plot_filter.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../subtom_plot_scanned_angles.html">subtom_plot_scanned_angles.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../subtom_scale_motl.html">subtom_scale_motl.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../subtom_scan_angles_exact.html">subtom_scan_angles_exact.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../subtom_seed_positions.html">subtom_seed_positions.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../subtom_shape.html">subtom_shape.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../subtom_split_motl_by_row.html">subtom_split_motl_by_row.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../subtom_transform_motl.html">subtom_transform_motl.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../subtom_weighted_average.html">subtom_weighted_average.m</a></li>
+</ul>
+<p class="caption"><span class="caption-text">B-Factor by Subsets Documentation:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/subtom_b_factor_by_subsets.html">subtom_b_factor_by_subsets.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_maskcorrected_fsc.html">subtom_maskcorrected_fsc.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_parallel_sums.html">subtom_parallel_sums.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subtom_weighted_average.html">subtom_weighted_average.m</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">subTOM</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+      <li>B-Factor by Subsets</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/functions/b_factor_by_subsets/introduction.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="b-factor-by-subsets">
+<h1>B-Factor by Subsets<a class="headerlink" href="#b-factor-by-subsets" title="Permalink to this headline">¶</a></h1>
+<p>To estimate the B-factor in maps of low to intermediate resolution, Guinier plot
+analysis is unsuitable because the structure factor dominates the appearance and
+slope of the amplitude decay at resolutions up to 10 Angstroms.</p>
+<p>Therefore another way to estimate the B-factor is to look at how the Resolution
+decays over smaller and smaller subsets of the particles that form each
+half-map. A linear function is fit to the reciprocal square of resolutions
+determined by Gold-standard FSCs against the natural log of asymmetric units.</p>
+<p>The method is described in detail in Rosenthal, Henderson 2003, and here the
+averaging and analysis functions <code class="docutils literal notranslate"><span class="pre">subtom_maskcorrected_fsc</span></code>,
+<code class="docutils literal notranslate"><span class="pre">subtom_parallel_sums</span></code>, and <code class="docutils literal notranslate"><span class="pre">subtom_weighted_average</span></code> have been slightly
+modified to first generate the average of successively smaller subsets, with
+each subset being roughly half of the subset before it until the subset would be
+less than 128 particles. Then the resolution of each subset is determined and
+the B-factor is estimated and this estimate B-factor can then be used to sharpen
+the final post-processed map.</p>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../scripts/subtom_b_factor_by_subsets.html" class="btn btn-neutral float-right" title="subtom_b_factor_by_subsets" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../subtom_weighted_average.html" class="btn btn-neutral float-left" title="subtom_weighted_average" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Dustin Reed Morado
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -42,5 +42,5 @@ See Also
 
 * :doc:`subtom_extract_noise`
 * :doc:`subtom_extract_subtomograms`
-* :doc::`subtom_parallel_sums`
+* :doc:`subtom_parallel_sums`
 * :doc:`subtom_scan_angles_exact`

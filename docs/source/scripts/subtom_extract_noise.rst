@@ -62,7 +62,7 @@ mem_max
   will kill the process. This is more of an option for safety of the cluster to
   prevent the user from crashing the cluster requesting too much memory.
 
-OTHER CLUSTER OPTIONS
+Other Cluster Options
 ---------------------
 
 job_name
