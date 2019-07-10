@@ -332,7 +332,7 @@ function subtom_parallel_sums(varargin)
 
         % Check class of current subtomogram and skip if it doesn't belong to
         % iclass 1 or the iclass the user has given.
-        if allmotl(20, ptcl_idx) ~= 1 && allmotl(20, ptcl_idx) ~= iclass
+        if all_motl(20, ptcl_idx) ~= 1 && all_motl(20, ptcl_idx) ~= iclass
 
             % Display some output
             [delprog, timings] = subtom_display_progress(delprog, timings, ...
@@ -344,7 +344,7 @@ function subtom_parallel_sums(varargin)
         end
 
         % Read in subtomogram
-        ptcl_fn = sprintf('%s_%d.em', ptcl_fn_prefix, all_motl(ptcl_idx));
+        ptcl_fn = sprintf('%s_%d.em', ptcl_fn_prefix, all_motl(4, ptcl_idx));
 
         if exist(ptcl_fn, 'file') ~= 2
             try

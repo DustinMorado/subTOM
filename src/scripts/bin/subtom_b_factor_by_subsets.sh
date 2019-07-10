@@ -16,6 +16,7 @@
 ################################################################################
 set -e           # Crash on error
 set -o nounset   # Crash on unset variables
+set +o noclobber # Turn off preventing BASH overwriting files
 unset ml
 unset module
 
@@ -33,18 +34,39 @@ then
     mkdir -p "${mcr_cache_dir}"
 fi
 
-ref_dir="${scratch_dir}/$(dirname "${ref_fn_prefix}")"
+all_motl_a_dir="${scratch_dir}/$(dirname "${all_motl_a_fn_prefix}")"
+all_motl_a_base="$(basename "${all_motl_a_fn_prefix}")"
+all_motl_b_dir="${scratch_dir}/$(dirname "${all_motl_b_fn_prefix}")"
+all_motl_b_base="$(basename "${all_motl_b_fn_prefix}")"
 
-if [[ ! -d "${ref_dir}" ]]
+ref_a_dir="${scratch_dir}/$(dirname "${ref_a_fn_prefix}")"
+ref_a_base="$(basename "${ref_a_fn_prefix}")"
+ref_b_dir="${scratch_dir}/$(dirname "${ref_b_fn_prefix}")"
+ref_b_base="$(basename "${ref_b_fn_prefix}")"
+
+if [[ ! -d "${ref_a_dir}" ]]
 then
-    mkdir -p "${ref_dir}"
+    mkdir -p "${ref_a_dir}"
 fi
 
-weight_sum_dir="${scratch_dir}/$(dirname "${weight_sum_fn_prefix}")"
-
-if [[ ! -d "${scratch_dir}/${weight_sum_dir}" ]]
+if [[ ! -d "${ref_a_dir}" ]]
 then
-    mkdir -p "${scratch_dir}/${weight_sum_dir}"
+    mkdir -p "${ref_a_dir}"
+fi
+
+weight_sum_a_dir="${scratch_dir}/$(dirname "${weight_sum_a_fn_prefix}")"
+weight_sum_a_base="$(basename "${weight_sum_a_fn_prefix}")"
+weight_sum_b_dir="${scratch_dir}/$(dirname "${weight_sum_b_fn_prefix}")"
+weight_sum_b_base="$(basename "${weight_sum_b_fn_prefix}")"
+
+if [[ ! -d "${weight_sum_a_dir}" ]]
+then
+    mkdir -p "${weight_sum_a_dir}"
+fi
+
+if [[ ! -d "${weight_sum_b_dir}" ]]
+then
+    mkdir -p "${weight_sum_b_dir}"
 fi
 
 job_name_sums="${job_name}_b_factor_sums_${iteration}"
@@ -64,6 +86,8 @@ then
     rm -f "log_${job_name_sums}"_*
 fi
 
+job_name_avg="${job_name}_b_factor_average_${iteration}"
+
 if [[ ${mem_free%G} -ge 48 ]]
 then
     dedmem=',dedicated=24'
@@ -82,19 +106,6 @@ fi
 
 # Calculate number of job scripts needed
 num_avg_jobs=$(((num_avg_batch + array_max - 1) / array_max))
-
-# Since we are generating subset averages in two halfsets
-ref_a_fn_prefix="${ref_fn_prefix}_a"
-ref_b_fn_prefix="${ref_fn_prefix}_b"
-
-ref_a_base="$(basename "${ref_a_fn_prefix}_${iteration}")"
-ref_b_base="$(basename "${ref_b_fn_prefix}_${iteration}")"
-
-weight_sum_a_fn_prefix="${weight_sum_fn_prefix}_a"
-weight_sum_b_fn_prefix="${weight_sum_fn_prefix}_b"
-
-weight_sum_a_base="$(basename "${weight_sum_a_fn_prefix}_${iteration}")"
-weight_sum_b_base="$(basename "${weight_sum_b_fn_prefix}_${iteration}")"
 
 # Loop to generate parallel alignment scripts
 for ((job_idx = 1, array_start = 1; \
@@ -148,9 +159,9 @@ export LD_LIBRARY_PATH="\${ldpath}"
         ref_fn_prefix \\
         "${scratch_dir}/${ref_a_fn_prefix}" \\
         ptcl_fn_prefix \\
-        "${scratch_dir}/${ptcl_fn_prefix}" \\
+        "${scratch_dir}/${ptcl_a_fn_prefix}" \\
         weight_fn_prefix \\
-        "${scratch_dir}/${weight_fn_prefix}" \\
+        "${scratch_dir}/${weight_a_fn_prefix}" \\
         weight_sum_fn_prefix \\
         "${scratch_dir}/${weight_sum_a_fn_prefix}" \\
         iteration \\
@@ -170,9 +181,9 @@ export LD_LIBRARY_PATH="\${ldpath}"
         ref_fn_prefix \\
         "${scratch_dir}/${ref_b_fn_prefix}" \\
         ptcl_fn_prefix \\
-        "${scratch_dir}/${ptcl_fn_prefix}" \\
+        "${scratch_dir}/${ptcl_b_fn_prefix}" \\
         weight_fn_prefix \\
-        "${scratch_dir}/${weight_fn_prefix}" \\
+        "${scratch_dir}/${weight_b_fn_prefix}" \\
         weight_sum_fn_prefix \\
         "${scratch_dir}/${weight_sum_b_fn_prefix}" \\
         iteration \\
@@ -191,43 +202,47 @@ export LD_LIBRARY_PATH="\${ldpath}"
 ###"log_${job_name_sums}_${job_idx}"
 PSUMJOB
 
+    num_complete_a=$(find "${ref_a_dir}" -regex \
+        ".*/${ref_a_base}_${iteration}_[0-9]+_subset1.em" | wc -l)
+
+    num_complete_a_prev=0
+    unchanged_count_a=0
+
+    num_complete_b=$(find "${ref_b_dir}" -regex \
+        ".*/${ref_b_base}_${iteration}_[0-9]+_subset1.em" | wc -l)
+
+    num_complete_b_prev=0
+    unchanged_count_b=0
+
     chmod u+x "${job_name_sums}_${job_idx}"
 
-    if [[ "${run_local}" -eq 1 ]]
+    if [[ "${run_local}" -eq 1 && (${num_complete_a} -lt ${num_avg_batch} \
+        || ${num_complete_b} -lt ${num_avg_batch}) ]]
     then
         sed -i 's/\#\#\#//' "${job_name_sums}_${job_idx}"
         "./${job_name_sums}_${job_idx}" &
-    else
+    elif [[ ${num_complete_a} -lt ${num_avg_batch} \
+        || ${num_complete_b} -lt ${num_avg_batch} ]]
+    then
         qsub "${job_name_sums}_${job_idx}"
     fi
 done
 
-echo "STARTING Parallel Average in Iteration Number: ${iteration}"
+echo "STARTING B-factor Subsets Sums in Iteration Number: ${iteration}"
 ################################################################################
 #                         PARALLEL AVERAGING PROGRESS                          #
 ################################################################################
 
-num_complete_a=$(find "${ref_dir}" -name "${ref_a_base}_[0-9]*.em" |\
-    wc -l)
-
-num_complete_b=$(find "${ref_dir}" -name "${ref_b_base}_[0-9]*.em" |\
-    wc -l)
-
-num_complete_prev_a=0
-num_complete_prev_b=0
-unchanged_count_a=0
-unchanged_count_b=0
-
-while [[ ${num_complete_a} -lt ${num_avg_batch} && \
+while [[ ${num_complete_a} -lt ${num_avg_batch} || \
     ${num_complete_b} -lt ${num_avg_batch} ]]
 do
-    num_complete_a=$(find "${ref_dir}" -name "${ref_a_base}_*.em" |\
-        wc -l)
+    num_complete_a=$(find "${ref_a_dir}" -regex \
+        ".*/${ref_a_base}_${iteration}_[0-9]+_subset1.em" | wc -l)
 
-    num_complete_a=$(find "${ref_dir}" -name "${ref_a_base}_*.em" |\
-        wc -l)
+    num_complete_b=$(find "${ref_b_dir}" -regex \
+        ".*/${ref_b_base}_${iteration}_[0-9]+_subset1.em" | wc -l)
 
-    if [[ ${num_complete_a} -eq ${num_complete_prev_a} ]]
+    if [[ ${num_complete_a} -eq ${num_complete_a_prev} ]]
     then
         unchanged_count_a=$((unchanged_count_a + 1))
     else
@@ -236,7 +251,7 @@ do
 
     num_complete_prev_a=${num_complete_a}
 
-    if [[ ${num_complete_b} -eq ${num_complete_prev_b} ]]
+    if [[ ${num_complete_b} -eq ${num_complete_b_prev} ]]
     then
         unchanged_count_b=$((unchanged_count_b + 1))
     else
@@ -245,25 +260,29 @@ do
 
     num_complete_prev_b=${num_complete_b}
 
-    if [[ ${num_complete_a} -gt 0 && ${unchanged_count_a} -gt 120 ]]
+    if [[ (${num_complete_a} -gt 0 && ${unchanged_count_a} -gt 120) || \
+        (${num_complete_b} -gt 0 && ${unchanged_count_b} -gt 120) ]]
     then
         echo "Parallel averaging has seemed to stall"
         echo "Please check error logs and resubmit the job if neeeded."
         exit 1
     fi
 
-    if [[ -f "error_${job_name_sums}_${iteration}_1" ]]
+    if [[ -f "error_${job_name_sums}_1" ]]
     then
-        echo -e "\nERROR Update: Averaging iteration ${iteration}\n"
-        tail "error_${job_name_sums}_${iteration}"_*
+        echo -e "\nERROR Update: B-factor Sums iteration ${iteration}\n"
+        tail "error_${job_name_sums}"_*
     fi
 
-    if [[ -f "log_${job_name_sums}_${iteration}_1" ]]
+    if [[ -f "log_${job_name_sums}_1" ]]
     then
-        echo -e "\nLOG Update: Averaging iteration ${iteration}\n"
-        tail "log_${job_name_sums}_${iteration}"_*
+        echo -e "\nLOG Update: B-factor Sums iteration ${iteration}\n"
+        tail "log_${job_name_sums}"_*
     fi
 
+    echo -e "\nSTATUS Update: B-factor Sums iteration ${iteration}\n"
+    echo -e "\t${num_complete_a} parallel sums A out of ${num_avg_batch}\n"
+    echo -e "\t${num_complete_b} parallel sums B out of ${num_avg_batch}\n"
     sleep 60s
 done
 
@@ -291,112 +310,91 @@ then
     mv -f "error_${job_name_sums}"_* b_factor_${iteration}/.
 fi
 
-echo "FINISHED Parallel Average in Iteration Number: ${iteration}"
+echo "FINISHED B-factor Subsets Sums in Iteration Number: ${iteration}"
 
 ################################################################################
 #                                FINAL AVERAGE                                 #
 ################################################################################
 
-job_name_avg="${job_name}_b_factor_avg_${iteration}"
-
-cat > "${job_name_avg}" <<-AVGJOB
-#!/bin/bash
-set +o noclobber
-set -e
-
 ldpath="XXXMCR_DIRXXX/runtime/glnxa64"
-ldpath="\${ldpath}:XXXMCR_DIRXXX/bin/glnxa64"
-ldpath="\${ldpath}:XXXMCR_DIRXXX/sys/os/glnxa64"
-ldpath="\${ldpath}:XXXMCR_DIRXXX/sys/opengl/lib/glnxa64"
-export LD_LIBRARY_PATH="\${ldpath}"
+ldpath="${ldpath}:XXXMCR_DIRXXX/bin/glnxa64"
+ldpath="${ldpath}:XXXMCR_DIRXXX/sys/os/glnxa64"
+ldpath="${ldpath}:XXXMCR_DIRXXX/sys/opengl/lib/glnxa64"
+export LD_LIBRARY_PATH="${ldpath}"
 
-mcr_cache_dir="${mcr_cache_dir}/${job_name_avg}"
+mcr_cache_dir_avg="${mcr_cache_dir}/${job_name_avg}"
 
-if [[ ! -d "\${mcr_cache_dir}" ]]
+if [[ ! -d "${mcr_cache_dir_avg}" ]]
 then
-    mkdir -p "\${mcr_cache_dir}"
+    mkdir -p "${mcr_cache_dir_avg}"
 else
-    rm -rf "\${mcr_cache_dir}"
-    mkdir -p "\${mcr_cache_dir}"
+    rm -rf "${mcr_cache_dir_avg}"
+    mkdir -p "${mcr_cache_dir_avg}"
 fi
 
-export MCR_CACHE_ROOT="\${mcr_cache_dir}"
+export MCR_CACHE_ROOT="${mcr_cache_dir_avg}"
 
-"${avg_exec}" \\
-    all_motl_fn_prefix \\
-    "${scratch_dir}/${all_motl_a_fn_prefix}" \\
-    ref_fn_prefix \\
-    "${scratch_dir}/${ref_a_fn_prefix}" \\
-    weight_sum_fn_prefix \\
-    "${scratch_dir}/${weight_sum_a_fn_prefix}" \\
-    iteration \\
-    "${iteration}" \\
-    iclass \\
-    "${iclass}" \\
-    num_avg_batch \\
+"${avg_exec}" \
+    all_motl_fn_prefix \
+    "${scratch_dir}/${all_motl_a_fn_prefix}" \
+    ref_fn_prefix \
+    "${scratch_dir}/${ref_a_fn_prefix}" \
+    weight_sum_fn_prefix \
+    "${scratch_dir}/${weight_sum_a_fn_prefix}" \
+    iteration \
+    "${iteration}" \
+    iclass \
+    "${iclass}" \
+    num_avg_batch \
     "${num_avg_batch}"
 
-"${avg_exec}" \\
-    all_motl_fn_prefix \\
-    "${scratch_dir}/${all_motl_b_fn_prefix}" \\
-    ref_fn_prefix \\
-    "${scratch_dir}/${ref_b_fn_prefix}" \\
-    weight_sum_fn_prefix \\
-    "${scratch_dir}/${weight_sum_b_fn_prefix}" \\
-    iteration \\
-    "${iteration}" \\
-    iclass \\
-    "${iclass}" \\
-    num_avg_batch \\
+"${avg_exec}" \
+    all_motl_fn_prefix \
+    "${scratch_dir}/${all_motl_b_fn_prefix}" \
+    ref_fn_prefix \
+    "${scratch_dir}/${ref_b_fn_prefix}" \
+    weight_sum_fn_prefix \
+    "${scratch_dir}/${weight_sum_b_fn_prefix}" \
+    iteration \
+    "${iteration}" \
+    iclass \
+    "${iclass}" \
+    num_avg_batch \
     "${num_avg_batch}"
 
-rm -rf "\${mcr_cache_dir}"
-AVGJOB
-
-chmod u+x "${job_name_avg}"
-
-"./${job_name_avg}" 2> "error_${job_name_avg}" |\
-    tee "log_${job_name_avg}"
+rm -rf "${mcr_cache_dir_avg}"
 
 ################################################################################
 #                            FINAL AVERAGE CLEAN UP                            #
 ################################################################################
 
-if [[ -e "${job_name_avg}" ]]
-then
-    mv "${job_name_avg}" b_factor_${iteration}/.
-fi
+find "${ref_a_dir}" -regex \
+    ".*/${ref_a_base}_${iteration}_[0-9]+_subset[0-9]+.em" -delete
 
-if [[ -e "log_${job_name_avg}" ]]
-then
-    mv "log_${job_name_avg}" b_factor_${iteration}/.
-fi
+find "${ref_b_dir}" -regex \
+    ".*/${ref_b_base}_${iteration}_[0-9]+_subset[0-9]+.em" -delete
 
-if [[ -e "error_${job_name_avg}" ]]
-then
-    mv "error_${job_name_avg}" b_factor_${iteration}/.
-fi
+find "${weight_sum_a_dir}" -regex \
+    ".*/${weight_sum_a_base}_${iteration}_[0-9]+_subset[0-9]+.em" -delete
 
-find "${ref_dir}" -name "${ref_a_base}_[0-9]*.em" -delete
-find "${ref_dir}" -name "${ref_b_base}_[0-9]*.em" -delete
-find "${weight_sum_dir}" -name "${weight_sum_a_base}_[0-9]*.em" -delete
-find "${weight_sum_dir}" -name "${weight_sum_b_base}_[0-9]*.em" -delete
+find "${weight_sum_b_dir}" -regex \
+    ".*/${weight_sum_b_base}_${iteration}_[0-9]+_subset[0-9]+.em" -delete
 
-echo "FINISHED Final Average in Iteration Number: ${iteration}"
+echo "FINISHED B-factor Subsets Average in Iteration Number: ${iteration}"
 echo "AVERAGE DONE IN ITERATION NUMBER ${iteration}"
 
 ################################################################################
 #                              MASK CORRECTED FSC                              #
 ################################################################################
 
-mcr_cache_dir="${mcr_cache_dir}/maskcorrected_FSC"
+mcr_cache_dir_fsc="${mcr_cache_dir}/maskcorrected_FSC"
 
-if [[ ! -d "${mcr_cache_dir}" ]]
+if [[ ! -d "${mcr_cache_dir_fsc}" ]]
 then
-    mkdir -p "${mcr_cache_dir}"
+    mkdir -p "${mcr_cache_dir_fsc}"
 else
-    rm -rf "${mcr_cache_dir}"
-    mkdir -p "${mcr_cache_dir}"
+    rm -rf "${mcr_cache_dir_fsc}"
+    mkdir -p "${mcr_cache_dir_fsc}"
 fi
 
 ldpath="XXXMCR_DIRXXX/runtime/glnxa64"
@@ -405,7 +403,7 @@ ldpath="${ldpath}:XXXMCR_DIRXXX/sys/os/glnxa64"
 ldpath="${ldpath}:XXXMCR_DIRXXX/sys/opengl/lib/glnxa64"
 export LD_LIBRARY_PATH="${ldpath}"
 
-export MCR_CACHE_ROOT="${mcr_cache_dir}"
+export MCR_CACHE_ROOT="${mcr_cache_dir_fsc}"
 
 "${fsc_exec}" \
     ref_a_fn_prefix \
@@ -413,15 +411,15 @@ export MCR_CACHE_ROOT="${mcr_cache_dir}"
     ref_b_fn_prefix \
     "${scratch_dir}/${ref_b_fn_prefix}" \
     motl_a_fn_prefix \
-    "${scratch_dir}/${motl_a_fn_prefix}" \
+    "${scratch_dir}/${all_motl_a_fn_prefix}" \
     motl_b_fn_prefix \
-    "${scratch_dir}/${motl_b_fn_prefix}" \
+    "${scratch_dir}/${all_motl_b_fn_prefix}" \
     iteration \
     "${iteration}" \
     fsc_mask_fn \
     "${scratch_dir}/${fsc_mask_fn}" \
     output_fn_prefix \
-    "${scratch_dir}/${ref_fn_prefix}" \
+    "${scratch_dir}/${output_fn_prefix}" \
     filter_a_fn \
     "${scratch_dir}/${filter_a_fn}" \
     filter_b_fn \
@@ -449,7 +447,7 @@ export MCR_CACHE_ROOT="${mcr_cache_dir}"
     iclass \
     "${iclass}"
 
-rm -rf "${mcr_cache_dir}"
+rm -rf "${mcr_cache_dir_fsc}"
 
 if [[ ! -f subTOM_protocol.md ]]
 then
@@ -481,32 +479,41 @@ printf "| %-25s | %25s |\n" "iteration" "${iteration}" >> subTOM_protocol.md
 printf "| %-25s | %25s |\n" "num_avg_batch" "${num_avg_batch}" >>\
     subTOM_protocol.md
 
-printf "| %-25s | %25s |\n" "num_avg_batch" "${num_avg_batch}" >>\
+printf "| %-25s | %25s |\n" "all_motl_a_fn_prefix" "${all_motl_a_fn_prefix}" >>\
     subTOM_protocol.md
 
-printf "| %-25s | %25s |\n" "all_motl_fn" \
-    "${all_motl_fn_prefix}_${iteration}.em" >> subTOM_protocol.md
-
-printf "| %-25s | %25s |\n" "ref_fn" "${ref_fn_prefix}_${iteration}.em" >>\
+printf "| %-25s | %25s |\n" "all_motl_b_fn_prefix" "${all_motl_b_fn_prefix}" >>\
     subTOM_protocol.md
 
-printf "| %-25s | %25s |\n" "ptcl_fn_prefix" "${ptcl_fn_prefix}" >>\
+printf "| %-25s | %25s |\n" "ref_a_fn_prefix" "${ref_a_fn_prefix}" >>\
     subTOM_protocol.md
 
-printf "| %-25s | %25s |\n" "weight_fn_prefix" "${weight_fn_prefix}" >>\
+printf "| %-25s | %25s |\n" "ref_b_fn_prefix" "${ref_b_fn_prefix}" >>\
     subTOM_protocol.md
 
-printf "| %-25s | %25s |\n" "weight_sum_fn_prefix" "${weight_sum_fn_prefix}" >>\
+printf "| %-25s | %25s |\n" "ptcl_a_fn_prefix" "${ptcl_a_fn_prefix}" >>\
+    subTOM_protocol.md
+
+printf "| %-25s | %25s |\n" "ptcl_b_fn_prefix" "${ptcl_b_fn_prefix}" >>\
+    subTOM_protocol.md
+
+printf "| %-25s | %25s |\n" "weight_a_fn_prefix" "${weight_a_fn_prefix}" >>\
+    subTOM_protocol.md
+
+printf "| %-25s | %25s |\n" "weight_b_fn_prefix" "${weight_b_fn_prefix}" >>\
+    subTOM_protocol.md
+
+printf "| %-25s | %25s |\n" "weight_sum_a_fn_prefix" \
+    "${weight_sum_a_fn_prefix}" >> subTOM_protocol.md
+
+printf "| %-25s | %25s |\n" "weight_sum_b_fn_prefix" \
+    "${weight_sum_b_fn_prefix}" >> subTOM_protocol.md
+
+printf "| %-25s | %25s |\n" "output_fn_prefix" "${output_fn_prefix}" >>\
     subTOM_protocol.md
 
 printf "| %-25s | %25s |\n" "tomo_row" "${tomo_row}" >> subTOM_protocol.md
 printf "| %-25s | %25s |\n" "iclass" "${iclass}" >> subTOM_protocol.md
-printf "| %-25s | %25s |\n" "ref_a_fn" "${ref_a_fn_prefix}_${iteration}.em" >>\
-    subTOM_protocol.md
-
-printf "| %-25s | %25s |\n" "ref_b_fn" "${ref_b_fn_prefix}_${iteration}.em" >>\
-    subTOM_protocol.md
-
 printf "| %-25s | %25s |\n" "fsc_mask_fn" "${fsc_mask_fn}" >> subTOM_protocol.md
 printf "| %-25s | %25s |\n" "filter_a_fn" "${filter_a_fn}" >> subTOM_protocol.md
 printf "| %-25s | %25s |\n" "filter_b_fn" "${filter_b_fn}" >> subTOM_protocol.md
@@ -517,7 +524,6 @@ printf "| %-25s | %25s |\n" "rand_threshold" "${rand_threshold}" >>\
 
 printf "| %-25s | %25s |\n" "plot_fsc" "${plot_fsc}" >> subTOM_protocol.md
 printf "| %-25s | %25s |\n" "do_sharpen" "${do_sharpen}" >> subTOM_protocol.md
-printf "| %-25s | %25s |\n" "b_factor" "${b_factor}" >> subTOM_protocol.md
 printf "| %-25s | %25s |\n" "box_gaussian" "${box_gaussian}" >>\
     subTOM_protocol.md
 

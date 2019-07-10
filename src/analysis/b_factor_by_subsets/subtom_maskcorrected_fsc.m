@@ -845,8 +845,9 @@ function subtom_maskcorrected_fsc(varargin)
 
     fsc_axes = axes(fsc_fig);
     hold(fsc_axes, 'on');
-    fsc_xticks = 1:3:n_shells;
-    fsc_resolutions = (box_size(1) * pixelsize) ./ (fsc_xticks - 1);
+    fsc_xrange = [0:cartesian_origin] ./ (box_size(1) * pixelsize);
+    fsc_xticks = [0:3:cartesian_origin] ./ (box_size(1) * pixelsize);
+    fsc_resolutions = 1 ./ fsc_xticks;
     fsc_xlabels = arrayfun(@(x) sprintf('%6.2f', x), fsc_resolutions, ...
         'UniformOutput', 0);
 
@@ -855,8 +856,10 @@ function subtom_maskcorrected_fsc(varargin)
         'UniformOutput', 0);
 
     for subset_idx = 1:num_subsets
-        plot(1:n_shells, corrected_fsc_cell{subset_idx}, 'LineStyle', '-', ...
-            'DisplayName', sprintf('Corrected FSC %d', subset_idx));
+        plot(fsc_axes, fsc_xrange, corrected_fsc_cell{subset_idx}, ...
+            'LineStyle', '-', ...
+            'DisplayName', sprintf('Corrected FSC %d - %6.2f \x212B', ...
+                subset_idx, resolutions(subset_idx)));
     end
 
     title(fsc_axes, sprintf('Final Resolution = %6.2f \x212B', ...
@@ -876,16 +879,23 @@ function subtom_maskcorrected_fsc(varargin)
     set(fsc_fig, 'Position', [0, 0, 800, 600]);
     saveas(fsc_fig, sprintf('%s_subset_FSC', output_fn_prefix), 'fig')
     saveas(fsc_fig, sprintf('%s_subset_FSC', output_fn_prefix), 'pdf')
+    saveas(fsc_fig, sprintf('%s_subset_FSC', output_fn_prefix), 'png')
 
     if ~plot_fsc
+        pause(10);
         close(fsc_fig);
+    else
+        waitfor(fsc_fig);
     end
+
 
     % Estimate the B-Factor using the plot of inverse resolutions squared
     % (1 / d^2) against the log of the number of asymmetric particles used
     % (log10(N))
-    b_factor_domain = log(arrayfun(@(subset_idx) ...
-        sum(mod(1:num_good_ptcls, 2^(subset_idx - 1)) == 0), 1:num_subsets));
+    b_factor_domain = arrayfun(@(subset_idx) ...
+        sum(mod(1:num_good_ptcls, 2^(subset_idx - 1)) == 0), 1:num_subsets);
+
+    b_factor_domain = log(b_factor_domain .* nfold);
 
     b_factor_range = 1 ./ (resolutions.^2);
 
@@ -897,7 +907,7 @@ function subtom_maskcorrected_fsc(varargin)
 
     b_factor_slope = b_factor_covariance / domain_variance;
     b_factor_intercept = range_mean - (b_factor_slope * domain_mean);
-    b_factor = 2.0 / b_factor_slope;
+    b_factor = -round(1.0 / b_factor_slope);
 
     % Plot corrected FSC
     if plot_fsc
@@ -908,48 +918,58 @@ function subtom_maskcorrected_fsc(varargin)
 
     b_factor_axes = axes(b_factor_fig);
     hold(b_factor_axes, 'on');
-    b_factor_xticks = arrayfun(@(x) (x ./ (box_size(1) * pixelsize)).^2, ...
-        1:3:n_shells);
+    b_factor_xticks = linspace(0, 1 / (2 * pixelsize)^2, ...
+        length(0:3:cartesian_origin));
 
     b_factor_xlabels = arrayfun(@(x) sprintf('%6.2f', sqrt(1 / x)), ...
         b_factor_xticks, 'UniformOutput', 0);
 
-    b_factor_yticks = arrayfun(@(x) 10^x, 0:6);
-    b_factor_ylabels = arrayfun(@(x) sprintf('%d', x), b_factor_yticks, ...
-        'UniformOutput', 0);
+    b_factor_yticks = arrayfun(@(x) log(10^x * nfold), 0:6);
+    b_factor_ylabels = arrayfun(@(x) sprintf('%d', round(exp(x) / nfold)), ...
+        b_factor_yticks, 'UniformOutput', 0);
 
-    plot(b_factor_axes, b_factor_range, b_factor_domain, 'o', ...
-        'DisplayName', 'Subsets');
+    for subset_idx = 1:num_subsets
+        num_ptcls = sum(mod(1:num_good_ptcls, 2^(subset_idx - 1)) == 0);
+        plot(b_factor_axes, b_factor_range(subset_idx), ...
+            b_factor_domain(subset_idx), 'o', ...
+            'DisplayName', sprintf('%6.2f \x212B, %d', ...
+            resolutions(subset_idx), num_ptcls));
 
-    fit_range = ((0:(n_shells - 1)) ./ (box_size(1) * pixelsize)).^2;
-    fit_domain = (fit_range - b_factor_intercept) ./ b_factor_slope;
-    plot(b_factor_axes, fit_range, fit_domain, '-', ...
-        'DisplayName', 'B-Factor Fit');
+    end
+
+    fit_domain = [b_factor_yticks(1), b_factor_yticks(end)];
+    fit_range = fit_domain .* b_factor_slope + b_factor_intercept;
+    plot(b_factor_axes, fit_range, fit_domain, 'DisplayName', 'B-Factor Fit');
 
     title(b_factor_axes, sprintf('Estimated B-Factor = %d', ...
-        b_factor);
+        b_factor));
 
-    ylabel(b_factor_axes, 'Particle Number');
+    ylabel(b_factor_axes, sprintf('log(Number of Particles * %d)', nfold));
     xlabel(b_factor_axes, sprintf('Resolution [\x212B^{-2}]'));
     xticks(b_factor_axes, b_factor_xticks);
     xticklabels(b_factor_axes, b_factor_xlabels);
     b_factor_axes.XTickLabelRotation = 45;
+    xlim(b_factor_axes, [b_factor_xticks(1), b_factor_xticks(end)]);
     yticks(b_factor_axes, b_factor_yticks);
     yticklabels(b_factor_axes, b_factor_ylabels);
-    set(b_factor_axes, 'yscale', 'log');
+    ylim(b_factor_axes, [b_factor_yticks(1), b_factor_yticks(end)]);
     set(b_factor_axes, 'YDir', 'reverse');
     grid(b_factor_axes, 'on');
-    legend(b_factor_axes, 'Location', 'southoutside', ...
-        'Orientation', 'horizontal');
+    legend(b_factor_axes, 'Location', 'eastoutside', ...
+        'Orientation', 'vertical');
 
     legend('boxoff');
     set(b_factor_fig, 'PaperPositionMode', 'auto');
     set(b_factor_fig, 'Position', [0, 0, 800, 600]);
     saveas(b_factor_fig, sprintf('%s_subset_b_factor', output_fn_prefix), 'fig')
     saveas(b_factor_fig, sprintf('%s_subset_b_factor', output_fn_prefix), 'pdf')
+    saveas(b_factor_fig, sprintf('%s_subset_b_factor', output_fn_prefix), 'png')
 
     if ~plot_fsc
+        pause(10);
         close(b_factor_fig);
+    else
+        waitfor(b_factor_fig);
     end
 
     if do_sharpen == 1
@@ -985,7 +1005,8 @@ function subtom_maskcorrected_fsc(varargin)
         subtom_check_em_file(ref_fn, -ref);
 
         % Sharpen reference
-        sharp_ref = subtom_sharpen('reference', ref, 'b_factor', b_factor, ...
+        sharp_ref = subtom_sharpen('reference', ref, ...
+            'b_factor', b_factor, ...
             'fsc', corrected_fsc_cell{1}, 'pixelsize', pixelsize, ...
             'filter_mode', filter_mode, ...
             'filter_threshold', filter_threshold, ...
@@ -993,7 +1014,7 @@ function subtom_maskcorrected_fsc(varargin)
 
         % Write out sharpened reference
         sharp_ref_fn = sprintf('%s_finalsharpref_%d.em', ...
-            output_fn_prefix, (b_factor * -1));
+            output_fn_prefix, -b_factor);
 
         tom_emwrite(sharp_ref_fn, -sharp_ref);
         subtom_check_em_file(sharp_ref_fn, -sharp_ref);
@@ -1090,7 +1111,7 @@ function subtom_maskcorrected_fsc(varargin)
             % Write out sharpened reference
             sharp_reweigh_fn = sprintf(...
                 '%s_finalsharpref_%d_reweight.em', output_fn_prefix, ...
-                (b_factor * -1));
+                -b_factor);
 
             tom_emwrite(sharp_reweigh_fn, -sharp_reweigh);
             subtom_check_em_file(sharp_reweigh_fn, -sharp_reweigh);

@@ -28,7 +28,7 @@ function sharpened_reference = subtom_sharpen(varargin)
     % an arbitrary order if at all.
     fn_parser = inputParser;
     addParameter(fn_parser, 'reference', '');
-    addParameter(fn_parser, 'B_factor', 0);
+    addParameter(fn_parser, 'b_factor', 0);
     addParameter(fn_parser, 'fsc', NaN);
     addParameter(fn_parser, 'pixelsize', 1.0);
     addParameter(fn_parser, 'filter_mode', 1);
@@ -57,23 +57,23 @@ function sharpened_reference = subtom_sharpen(varargin)
     % Number of unique frequencies in the Fourier transform
     n_shells = floor(box_size(1) / 2) + 1;
 
-    B_factor = fn_parser.Results.B_factor;
+    b_factor = fn_parser.Results.b_factor;
 
-    if ischar(B_factor)
-        B_factor_ = str2double(B_factor);
+    if ischar(b_factor)
+        b_factor_ = str2double(b_factor);
     end
 
     try
-        validateattributes(B_factor, {'numeric'}, {'nonnan'}, ...
-            'subtom_sharpen', 'B_factor');
+        validateattributes(b_factor, {'numeric'}, {'nonnan'}, ...
+            'subtom_sharpen', 'b_factor');
 
     catch ME
         fprintf(2, '%s - %s\n', ME.identifier, ME.message);
         rethrow(ME);
     end
 
-    if B_factor > 0
-        B_factor = B_factor * -1;
+    if b_factor > 0
+        b_factor = b_factor * -1;
     end
 
     fsc = fn_parser.Results.fsc;
@@ -249,7 +249,7 @@ function sharpened_reference = subtom_sharpen(varargin)
         sqrt(grid_x.^2 + grid_y.^2 + grid_z.^2);
 
     % Calculate exponential B-Factor filter.
-    exp_filter = exp(-(B_factor ./ (4 .* (resolutions.^2))));
+    exp_filter = exp(-(b_factor ./ (4 .* (resolutions.^2))));
 
     % Get the 1-D version of the exponential filter
     box_center = floor(box_size(1) / 2) + 1;
@@ -294,7 +294,7 @@ function sharpened_reference = subtom_sharpen(varargin)
         % plot(sharpen_axes, 1:n_shells, fsc, 'DisplayName', 'FSC');
         % plot(sharpen_axes, 1:n_shells, c_ref, 'DisplayName', 'C\_ref');
         title(sharpen_axes, sprintf('Sharpen Curve - B-Factor : %d', ...
-            B_factor));
+            b_factor));
 
         ylabel(sharpen_axes, 'Amplitude [arb. unit]');
         xlabel(sharpen_axes, sprintf('Resolution [\x212B]'));
@@ -311,14 +311,17 @@ function sharpened_reference = subtom_sharpen(varargin)
         set(sharpen_fig, 'Position', [0, 0, 800, 600]);
 
         if ~isempty(output_fn_prefix)
-            output_fn = sprintf('%s_sharp_%d', output_fn_prefix, -B_factor);
+            output_fn = sprintf('%s_sharp_%d', output_fn_prefix, -b_factor);
             saveas(sharpen_fig, output_fn, 'fig');
             saveas(sharpen_fig, output_fn, 'pdf');
             saveas(sharpen_fig, output_fn, 'png');
         end
 
         if ~plot_sharpen
+            pause(10);
             close(sharpen_fig);
+        else
+            waitfor(sharpen_fig);
         end
     end
 end

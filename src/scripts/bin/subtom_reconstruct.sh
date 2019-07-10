@@ -621,5 +621,5 @@ printf "| %-25s | %25s |\n" "radial_cutoff" "${radial_cutoff}" >>\
 printf "| %-25s | %25s |\n" "radial_falloff" "${radial_falloff}" >>\
     subTOM_protocol.md
 
-printf "| %-25s | %25s |\n" "erase_radius" "${erase_radius}" >>\
+printf "| %-25s | %25s |\n\n" "erase_radius" "${erase_radius}" >>\
     subTOM_protocol.md

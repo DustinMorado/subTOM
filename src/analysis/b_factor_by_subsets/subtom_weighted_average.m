@@ -309,7 +309,7 @@ function subtom_weighted_average(varargin)
     % Determine low pass filter dimensions, this filter takes out the last few
     % high frequency pixels, which dampens interpolation artefacts from
     % rotations etc.
-    spheremask_radius = floor(size(avg_sum, 1) / 2) - 3;
+    spheremask_radius = floor(box_size(1) / 2) - 3;
 
     % Do the final weighted average for each subset.
     for subset_idx = 1:num_subsets
@@ -323,6 +323,7 @@ function subtom_weighted_average(varargin)
 
         % Calculate the average weight subset from batches.
         weight_average = weight_sum_cell{subset_idx} ./ subset_num_good_ptcls;
+        weight_average = weight_average ./ max(weight_average(:));
 
         % Calculate the average weight inverse subset that will reweight the
         % average.

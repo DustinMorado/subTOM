@@ -740,7 +740,10 @@ function subtom_maskcorrected_fsc(varargin)
     saveas(fsc_fig, sprintf('%s_FSC', output_fn_prefix), 'png');
 
     if ~plot_fsc
+        pause(10);
         close(fsc_fig);
+    else
+        waitfor(fsc_fig);
     end
 
     if do_sharpen == 1

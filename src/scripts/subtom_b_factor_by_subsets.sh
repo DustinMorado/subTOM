@@ -86,29 +86,43 @@ num_avg_batch="1"
 #                                 FILE OPTIONS                                 #
 ################################################################################
 # Relative path and name prefix of the concatenated motivelist of all particles
-# (e.g.  allmotl_iter.em , the variable will be written as a string e.g.
-# all_motl_fn_prefix='sub-directory/allmotl')
+# in the first half-map.
 all_motl_a_fn_prefix="even/combinedmotl/allmotl"
 
 # Relative path and name prefix of the concatenated motivelist of all particles
-# (e.g.  allmotl_iter.em , the variable will be written as a string e.g.
-# all_motl_fn_prefix='sub-directory/allmotl')
-all_motl_b_fn_prefix="even/combinedmotl/allmotl"
+# in the second half-map.
+all_motl_b_fn_prefix="odd/combinedmotl/allmotl"
 
-# Relative path and name prefix of the reference volumes (e.g.  ref_iter.em, the
-# variable will be written as a string e.g.  ref_fn_prefix='sub-directory/ref')
-ref_fn_prefix="FSC/ref"
+# Relative path and name prefix of the reference volumes of the first half-map.
+ref_a_fn_prefix="FSC/ref_a"
 
-# Relative path and name prefix of the subtomograms (e.g. part_n.em, the
-# variable will be written as a string e.g.
-# ptcl_fn_prefix='sub-directory/part')
-ptcl_fn_prefix="subtomograms/subtomo"
+# Relative path and name prefix of the reference volumes of the second half-map.
+ref_b_fn_prefix="FSC/ref_b"
 
-# Relative path and name prefix of the weight file.
-weight_fn_prefix="otherinputs/ampspec"
+# Relative path and name prefix of the subtomograms that comprise the first
+# half-map.
+ptcl_a_fn_prefix="subtomograms/subtomo"
 
-# Relative path and name prefix of the partial weight files.
-weight_sum_fn_prefix="FSC/wei"
+# Relative path and name prefix of the subtomograms that comprise the second
+# half-map.
+ptcl_b_fn_prefix="subtomograms/subtomo"
+
+# Relative path and name prefix of the weight files for the first half-map.
+weight_a_fn_prefix="otherinputs/ampspec"
+
+# Relative path and name prefix of the weight files for the second half-map.
+weight_b_fn_prefix="otherinputs/ampspec"
+
+# Relative path and name prefix of the partial weight files of the first
+# half-map.
+weight_sum_a_fn_prefix="FSC/wei_a"
+
+# Relative path and name prefix of the partial weight files of the second
+# half-map.
+weight_sum_b_fn_prefix="FSC/wei_b"
+
+# Relative path and prefix for the name of the output maps and figures.
+output_fn_prefix="FSC/ref_auto_b"
 
 ################################################################################
 #                              AVERAGING OPTIONS                               #
@@ -131,10 +145,6 @@ iclass="0"
 ################################################################################
 #                                 FILE OPTIONS                                 #
 ################################################################################
-# The index of the reference to generate : input will be
-# ref_{a,b}_fn_prefix_iteration.em (define as integer e.g. iteration=1)
-iteration=1
-
 # Relative or absolute path and name of the FSC mask.
 fsc_mask_fn="FSC/fsc_mask.em"
 
