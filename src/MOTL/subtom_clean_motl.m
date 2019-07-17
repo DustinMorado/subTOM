@@ -548,7 +548,7 @@ function subtom_clean_motl(varargin)
                         % Find the index of the highest scoring particle in the
                         % cluster.
                         best_idx = find(distances <= cluster_distance ...
-                            & motl_(1, :) == maxCCC);
+                            & motl_(1, :) == maxCCC, 1);
 
                         % Move that particle to the front of the current motive
                         % list.
