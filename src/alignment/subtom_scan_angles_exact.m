@@ -531,6 +531,18 @@ function subtom_scan_angles_exact(varargin)
         return
     end
 
+    % Check if the calculation has already been done and skip if so.
+    all_motl_fn = sprintf('%s_%d.em', all_motl_fn_prefix, iteration + 1);
+
+    if exist(all_motl_fn, 'file') == 2
+        warning('subTOM:recoverOnFail', ...
+            'scan_angles_exact:MOTL %s already exists. SKIPPING!', all_motl_fn);
+
+        [msg, msg_id] = lastwarn;
+        fprintf(2, '%s - %s\n', msg_id, msg);
+        return
+    end
+
     % Read reference to get the initial box size
     ref_fn = sprintf('%s_%d.em', ref_fn_prefix, iteration);
 

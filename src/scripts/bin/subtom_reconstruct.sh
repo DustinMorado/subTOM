@@ -102,12 +102,42 @@ FILTERCOM
     fi
 fi
 
-if [[ ${do_radial} -eq 1 ]]
+if [[ ${do_radial} -eq 1 && ${do_ctf} -eq 1 ]]
 then
     cat<<RECCOM>nova_reconstruct.com
 Algorithm 3dctf
 InputProjections XXXTOMOGRAMXXX_filtered.ali
-OutputFile XXXTOMOGRAMXXX.rec  
+OutputFile XXXTOMOGRAMXXX.ctf.rec  
+TILTFILE XXXTOMOGRAMXXX.tlt
+THICKNESS XXXTHICKNESSXXX
+FULLIMAGE XXXFULLIMAGEXXX
+SHIFT XXXSHIFTXXX
+PixelSize ${pixel_size}
+DefocusStep ${defocus_step}
+Use3DCTF ${do_ctf}
+RECCOM
+
+elif [[ ${do_radial} -eq 1 ]]
+then
+    cat<<RECCOM>nova_reconstruct.com
+Algorithm 3dctf
+InputProjections XXXTOMOGRAMXXX_filtered.ali
+OutputFile XXXTOMOGRAMXXX.nonctf.rec  
+TILTFILE XXXTOMOGRAMXXX.tlt
+THICKNESS XXXTHICKNESSXXX
+FULLIMAGE XXXFULLIMAGEXXX
+SHIFT XXXSHIFTXXX
+PixelSize ${pixel_size}
+DefocusStep ${defocus_step}
+Use3DCTF ${do_ctf}
+RECCOM
+
+elif [[ ${do_ctf} -eq 1 ]]
+then
+    cat<<RECCOM>nova_reconstruct.com
+Algorithm 3dctf
+InputProjections XXXTOMOGRAMXXX_flipped.ali
+OutputFile XXXTOMOGRAMXXX.ctf.rec  
 TILTFILE XXXTOMOGRAMXXX.tlt
 THICKNESS XXXTHICKNESSXXX
 FULLIMAGE XXXFULLIMAGEXXX
@@ -121,7 +151,7 @@ else
     cat<<RECCOM>nova_reconstruct.com
 Algorithm 3dctf
 InputProjections XXXTOMOGRAMXXX_flipped.ali
-OutputFile XXXTOMOGRAMXXX.rec  
+OutputFile XXXTOMOGRAMXXX.nonctf.rec  
 TILTFILE XXXTOMOGRAMXXX.tlt
 THICKNESS XXXTHICKNESSXXX
 FULLIMAGE XXXFULLIMAGEXXX
@@ -435,22 +465,22 @@ RECONSTRUCT
         then
             cat<<RECONSTRUCT>>"${script_fn}"
 
-"${imod_exe_dir}/trimvol" -rx "${tomo}.rec" "${tomo}.ctf.bin1.rec"
-rm "${tomo}.rec"
+"${imod_exe_dir}/trimvol" -rx "${tomo}.ctf.rec" "${tomo}.ctf.bin1.rec"
+rm "${tomo}.ctf.rec"
 RECONSTRUCT
 
         elif [[ ${do_rotate_tomo} -eq 1 ]]
         then
             cat<<RECONSTRUCT>>"${script_fn}"
 
-"${imod_exe_dir}/clip" rotx "${tomo}.rec" "${tomo}.ctf.bin1.rec"
-rm ${tomo}.rec
+"${imod_exe_dir}/clip" rotx "${tomo}.ctf.rec" "${tomo}.ctf.bin1.rec"
+rm ${tomo}.ctf.rec
 RECONSTRUCT
 
         else
             cat<<RECONSTRUCT>>"${script_fn}"
 
-mv "${tomo}.rec" "${tomo}.ctf.bin1.rec"
+mv "${tomo}.ctf.rec" "${tomo}.ctf.bin1.rec"
 RECONSTRUCT
 
         fi
@@ -506,20 +536,20 @@ RECONSTRUCT
         if [[ ${do_rotate_tomo} -eq 1 && ${do_trimvol} -eq 1 ]]
         then
             cat<<RECONSTRUCT>>"${script_fn}"
-"${imod_exe_dir}/trimvol" -rx "${tomo}.rec" "${tomo}.nonctf.bin1.rec"
-rm "${tomo}.rec"
+"${imod_exe_dir}/trimvol" -rx "${tomo}.nonctf.rec" "${tomo}.nonctf.bin1.rec"
+rm "${tomo}.nonctf.rec"
 RECONSTRUCT
 
         elif [[ ${do_rotate_tomo} -eq 1 ]]
         then
             cat<<RECONSTRUCT>>"${script_fn}"
-"${imod_exe_dir}/clip" rotx "${tomo}.rec" "${tomo}.nonctf.bin1.rec"
-rm "${tomo}.rec"
+"${imod_exe_dir}/clip" rotx "${tomo}.nonctf.rec" "${tomo}.nonctf.bin1.rec"
+rm "${tomo}.nonctf.rec"
 RECONSTRUCT
 
         else
             cat<<RECONSTRUCT>>"${script_fn}"
-mv "${tomo}.rec" "${tomo}.nonctf.bin1.rec"
+mv "${tomo}.nonctf.rec" "${tomo}.nonctf.bin1.rec"
 RECONSTRUCT
 
         fi

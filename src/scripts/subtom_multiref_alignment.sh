@@ -187,6 +187,10 @@ apply_weight="0"
 # Apply mask to subtomograms (1=yes, 0=no)
 apply_mask="0"
 
+# If you want particles to be constrained to their existing class set this to 1,
+# otherwise particles will change to the class of which they align best against.
+keep_class="0"
+
 # Angular increment in degrees, applied during the cone-search, i.e. psi and
 # theta (define as real e.g. psi_angle_step=3)
 # Leave the parentheses and if the number of values is less than the number of

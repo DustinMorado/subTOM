@@ -1,0 +1,312 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Principal Component Analysis Classification &mdash; subTOM 1.0.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="subtom_pca" href="scripts/subtom_pca.html" />
+    <link rel="prev" title="subTOM: Principal Component Analysis" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> subTOM
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Table of Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../conventions.html">Conventions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Links to Individual Script Documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/subtom_alignment.html">subtom_alignment.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/subtom_average.html">subtom_average.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/subtom_cat_motls.html">subtom_cat_motls.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/subtom_clean_motl.html">subtom_clean_motl.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/subtom_compare_motls.html">subtom_compare_motls.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/subtom_even_odd_motl.html">subtom_even_odd_motl.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/subtom_extract_noise.html">subtom_extract_noise.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/subtom_extract_subtomograms.html">subtom_extract_subtomograms.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/subtom_maskcorrected_fsc.html">subtom_maskcorrected_fsc.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/subtom_preprocess.html">subtom_preprocess.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/subtom_plot_filter.html">subtom_plot_filter.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/subtom_plot_scanned_angles.html">subtom_plot_scanned_angles.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/subtom_reconstruct.html">subtom_reconstruct.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/subtom_scale_motl.html">subtom_scale_motl.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/subtom_seed_positions.html">subtom_seed_positions.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/subtom_shape.html">subtom_shape.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/subtom_split_motl_by_row.html">subtom_split_motl_by_row.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/subtom_transform_motl.html">subtom_transform_motl.sh</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Links to Individual Function Documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../functions/introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functions/subtom_cat_motls.html">subtom_cat_motls.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functions/subtom_clean_motl.html">subtom_clean_motl.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functions/subtom_compare_motls.html">subtom_compare_motls.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functions/subtom_even_odd_motl.html">subtom_even_odd_motl.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functions/subtom_extract_noise.html">subtom_extract_noise.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functions/subtom_extract_subtomograms.html">subtom_extract_subtomograms.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functions/subtom_maskcorrected_fsc.html">subtom_maskcorrected_fsc.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functions/subtom_parallel_sums.html">subtom_parallel_sums.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functions/subtom_plot_filter.html">subtom_plot_filter.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functions/subtom_plot_scanned_angles.html">subtom_plot_scanned_angles.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functions/subtom_scale_motl.html">subtom_scale_motl.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functions/subtom_scan_angles_exact.html">subtom_scan_angles_exact.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functions/subtom_seed_positions.html">subtom_seed_positions.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functions/subtom_shape.html">subtom_shape.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functions/subtom_split_motl_by_row.html">subtom_split_motl_by_row.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functions/subtom_transform_motl.html">subtom_transform_motl.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functions/subtom_weighted_average.html">subtom_weighted_average.m</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Classification Documentation:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../multireference/index.html">Multireference</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">PCA</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scripts/subtom_pca.html">subtom_pca.sh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functions/subtom_cluster.html">subtom_cluster</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functions/subtom_eigs.html">subtom_eigs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functions/subtom_join_ccmatrix.html">subtom_join_ccmatrix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functions/subtom_join_eigencoeffs.html">subtom_join_eigencoeffs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functions/subtom_join_eigenvolumes.html">subtom_join_eigenvolumes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functions/subtom_parallel_ccmatrix.html">subtom_parallel_ccmatrix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functions/subtom_parallel_eigencoeffs.html">subtom_parallel_eigencoeffs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functions/subtom_parallel_eigenvolumes.html">subtom_parallel_eigenvolumes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functions/subtom_parallel_prealign.html">subtom_parallel_prealign</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functions/subtom_parallel_sums.html">subtom_parallel_sums</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functions/subtom_parallel_xmatrix.html">subtom_parallel_xmatrix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functions/subtom_prepare_ccmatrix.html">subtom_prepare_ccmatrix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functions/subtom_svds.html">subtom_svds</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functions/subtom_weighted_average.html">subtom_weighted_average</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#indices-and-tables">Indices and tables</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Analysis Documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../analysis/b_factor_by_subsets/index.html">B-Factor from Subsets</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">subTOM</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">subTOM: Principal Component Analysis</a> &raquo;</li>
+        
+      <li>Principal Component Analysis Classification</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/classification/pca/introduction.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="principal-component-analysis-classification">
+<h1>Principal Component Analysis Classification<a class="headerlink" href="#principal-component-analysis-classification" title="Permalink to this headline">¶</a></h1>
+<p>In principal component analysis (PCA) classification the full set of particles
+are simplified into a new lower-dimensional representation by means of Eigen or
+Singular Value decomposition methods. Particles projected onto these most
+variable basis-vectors then can be clustered using a variety of methods.</p>
+<p>Within subTOM particles are first compared using Constrained Cross-Correlation
+taking into account the missing wedge. The pairs used in comparison are
+pre-calculated with the function <code class="docutils literal notranslate"><span class="pre">subtom_prepare_ccmatrix</span></code>. To speed up
+calculation particles can be pre-aligned using the function
+<code class="docutils literal notranslate"><span class="pre">subtom_parallel_prealign</span></code>.</p>
+<p>The comparisons are calculated in parallel batches with
+<code class="docutils literal notranslate"><span class="pre">subtom_parallel_ccmatrix</span></code> and the results are combined with
+<code class="docutils literal notranslate"><span class="pre">subtom_join_ccmatrix</span></code>. The Cross-Correlation matrix is then decomposed into a
+user-given number of basis vectors using either Eigenvalue decomposition with
+<code class="docutils literal notranslate"><span class="pre">subtom_eigs</span></code> or Singular Value decomposition with <code class="docutils literal notranslate"><span class="pre">subtom_svds</span></code>, which the
+basis vectors and their respective weights.</p>
+<p>The particles that were compared against are then projected onto these vectors
+by first constructing a matrix of the aligned data with
+<code class="docutils literal notranslate"><span class="pre">subtom_parallel_xmatrix</span></code> and then projected in parallel batches with
+<code class="docutils literal notranslate"><span class="pre">subtom_parallel_eigenvolumes</span></code> and joined with <code class="docutils literal notranslate"><span class="pre">subtom_join_eigenvolumes</span></code>.
+These volumes are then used to determine the low-rank approximation coefficients
+in volume space for clustering. A larger particle superset can be projected onto
+the volumes to speed up classification of large datasets. Coefficients are also
+calculated in parallel in batches with <code class="docutils literal notranslate"><span class="pre">subtom_parallel_eigcoeffs</span></code> and joined
+with <code class="docutils literal notranslate"><span class="pre">subtom_join_eigencoeffs</span></code>.</p>
+<p>Finally using a user-selected subset of the determined coefficients, the data is
+clustered either by Hierarchical Ascendant Clustering using a Ward distance
+criterion, K-Means clustering, or a Gaussian Mixture model with the function
+<code class="docutils literal notranslate"><span class="pre">subtom_cluster</span></code>. This clustering is then used to generate the final class
+averages.</p>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="scripts/subtom_pca.html" class="btn btn-neutral float-right" title="subtom_pca" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="subTOM: Principal Component Analysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Dustin Reed Morado
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

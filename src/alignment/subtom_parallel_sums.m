@@ -207,6 +207,20 @@ function subtom_parallel_sums(varargin)
 %##############################################################################%
 %                               START PROCESSING                               %
 %##############################################################################%
+
+    % Check if the calculation has already been done and skip if so.
+    ref_fn = sprintf('%s_%d.em', ref_fn_prefix, iteration);
+
+    if exist(ref_fn, 'file') == 2
+        warning('subTOM:recoverOnFail', ...
+            'parallel_sums:File %s already exists. SKIPPING!', ref_fn);
+
+        [msg, msg_id] = lastwarn;
+        fprintf(2, '%s - %s\n', msg_id, msg);
+        return
+    end
+
+    % Check if the calculation has already been done and skip if so.
     ref_fn = sprintf('%s_%d_%d.em', ref_fn_prefix, iteration, process_idx);
     weight_sum_fn = sprintf('%s_%d_%d.em', weight_sum_fn_prefix, iteration,...
                             process_idx);

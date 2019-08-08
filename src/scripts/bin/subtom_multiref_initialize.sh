@@ -417,6 +417,7 @@ printf "| %-25s | %25s |\n" "mcr_cache_dir" "${mcr_cache_dir}" >>\
 printf "| %-25s | %25s |\n" "exec_dir" "${exec_dir}" >> subTOM_protocol.md
 printf "| %-25s | %25s |\n" "sum_exec" "${sum_exec}" >> subTOM_protocol.md
 printf "| %-25s | %25s |\n" "avg_exec" "${avg_exec}" >> subTOM_protocol.md
+printf "| %-25s | %25s |\n" "rand_exec" "${rand_exec}" >> subTOM_protocol.md
 printf "| %-25s | %25s |\n" "mem_free" "${mem_free}" >> subTOM_protocol.md
 printf "| %-25s | %25s |\n" "mem_max" "${mem_max}" >> subTOM_protocol.md
 printf "| %-25s | %25s |\n" "job_name" "${job_name}" >> subTOM_protocol.md

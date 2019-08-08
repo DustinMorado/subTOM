@@ -1,5 +1,5 @@
 function subtom_rand_class_motl(varargin)
-% SUBTOM_RAND_CLASS_MOTL scales a given motive list by a given factor.
+% SUBTOM_RAND_CLASS_MOTL randomizes a given number of classes in a motive list.
 %
 %     SUBTOM_RAND_CLASS_MOTL(
 %         'input_motl_fn', INPUT_MOTL_FN,

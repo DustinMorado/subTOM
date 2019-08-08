@@ -346,6 +346,8 @@ export LD_LIBRARY_PATH="\${ldpath}"
         "${apply_weight}" \\
         apply_mask \\
         "${apply_mask}" \\
+        keep_class \\
+        "${keep_class}" \\
         psi_angle_step \\
         "${psi_angle_step[${array_idx}]}" \\
         psi_angle_shells \\
@@ -904,6 +906,9 @@ PSUMJOB
         subTOM_protocol.md
 
     printf "| %-25s | %25s |\n" "apply_mask" "${apply_mask}" >>\
+        subTOM_protocol.md
+
+    printf "| %-25s | %25s |\n" "keep_class" "${keep_class}" >>\
         subTOM_protocol.md
 
     printf "| %-25s | %25s |\n" "psi_angle_step" \

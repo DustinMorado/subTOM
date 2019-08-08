@@ -68,13 +68,16 @@ cryo-tomography data.
 
 .. toctree::
     :maxdepth: 1
-    :caption: B-Factor by Subsets Documentation:
+    :caption: Classification Documentation:
 
-    Introduction <functions/b_factor_by_subsets/introduction>
-    subtom_b_factor_by_subsets.sh <scripts/subtom_b_factor_by_subsets>
-    subtom_maskcorrected_fsc.m <functions/b_factor_by_subsets/subtom_maskcorrected_fsc>
-    subtom_parallel_sums.m <functions/b_factor_by_subsets/subtom_parallel_sums>
-    subtom_weighted_average.m <functions/b_factor_by_subsets/subtom_weighted_average>
+    Multireference <classification/multireference/index.rst>
+    PCA <classification/pca/index.rst>
+
+.. toctree::
+    :maxdepth: 1
+    :caption: Analysis Documentation:
+
+    B-Factor from Subsets <analysis/b_factor_by_subsets/index.rst>
 
 Indices and tables
 ==================

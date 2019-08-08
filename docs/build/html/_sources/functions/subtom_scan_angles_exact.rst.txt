@@ -158,5 +158,5 @@ See Also
 
 * :doc:`subtom_extract_noise`
 * :doc:`subtom_extract_subtomograms`
-* :doc::`subtom_parallel_sums`
+* :doc:`subtom_parallel_sums`
 * :doc:`subtom_weighted_average`

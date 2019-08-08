@@ -10,6 +10,7 @@ function subtom_scan_angles_exact(varargin)
 %         'cc_mask_fn', CC_MASK_FN,
 %         'apply_weight', APPLY_WEIGHT,
 %         'apply_mask', APPLY_MASK,
+%         'keep_class', KEEP_CLASS,
 %         'psi_angle_step', PSI_ANGLE_STEP,
 %         'psi_angle_shells', PSI_ANGLE_SHELLS,
 %         'phi_angle_step', PHI_ANGLE_STEP,
@@ -135,6 +136,7 @@ function subtom_scan_angles_exact(varargin)
     addParameter(fn_parser, 'cc_mask_fn', 'noshift');
     addParameter(fn_parser, 'apply_weight', 0);
     addParameter(fn_parser, 'apply_mask', 0);
+    addParameter(fn_parser, 'keep_class', 0);
     addParameter(fn_parser, 'psi_angle_step', 0);
     addParameter(fn_parser, 'psi_angle_shells', 0);
     addParameter(fn_parser, 'phi_angle_step', 0);
@@ -266,6 +268,22 @@ function subtom_scan_angles_exact(varargin)
         validateattributes(apply_mask, {'numeric'}, ...
             {'scalar', 'nonnan', 'binary'}, ...
             'subtom_scan_angles_exact', 'apply_mask');
+
+    catch ME
+        fprintf(2, '%s - %s\n', ME.identifier, ME.message);
+        rethrow(ME);
+    end
+
+    keep_class = fn_parser.Results.keep_class;
+
+    if ischar(keep_class)
+        apply_mask = str2double(keep_class);
+    end
+
+    try
+        validateattributes(keep_class, {'numeric'}, ...
+            {'scalar', 'nonnan', 'binary'}, ...
+            'subtom_scan_angles_exact', 'keep_class');
 
     catch ME
         fprintf(2, '%s - %s\n', ME.identifier, ME.message);
@@ -530,6 +548,18 @@ function subtom_scan_angles_exact(varargin)
     classes = unique(all_motl(20, :));
     classes = classes(classes > 0);
     num_classes = length(classes);
+
+    % Check if the calculation has already been done and skip if so.
+    motl_fn = sprintf('%s_%d.em', all_motl_fn_prefix, iteration + 1);
+
+    if exist(motl_fn, 'file') == 2
+        warning('subTOM:recoverOnFail', ...
+            'scan_angles_exact:MOTL %s already exists. SKIPPING!', motl_fn);
+
+        [msg, msg_id] = lastwarn;
+        fprintf(2, '%s - %s\n', msg_id, msg);
+        return
+    end
 
     % Check if the calculation has already been done and skip if so.
     motl_fn = sprintf('%s_%d_%d.em', all_motl_fn_prefix, iteration + 1, ...
@@ -886,8 +916,14 @@ function subtom_scan_angles_exact(varargin)
                     psi = scan_euler(2);
                     theta = scan_euler(3);
 
+                    if ~keep_class
+                        class_idxs = 1:num_classes;
+                    else
+                        class_idxs = find(classes == all_motl(20, ptcl_idx));
+                    end
+
                     % Loop over the references.
-                    for class_idx = 1:num_classes
+                    for class_idx = class_idxs
                         masked_ref = refs{class_idx};
 
                         % Prepare the reference for correlation

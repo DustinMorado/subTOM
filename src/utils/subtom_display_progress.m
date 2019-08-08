@@ -27,7 +27,7 @@ function [new_del_progress, new_timings] = subtom_display_progress(...
     progress_freq = max(floor(num_ops / 200), 1);
 
     % Check if we need to update the progress bar or just return early
-    if mod(op_idx, progress_freq) ~= 0
+    if mod(op_idx, progress_freq) ~= 0 && op_idx ~= num_ops
         new_del_progress = del_progress;
         new_timings = timings;
         return
@@ -87,4 +87,9 @@ function [new_del_progress, new_timings] = subtom_display_progress(...
 
     % Create the new del_progress to later erase this progress bar.
     new_del_progress = repmat('\b', 1, length(progress));
+
+    % Handle the last status message.
+    if op_idx == num_ops
+        fprintf(1, '\n');
+    end
 end
