@@ -198,6 +198,8 @@ function sharpened_reference = subtom_sharpen(varargin)
         else
             cutoff = cutoff(1);
         end
+    else
+        cutoff = filter_threshold;
     end
 
     % Determine the values of the raised-cosine low-pass filter, making sure
