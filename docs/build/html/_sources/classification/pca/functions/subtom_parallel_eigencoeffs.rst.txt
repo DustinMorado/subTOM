@@ -20,7 +20,6 @@ Computes particle Eigencoefficients
         'use_eig_vec', use_eig_vec (0),
         'apply_weight', apply_weight (0),
         'prealigned', prealigned (0),
-        'nfold', nfold (1),
         'iteration', iteration (1),
         'tomo_row', tomo_row (7),
         'num_xmatrix_batch', num_xmatrix_batch (1),
@@ -50,8 +49,7 @@ be reweighted using the correct weight of each particle as described by
 projected in a loop. If ``prealigned`` is set to 1, then it is understood that
 the particles have been prealigned beforehand and the alignment of the particles
 can be skipped to save time.  ``mask_fn`` describes the mask used throughout
-classification and 'none' describes a default spherical mask. ``nfold``
-describes a C-symmetry number to apply to the Eigenvolume before projection
+classification and 'none' describes a default spherical mask.
 
 Also as a consequence of the transition formulas conjugate space Eignvectors can
 be used in place of the Eigenvolumes if ``use_eig_vec`` is set to 1, as a means
@@ -78,7 +76,6 @@ Example
         'use_eig_vec', 0, ...
         'apply_weight', 1, ...
         'prealigned', 1, ...
-        'nfold', 1, ...
         'iteration', 1, ...
         'tomo_row', 7, ...
         'num_xmatrix_batch', 100, ...

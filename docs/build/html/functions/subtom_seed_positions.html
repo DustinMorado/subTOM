@@ -217,7 +217,8 @@
     <span class="s">&#39;input_motl_fn_prefix&#39;</span><span class="p">,</span> <span class="n">input_motl_fn_prefix</span> <span class="p">(</span><span class="s">&#39;../startset/clicker&#39;</span><span class="p">),</span>
     <span class="s">&#39;output_motl_fn&#39;</span><span class="p">,</span> <span class="n">output_motl_fn</span> <span class="p">(</span><span class="s">&#39;combinedmotl/allmotl_1.em&#39;</span><span class="p">),</span>
     <span class="s">&#39;spacing&#39;</span><span class="p">,</span> <span class="n">spacing</span> <span class="p">(</span><span class="mi">8</span><span class="p">),</span>
-    <span class="s">&#39;do_tubule&#39;</span><span class="p">,</span> <span class="n">do_tubule</span> <span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+    <span class="s">&#39;do_tubule&#39;</span><span class="p">,</span> <span class="n">do_tubule</span> <span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s">&#39;rand_inplane&#39;</span><span class="p">,</span> <span class="n">rand_inplane</span> <span class="p">(</span><span class="mi">0</span><span class="p">))</span>
 </pre></div>
 </div>
 <p>Takes in clicker motive lists from the ‘Pick Particle’ plugin for Chimera
@@ -235,14 +236,18 @@ output motive list. The second field corresponds to the marker set the
 clicker file was created from, which is not used in placing spheres but is
 considered in seeding tubules to delineate between multiple tubules in
 each tomogram. Finally a running index of tube or sphere is added to the
-6th field of the output motive list.</p>
+6th field of the output motive list. If both <code class="docutils literal notranslate"><span class="pre">do_tubule</span></code> and <code class="docutils literal notranslate"><span class="pre">rand_inplane</span></code>
+evaluate to true as a boolean, then the final Euler angle (phi in AV3 notation,
+and psi/spin/inplane in other notations) will be randomized as opposed to
+directed along the tubular axis.</p>
 <div class="section" id="example">
 <h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-Matlab notranslate"><div class="highlight"><pre><span></span><span class="n">subtom_seed_positions</span><span class="p">(</span><span class="c">...</span>
     <span class="s">&#39;input_motl_fn_prefix&#39;</span><span class="p">,</span> <span class="s">&#39;../startset/clicker&#39;</span><span class="p">,</span> <span class="c">...</span>
     <span class="s">&#39;output_motl_fn&#39;</span><span class="p">,</span> <span class="s">&#39;combinedmotl/allmotl_1.em&#39;</span><span class="p">,</span> <span class="c">...</span>
     <span class="s">&#39;spaciing&#39;</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;do_tubule&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="s">&#39;do_tubule&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="c">...</span>
+    <span class="s">&#39;rand_inplane&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>

@@ -53,7 +53,9 @@ export MCR_CACHE_ROOT="${mcr_cache_dir}"
     spacing \
     ${spacing} \
     do_tubule \
-    ${do_tubule}
+    ${do_tubule} \
+    rand_inplane \
+    ${rand_inplane}
 
 rm -rf "${mcr_cache_dir}"
 
@@ -82,4 +84,6 @@ printf "| %-25s | %25s |\n" "output_motl_fn" "${output_motl_fn}" >>\
     subTOM_protocol.md
 
 printf "| %-25s | %25s |\n" "spacing" "${spacing}" >> subTOM_protocol.md
-printf "| %-25s | %25s |\n\n" "do_tubule" "${do_tubule}" >> subTOM_protocol.md
+printf "| %-25s | %25s |\n" "do_tubule" "${do_tubule}" >> subTOM_protocol.md
+printf "| %-25s | %25s |\n\n" "rand_inplane" "${rand_inplane}" >>\
+    subTOM_protocol.md

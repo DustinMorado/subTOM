@@ -248,7 +248,6 @@
     <span class="s">&#39;use_eig_vec&#39;</span><span class="p">,</span> <span class="n">use_eig_vec</span> <span class="p">(</span><span class="mi">0</span><span class="p">),</span>
     <span class="s">&#39;apply_weight&#39;</span><span class="p">,</span> <span class="n">apply_weight</span> <span class="p">(</span><span class="mi">0</span><span class="p">),</span>
     <span class="s">&#39;prealigned&#39;</span><span class="p">,</span> <span class="n">prealigned</span> <span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s">&#39;nfold&#39;</span><span class="p">,</span> <span class="n">nfold</span> <span class="p">(</span><span class="mi">1</span><span class="p">),</span>
     <span class="s">&#39;iteration&#39;</span><span class="p">,</span> <span class="n">iteration</span> <span class="p">(</span><span class="mi">1</span><span class="p">),</span>
     <span class="s">&#39;tomo_row&#39;</span><span class="p">,</span> <span class="n">tomo_row</span> <span class="p">(</span><span class="mi">7</span><span class="p">),</span>
     <span class="s">&#39;num_xmatrix_batch&#39;</span><span class="p">,</span> <span class="n">num_xmatrix_batch</span> <span class="p">(</span><span class="mi">1</span><span class="p">),</span>
@@ -277,8 +276,7 @@ be reweighted using the correct weight of each particle as described by
 projected in a loop. If <code class="docutils literal notranslate"><span class="pre">prealigned</span></code> is set to 1, then it is understood that
 the particles have been prealigned beforehand and the alignment of the particles
 can be skipped to save time.  <code class="docutils literal notranslate"><span class="pre">mask_fn</span></code> describes the mask used throughout
-classification and ‘none’ describes a default spherical mask. <code class="docutils literal notranslate"><span class="pre">nfold</span></code>
-describes a C-symmetry number to apply to the Eigenvolume before projection</p>
+classification and ‘none’ describes a default spherical mask.</p>
 <p>Also as a consequence of the transition formulas conjugate space Eignvectors can
 be used in place of the Eigenvolumes if <code class="docutils literal notranslate"><span class="pre">use_eig_vec</span></code> is set to 1, as a means
 to calculate the Eigencoefficients, however this should be identical in the
@@ -299,7 +297,6 @@ final result and is just for clarity.</p>
     <span class="s">&#39;use_eig_vec&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="c">...</span>
     <span class="s">&#39;apply_weight&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="c">...</span>
     <span class="s">&#39;prealigned&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;nfold&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="c">...</span>
     <span class="s">&#39;iteration&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="c">...</span>
     <span class="s">&#39;tomo_row&#39;</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="c">...</span>
     <span class="s">&#39;num_xmatrix_batch&#39;</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="c">...</span>

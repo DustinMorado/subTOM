@@ -5,7 +5,8 @@ function subtom_seed_positions(varargin)
 %         'input_motl_fn_prefix', INPUT_MOTL_FN_PREFIX,
 %         'output_motl_fn', OUTPUT_MOTL_FN,
 %         'spacing', SPACING,
-%         'do_tubule', DO_TUBULE)
+%         'do_tubule', DO_TUBULE,
+%         'rand_inplane', RAND_INPLANE)
 %
 %     Takes in clicker motive lists from the 'Pick Particle' plugin for Chimera
 %     with a name in the format INPUT_MOTL_FN_PREFIX_#.em, where # should
@@ -23,7 +24,10 @@ function subtom_seed_positions(varargin)
 %     clicker file was created from, which is not used in placing spheres but is
 %     considered in seeding tubules to delineate between multiple tubules in
 %     each tomogram. Finally a running index of tube or sphere is added to the
-%     6th field of the output motive list.
+%     6th field of the output motive list. If both DO_TUBULE and RAND_INPLANE
+%     evaluate to true as a boolean, then the final Euler angle (phi in AV3
+%     notation, and psi/spin/inplane in other notations) will be randomized as
+%     opposed to directed along the tubular axis.
 
 % DRM 05-2019
 %##############################################################################%
@@ -38,6 +42,7 @@ function subtom_seed_positions(varargin)
     addParameter(fn_parser, 'output_motl_fn', 'combinedmotl/allmotl_1.em');
     addParameter(fn_parser, 'spacing', '8');
     addParameter(fn_parser, 'do_tubule', '0');
+    addParameter(fn_parser, 'rand_inplane', '0');
     parse(fn_parser, varargin{:});
 
 %##############################################################################%
@@ -127,6 +132,22 @@ function subtom_seed_positions(varargin)
         validateattributes(do_tubule, {'numeric'}, ...
             {'scalar', 'nonnan', 'binary'}, ...
             'subtom_seed_positions', 'do_tubule');
+
+    catch ME
+        fprintf(2, '%s - %s\n', ME.identifier, ME.message);
+        rethrow(ME);
+    end
+
+    rand_inplane = fn_parser.Results.rand_inplane;
+
+    if ischar(rand_inplane)
+        rand_inplane = str2double(rand_inplane);
+    end
+
+    try
+        validateattributes(rand_inplane, {'numeric'}, ...
+            {'scalar', 'nonnan', 'binary'}, ...
+            'subtom_seed_positions', 'rand_inplane');
 
     catch ME
         fprintf(2, '%s - %s\n', ME.identifier, ME.message);
@@ -230,6 +251,12 @@ function subtom_seed_positions(varargin)
 
                 % Do the actual seeding.
                 seed_motl = subtom_seed_tube(tube_motl, spacing);
+
+                % Randomize phi if requested.
+                if rand_inplane
+                    num_seeds = size(seed_motl, 2);
+                    seed_motl(17, :) = rand([1, num_seeds]) .* 360.0 - 180.0;
+                end
 
                 % Add the seeded positions to the all motive list.
                 all_motl = [all_motl, seed_motl];

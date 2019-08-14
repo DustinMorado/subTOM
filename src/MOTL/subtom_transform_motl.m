@@ -9,7 +9,8 @@ function transform_motl(varargin)
 %         'shift_z', SHIFT_Z,
 %         'rotate_phi', ROTATE_PHI,
 %         'rotate_psi', ROTATE_PSI,
-%         'rotate_theta', ROTATE_THETA)
+%         'rotate_theta', ROTATE_THETA,
+%         'rand_inplane', RAND_INPLANE)
 %
 %     Takes the motl given by INPUT_MOTL_FN, and first applies the rotation
 %     described by the Euler angles ROTATE_PHI, ROTATE_PSI, ROTATE_THETA, which
@@ -19,8 +20,10 @@ function transform_motl(varargin)
 %     motive list is written out as OUTPUT_MOTL_FN. Keep in mind that the motive
 %     list transforms describe the alignment of the reference to each particle,
 %     but that the rotation and shift here describe an affine transform of the
-%     reference to a new reference.
-%
+%     reference to a new reference. If RAND_INPLANE evaluates to true as a
+%     boolean, then the final Euler angle (phi in AV3 notation, and
+%     psi/spin/inplane in other notations) will be randomized after the given
+%     transform.
 
 % DRM 05-2019
 %
@@ -97,6 +100,7 @@ function transform_motl(varargin)
     addParameter(fn_parser, 'rotate_phi', '0');
     addParameter(fn_parser, 'rotate_psi', '0');
     addParameter(fn_parser, 'rotate_theta', '0');
+    addParameter(fn_parser, 'rand_inplane', '0');
     parse(fn_parser, varargin{:});
 
 %##############################################################################%
@@ -235,6 +239,22 @@ function transform_motl(varargin)
         rethrow(ME);
     end
 
+    rand_inplane = fn_parser.Results.rand_inplane;
+
+    if ischar(rand_inplane)
+        rand_inplane = str2double(rand_inplane);
+    end
+
+    try
+        validateattributes(rand_inplane, {'numeric'}, ...
+            {'scalar', 'nonnan', 'binary'}, ...
+            'subtom_transform_motl', 'rand_inplane');
+
+    catch ME
+        fprintf(2, '%s - %s\n', ME.identifier, ME.message);
+        rethrow(ME);
+    end
+
 %##############################################################################%
 %                               START PROCESSING                               %
 %##############################################################################%
@@ -273,6 +293,11 @@ function transform_motl(varargin)
         output_motl(17:19, motl_idx) = subtom_matrix_to_zxz(...
             new_rotation_matrix);
 
+        % Additionaly if requested we randomize the phi rotation.
+        if rand_inplane
+            num_ptcls = size(output_motl, 2);
+            output_motl(17, :) = rand([1, num_ptcls]) .* 360.0 - 180.0;
+        end
     end
 
     tom_emwrite(output_motl_fn, output_motl);

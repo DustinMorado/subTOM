@@ -10,7 +10,8 @@ Place particle positions from clicker motive list.
         'input_motl_fn_prefix', input_motl_fn_prefix ('../startset/clicker'),
         'output_motl_fn', output_motl_fn ('combinedmotl/allmotl_1.em'),
         'spacing', spacing (8),
-        'do_tubule', do_tubule (0))
+        'do_tubule', do_tubule (0),
+        'rand_inplane', rand_inplane (0))
 
 Takes in clicker motive lists from the 'Pick Particle' plugin for Chimera
 with a name in the format ``input_motl_fn_prefix`` _#.em, where # should
@@ -28,7 +29,10 @@ output motive list. The second field corresponds to the marker set the
 clicker file was created from, which is not used in placing spheres but is
 considered in seeding tubules to delineate between multiple tubules in
 each tomogram. Finally a running index of tube or sphere is added to the
-6th field of the output motive list.
+6th field of the output motive list. If both ``do_tubule`` and ``rand_inplane``
+evaluate to true as a boolean, then the final Euler angle (phi in AV3 notation,
+and psi/spin/inplane in other notations) will be randomized as opposed to
+directed along the tubular axis.
 
 -------
 Example
@@ -40,7 +44,8 @@ Example
         'input_motl_fn_prefix', '../startset/clicker', ...
         'output_motl_fn', 'combinedmotl/allmotl_1.em', ...
         'spaciing', 4, ...
-        'do_tubule', 0)
+        'do_tubule', 0, ...
+        'rand_inplane', 0)
 
 --------
 See Also

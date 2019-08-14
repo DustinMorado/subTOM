@@ -14,7 +14,8 @@ Apply a rotation and a shift to a MOTL file.
         'shift_z', shift_z (0),
         'rotate_phi', rotate_phi (0),
         'rotate_psi', rotate_psi (0),
-        'rotate_theta', rotate_theta (0))
+        'rotate_theta', rotate_theta (0),
+        'rand_inplane', rand_inplane (0))
 
 Takes the motl given by ``input_motl_fn``, and first applies the rotation
 described by the Euler angles ``rotate_phi``, ``rotate_psi``, ``rotate_theta``,
@@ -24,7 +25,9 @@ respectively. Then a translation specified by ``shift_x``, ``shift_y``,
 transformed motive list is written out as ``output_motl_fn``. Keep in mind that
 the motive list transforms describe the alignment of the reference to each
 particle, but that the rotation and shift here describe an affine transform of
-the reference to a new reference.
+the reference to a new reference. If ``rand_inplane`` evaluates to true as a
+boolean, then the final Euler angle (phi in AV3 notation, and psi/spin/inplane
+in other notations) will be randomized after the given transform.
 
 ---------------------------------------------
 Explanation of how the transforms are derived
@@ -102,7 +105,8 @@ Example
         'shift_z', -3, ...
         'rotate_phi', 60, ...
         'rotate_psi', 15, ...
-        'rotate_theta', 0.5)
+        'rotate_theta', 0.5, ...
+        'rand_inplane', 0)
 
 --------
 See Also

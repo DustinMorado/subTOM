@@ -61,7 +61,9 @@ export MCR_CACHE_ROOT="${mcr_cache_dir}"
     rotate_psi \
     "${rotate_psi}" \
     rotate_theta \
-    "${rotate_theta}"
+    "${rotate_theta}" \
+    rand_inplane \
+    "${rand_inplane}"
 
 rm -rf "${mcr_cache_dir}"
 
@@ -96,6 +98,8 @@ printf "| %-25s | %25s |\n" "shift_y" "${shift_y}" >> subTOM_protocol.md
 printf "| %-25s | %25s |\n" "shift_z" "${shift_z}" >> subTOM_protocol.md
 printf "| %-25s | %25s |\n" "rotate_phi" "${rotate_phi}" >> subTOM_protocol.md
 printf "| %-25s | %25s |\n" "rotate_psi" "${rotate_psi}" >> subTOM_protocol.md
-printf "| %-25s | %25s |\n\n" "rotate_theta" "${rotate_theta}" >>\
+printf "| %-25s | %25s |\n" "rotate_theta" "${rotate_theta}" >>\
     subTOM_protocol.md
 
+printf "| %-25s | %25s |\n\n" "rand_inplane" "${rand_inplane}" >>\
+    subTOM_protocol.md

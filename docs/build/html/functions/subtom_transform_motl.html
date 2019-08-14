@@ -222,7 +222,8 @@
     <span class="s">&#39;shift_z&#39;</span><span class="p">,</span> <span class="n">shift_z</span> <span class="p">(</span><span class="mi">0</span><span class="p">),</span>
     <span class="s">&#39;rotate_phi&#39;</span><span class="p">,</span> <span class="n">rotate_phi</span> <span class="p">(</span><span class="mi">0</span><span class="p">),</span>
     <span class="s">&#39;rotate_psi&#39;</span><span class="p">,</span> <span class="n">rotate_psi</span> <span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s">&#39;rotate_theta&#39;</span><span class="p">,</span> <span class="n">rotate_theta</span> <span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+    <span class="s">&#39;rotate_theta&#39;</span><span class="p">,</span> <span class="n">rotate_theta</span> <span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s">&#39;rand_inplane&#39;</span><span class="p">,</span> <span class="n">rand_inplane</span> <span class="p">(</span><span class="mi">0</span><span class="p">))</span>
 </pre></div>
 </div>
 <p>Takes the motl given by <code class="docutils literal notranslate"><span class="pre">input_motl_fn</span></code>, and first applies the rotation
@@ -233,7 +234,9 @@ respectively. Then a translation specified by <code class="docutils literal notr
 transformed motive list is written out as <code class="docutils literal notranslate"><span class="pre">output_motl_fn</span></code>. Keep in mind that
 the motive list transforms describe the alignment of the reference to each
 particle, but that the rotation and shift here describe an affine transform of
-the reference to a new reference.</p>
+the reference to a new reference. If <code class="docutils literal notranslate"><span class="pre">rand_inplane</span></code> evaluates to true as a
+boolean, then the final Euler angle (phi in AV3 notation, and psi/spin/inplane
+in other notations) will be randomized after the given transform.</p>
 <div class="section" id="explanation-of-how-the-transforms-are-derived">
 <h2>Explanation of how the transforms are derived<a class="headerlink" href="#explanation-of-how-the-transforms-are-derived" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">The alignments in the motive list describe the rotation and shift of the</span>
@@ -304,7 +307,8 @@ the reference to a new reference.</p>
     <span class="s">&#39;shift_z&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="c">...</span>
     <span class="s">&#39;rotate_phi&#39;</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="c">...</span>
     <span class="s">&#39;rotate_psi&#39;</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;rotate_theta&#39;</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+    <span class="s">&#39;rotate_theta&#39;</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="c">...</span>
+    <span class="s">&#39;rand_inplane&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>

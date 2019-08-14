@@ -307,12 +307,6 @@ eigcoeff_prealign
   calculation, set the following to 1, otherwise the particles will be aligned
   during the computation.
 
-eigcoeff_nfold
-  Symmetry to apply to each Eigenvolume (or conjugate-space Eigenvector) in the
-  Eigencoefficient calculation, This will affect the symmetry of the
-  Eigenvolumes as well, if no symmetry coeff_nfold=1 (define as integer e.g.
-  coeff_nfold=3)
-
 tomo_row
   Which row in the motl file contains the correct tomogram number.
   Usually row 5 and 7 both correspond to the correct value and can be used
@@ -485,8 +479,6 @@ Example
     apply_weight="0"
 
     eigcoeff_prealign="0"
-
-    eigcoeff_nfold="1"
 
     tomo_row="7"
 

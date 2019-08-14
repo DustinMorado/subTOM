@@ -67,6 +67,11 @@ rotate_theta
   How much to second rotate the reference about it's intermediate X-Axis.
   (i.e. Zenithal rotation corresponding to theta).
 
+rand_inplane
+  If this is set to 1 (i.e. evaluates to true in Matlab) then the inplane
+  rotation of particles will be randomized after the application of the given
+  transform.
+
 -------
 Example
 -------
@@ -96,3 +101,5 @@ Example
     rotate_psi=0.0
 
     rotate_theta=0.0
+
+    rand_inplane=0

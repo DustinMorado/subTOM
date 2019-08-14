@@ -56,6 +56,11 @@ do_tubule
   the tubule-axis. Otherwise the clicker file is assumed to correspond to
   spheres.
 
+rand_inplane
+  If this is set to 1 (i.e. evaluates to true in Matlab) then the inplane
+  rotation of particles along a tubule will be randomized as opposed to the
+  default which is to place the X-axis orthogonal to the longest tubule axis.
+
 -------
 Example
 -------
@@ -77,3 +82,5 @@ Example
     spacing=8
 
     do_tubule=0
+
+    rand_inplane=0

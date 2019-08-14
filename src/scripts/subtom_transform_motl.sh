@@ -69,6 +69,11 @@ rotate_psi=0.0
 # (i.e. Zenithal rotation corresponding to theta).
 rotate_theta=0.0
 
+# If this is set to 1 (i.e. evaluates to true in Matlab) then the inplane
+# rotation of particles will be randomized after the application of the given
+# transform.
+rand_inplane="0"
+
 ################################################################################
 #                                                                              #
 #                                END OF OPTIONS                                #
