@@ -720,7 +720,7 @@ do
         check_fn_="$(find ${check_dir} -regex ".*/${check_base}" -and \
             -newer check_fn_complete)"
 
-        if [[ -n "${check_fn}" ]]
+        if [[ -n "${check_fn_}" ]]
         then
             check_done=0
         else
