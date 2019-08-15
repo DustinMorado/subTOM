@@ -273,6 +273,11 @@ prevent the user from crashing the cluster requesting too much memory.</p>
 <div class="section" id="other-cluster-options">
 <h3>Other Cluster Options<a class="headerlink" href="#other-cluster-options" title="Permalink to this headline">¶</a></h3>
 <dl class="simple">
+<dt>job_name</dt><dd><p>The job name prefix that will be used for the cluster submission scripts, log
+files, and error logs for the processing. Be careful that this name is unique
+because previous submission scripts, logs, and error logs with the same job
+name prefix will be overwritten in the case of a name collision.</p>
+</dd>
 <dt>run_local</dt><dd><p>If the user wants to skip the cluster and run the job locally, this value
 should be set to 1.</p>
 </dd>
@@ -369,6 +374,9 @@ use the command ‘clip stats’ on several movies to find out where the values
 start to become outliers, it should be around 5-7 for 10 frame movies of about
 3e/A^2 on the K2.</p>
 </dd>
+<dt>use_gpu</dt><dd><p>If you want to use a GPU set this to 1, but be careful to not use both the
+cluster and the GPU as this is not supported.</p>
+</dd>
 <dt>extra_opts</dt><dd><p>If you want to use other options to alignframes specify them here.</p>
 </dd>
 </dl>
@@ -376,7 +384,9 @@ start to become outliers, it should be around 5-7 for 10 frame movies of about
 <div class="section" id="ctf-estimation-options">
 <h3>CTF Estimation Options<a class="headerlink" href="#ctf-estimation-options" title="Permalink to this headline">¶</a></h3>
 <dl class="simple">
-<dt>apix</dt><dd><p>The pixel size of the motion-corrected tilt-series in Angstroms.</p>
+<dt>apix</dt><dd><p>The pixel size of the raw movie frames if they exist, or the pixelsize of the
+“_aligned.st” stack if alignframes and dose-weighting is not being done. The
+actual pixelsize used in CTF estimation is apix * sum_bin.</p>
 </dd>
 <dt>do_ctffind4</dt><dd><p>If this is set to 1, the defocus will be estimated with CTFFIND4.</p>
 </dd>

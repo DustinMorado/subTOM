@@ -28,18 +28,18 @@ frame_dir="Frames"
 ################################################################################
 # Absolute path to the IMOD alignframes executable. The directory of this will
 # be used for the other IMOD programs used in the processing. Need version at
-# least above 4.10.29
-#alignframes_exe=$(which alignframes) # If you have alignframes in your path.
-alignframes_exe="$(which alignframes)"
+# least above 4.10.30
+#alignframes_exe="$(which alignframes)"
+alignframes_exe=""
 
 # Absolute path to the CTFFIND4 executable. Needs version at least above 4.1.13.
-#ctffind_exe=${bstore1}/../LMB/software/ctffind/ctffind.exe
-#ctffind_exe=$(which ctffind.exe)
-ctffind_exe="$(which ctffind)"
+#ctffind_exe="$(which ctffind.exe)"
+ctffind_exe=""
 
 # Absolute path to the GCTF executable. I wouldn't use it because it rarely
 # works but it seems a version of 1.06 sometimes doesn't crash.
-gctf_exe="$(which Gctf)"
+#gctf_exe="$(which Gctf)"
+gctf_exe=""
 
 # Directory for subTOM executables
 exec_dir="XXXINSTALLATION_DIRXXX/bin"
@@ -58,6 +58,9 @@ mem_max="64G"
 ################################################################################
 #                              OTHER LSF OPTIONS                               #
 ################################################################################
+# BE CAREFUL THAT THE NAME DOESN'T CORRESPOND TO THE BEGINNING OF ANY OTHER FILE
+job_name="subTOM"
+
 # If you want to skip the cluster and run the job locally set this to 1.
 run_local=0
 
@@ -182,6 +185,10 @@ refine_shift_stop=0.1
 # 3e/A^2 on the K2.
 truncate_above=7
 
+# If you want to use a GPU set this to 1, but be careful to not use both the
+# cluster and the GPU as this is not supported.
+use_gpu=0
+
 # If you want to use other options to alignframes specify them here.
 extra_opts=''
 
@@ -190,7 +197,9 @@ extra_opts=''
 #                            CTF ESTIMATION OPTIONS                            #
 #                                                                              #
 ################################################################################
-# The pixel size of the motion-corrected tilt-series in Angstroms.
+# The pixel size of the raw movie frames if they exist, or the pixelsize of the
+# "_aligned.st" stack if alignframes and dose-weighting is not being done. The
+# actual pixelsize used in CTF estimation is apix * sum_bin.
 apix=1
 
 # If this is set to 1, the defocus will be estimated with CTFFIND4.

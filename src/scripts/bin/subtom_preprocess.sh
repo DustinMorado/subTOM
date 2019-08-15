@@ -31,6 +31,12 @@ apix_nm=$(awk -vapix="${apix}" 'BEGIN { print apix / 10 }')
 apix2=$(awk -vapix="${apix}" -vbin="${sum_bin}" 'BEGIN { print apix * bin }')
 apix2_nm=$(awk -vapix="${apix2}" 'BEGIN { print apix / 10 }')
 
+# Create a list of indices that have data and are being processed to check
+# progress later on.
+good_idxs=()
+
+# Create a list of the last files to be written to check progress later on.
+check_fns=()
 
 # This is the main loop over the indices of tiltseries to process
 for idx in $(seq "${start_idx}" "${end_idx}")
@@ -46,6 +52,7 @@ do
     # Check if the tiltseries base directory exists and if not create it.
     ts_dir="${scratch_dir}/${ts}"
     empty_ts_dir=0
+
     if [[ ! -d "${ts_dir}" ]]
     then
         mkdir "${ts_dir}"
@@ -147,7 +154,8 @@ do
 
             elif [[ -n "${one_frame}" ]]
             then
-                echo "ImageFile = ${ts}.st" >> "${ts_dir}/${mdoc_fn}"
+                ts_fn="${ts}.st"
+                echo "ImageFile = ${ts_fn}" >> "${ts_dir}/${mdoc_fn}"
                 echo "ImageSize = $("${imod_exe_dir}/header" -size \
                     "${one_frame}" | awk '{ print $1, $2 }')" >> \
                     "${ts_dir}/${mdoc_fn}"
@@ -205,6 +213,25 @@ do
         echo "Seems like nothing to do for ${ts}. SKIPPING!"
         rmdir "${ts_dir}"
         continue
+    else
+        # Add index to list of good indices and find last filename to look for.
+        good_idxs[${#good_idxs[*]}]=${idx}
+
+        if [[ "${do_ctfplotter}" -eq 1 ]]
+        then
+            check_fns[${#check_fns[*]}]="${ts_dir}/ctfplotter/${ts}_output.txt"
+        elif [[ "${do_gctf}" -eq 1 ]]
+        then
+            check_fns[${#check_fns[*]}]="${ts_dir}/gctf/${ts}_output.ctf"
+        elif [[ "${do_ctffind4}" -eq 1 ]]
+        then
+            check_fns[${#check_fns[*]}]="${ts_dir}/ctffind4/${ts}_output.ctf"
+        elif [[ "${do_doseweight}" -eq 1 ]]
+        then
+            check_fns[${#check_fns[*]}]="${ts_dir}/${ts}_dose-filt.st"
+        else
+            check_fns[${#check_fns[*]}]="${ts_dir}/${ts}_aligned.st"
+        fi
     fi
 
     if [[ "${do_aligned}" -eq 1 && ! -d "${ts_dir}/alignframes" ]]
@@ -238,16 +265,19 @@ do
 #                                                                              #
 ################################################################################
 
-    script_fn="subtom_preprocess_${fmt_idx}.sh"
+    script_fn="${job_name}_preprocess_${fmt_idx}.sh"
+    log_fn="log_${job_name}_preprocess_${fmt_idx}"
+    error_fn="error_${job_name}_preprocess_${fmt_idx}"
+
     cat<<PREPROC>"${script_fn}"
 #!/bin/bash
-#$ -N subtom_preprocess_${fmt_idx}
+#$ -N "${job_name}_preprocess_${fmt_idx}"
 #$ -S /bin/bash
 #$ -V
 #$ -cwd
 #$ -l dedicated=24,mem_free=${mem_free},h_vmem=${mem_max}
-#$ -o log_preprocess_${fmt_idx}
-#$ -e error_preprocess_${fmt_idx}
+#$ -o "${log_fn}"
+#$ -e "${error_fn}"
 set +o noclobber
 set -e
 echo \${HOSTNAME}
@@ -302,6 +332,14 @@ PREPROC
 
         fi
 
+        if [[ "${use_gpu}" -eq 1 && "${run_local}" -eq 1 ]]
+        then
+            cat<<PREPROC>>"${script_fn}"
+    -UseGPU 0 \\
+PREPROC
+
+        fi
+
         if [[ -n "${extra_opts}" ]]
         then
             cat<<PREPROC>>"${script_fn}"
@@ -311,8 +349,7 @@ PREPROC
         fi
 
         cat<<PREPROC>>"${script_fn}"
-    -OutputImageFile "${ts_dir}/${ts}_aligned.st" |  \\
-tee "${ts_dir}/alignframes/${ts}_aligned.out"
+    -OutputImageFile "${ts_dir}/${ts}_aligned.st"
 
 "${imod_exe_dir}/newstack" \\
     -ReorderByTiltAngle 1 \\
@@ -379,6 +416,14 @@ PREPROC
 
         fi
 
+        if [[ "${use_gpu}" -eq 1 ]]
+        then
+            cat<<PREPROC>>"${script_fn}"
+    -UseGPU 0 \\
+PREPROC
+
+        fi
+
         if [[ -n "${extra_opts}" ]]
         then
             cat<<PREPROC>>"${script_fn}"
@@ -388,8 +433,7 @@ PREPROC
         fi
 
         cat<<PREPROC>>"${script_fn}"
-    -OutputImageFile "${ts_dir}/${ts}_dose-filt.st" | \\
-tee "${ts_dir}/alignframes/${ts}_dose-filt.out"
+    -OutputImageFile "${ts_dir}/${ts}_dose-filt.st"
 
 "${imod_exe_dir}/newstack" \\
     -ReorderByTiltAngle 1 \\
@@ -610,18 +654,171 @@ PREPROC
 
     fi
 
+    # Make the script executable
+    chmod u+x "${script_fn}"
+done
+
 ################################################################################
 #                             PREPROCESS EXECUTION                             #
 ################################################################################
+# We need to run the scripts but one at a time while still being able to
+# monitor progress so we use a subshell here to do that
+(
+    # Confusingly loop over the indices of good_idxs
+    # (0 to length of good_idxs)
+    for good_idx_idx in ${!good_idxs[*]}
+    do
+        good_idx=${good_idxs[good_idx_idx]}
 
-    chmod u+x "${script_fn}"
+        # Convert the numeric index to the string formatted version.
+        fmt_idx=$(printf "${idx_fmt}" "${good_idx}")
 
-    if [[ "${run_local}" -eq 1 ]]
+        script_fn="${job_name}_preprocess_${fmt_idx}.sh"
+        log_fn="log_${job_name}_preprocess_${fmt_idx}"
+        error_fn="error_${job_name}_preprocess_${fmt_idx}"
+
+        if [[ "${run_local}" -eq 1 ]]
+        then
+            "./${script_fn}" 2>"${error_fn}" >"${log_fn}"
+        else
+            qsub "${script_fn}"
+        fi
+    done
+)&
+
+################################################################################
+#                             PREPROCESS PROGRESS                              #
+################################################################################
+num_scripts="${#good_idxs[*]}"
+num_complete=0
+num_complete_prev=0
+unchanged_count=0
+
+for check_fn in "${check_fns[@]}"
+do
+    if [[ -f "${check_fn}" ]]
     then
-        "./${script_fn}" 2> "error_preprocess_${fmt_idx}" >\
-            "log_preprocess_${fmt_idx}"
+        num_complete=$((num_complete + 1))
+    fi
+done
+
+while [[ ${num_complete} -lt ${num_scripts} ]]
+do
+    num_complete=0
+
+    for check_fn in "${check_fns[@]}"
+    do
+        if [[ -f "${check_fn}" ]]
+        then
+            num_complete=$((num_complete + 1))
+        fi
+    done
+
+    if [[ ${num_complete} -eq ${num_complete_prev} ]]
+    then
+        unchanged_count=$((unchanged_count + 1))
     else
-        qsub "${script_fn}"
+        unchanged_count=0
+    fi
+
+    num_complete_prev=${num_complete}
+
+    if [[ ${num_complete} -gt 0 && ${unchanged_count} -gt 240 ]]
+    then
+        echo "Preprocessing has seemed to stall"
+        echo "Please check error logs and resubmit the job if needed."
+        exit 1
+    fi
+
+    # Create a general error and log file
+    if [[ -f "error_${job_name}_preprocess" ]]
+    then
+        rm "error_${job_name}_preprocess"
+        touch "error_${job_name}_preprocess"
+    else
+        touch "error_${job_name}_preprocess"
+    fi
+
+    if [[ -f "log_${job_name}_preprocess" ]]
+    then
+        rm "log_${job_name}_preprocess"
+        touch "log_${job_name}_preprocess"
+    else
+        touch "log_${job_name}_preprocess"
+    fi
+
+    for log_idx in $(seq ${good_idxs[0]} ${good_idxs[-1]})
+    do
+        log_fmt_idx=$(printf "${idx_fmt}" ${log_idx})
+
+        if [[ -f "error_${job_name}_preprocess_${log_fmt_idx}" ]]
+        then
+            cat "error_${job_name}_preprocess_${log_fmt_idx}" >\
+                "error_${job_name}_preprocess"
+        fi
+
+        if [[ -f "log_${job_name}_preprocess_${log_fmt_idx}" ]]
+        then
+            cat "log_${job_name}_preprocess_${log_fmt_idx}" >\
+                "log_${job_name}_preprocess"
+        fi
+    done
+
+    echo -e "\nERROR Update: Preprocessing\n"
+    tail "error_${job_name}_preprocess"
+
+    echo -e "\nLOG Update: Preprocessing\n"
+    tail "log_${job_name}_preprocess"
+
+    echo -e "\nSTATUS Update: Preprocessing\n"
+    echo -e "\t${num_complete} tilt-series out of ${num_scripts}\n"
+    sleep 60s
+done
+
+################################################################################
+#                             PREPROCESS CLEAN UP                              #
+################################################################################
+if [[ ! -d preprocess ]]
+then
+    mkdir preprocess
+fi
+
+if [[ -e "log_${job_name}_preprocess" ]]
+then
+    mv "log_${job_name}_preprocess" preprocess/.
+fi
+
+if [[ -e "error_${job_name}_preprocess" ]]
+then
+    mv "error_${job_name}_preprocess" preprocess/.
+fi
+
+# Confusingly loop over the indices of good_idxs
+# (0 to length of good_idxs)
+for good_idx_idx in ${!good_idxs[*]}
+do
+    good_idx=${good_idxs[good_idx_idx]}
+
+    # Convert the numeric index to the string formatted version.
+    fmt_idx=$(printf "${idx_fmt}" "${good_idx}")
+
+    script_fn="${job_name}_preprocess_${fmt_idx}.sh"
+    log_fn="log_${job_name}_preprocess_${fmt_idx}"
+    error_fn="error_${job_name}_preprocess_${fmt_idx}"
+
+    if [[ -e "${script_fn}" ]]
+    then
+        mv "${script_fn}" preprocess/.
+    fi
+
+    if [[ -e "${log_fn}" ]]
+    then
+        mv "${log_fn}" preprocess/.
+    fi
+
+    if [[ -e "${error_fn}" ]]
+    then
+        mv "${error_fn}" preprocess/.
     fi
 done
 

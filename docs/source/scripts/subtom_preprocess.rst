@@ -58,6 +58,12 @@ mem_max
 Other Cluster Options
 ---------------------
 
+job_name
+  The job name prefix that will be used for the cluster submission scripts, log
+  files, and error logs for the processing. Be careful that this name is unique
+  because previous submission scripts, logs, and error logs with the same job
+  name prefix will be overwritten in the case of a name collision.
+
 run_local
   If the user wants to skip the cluster and run the job locally, this value
   should be set to 1.
@@ -174,6 +180,10 @@ truncate_above
   start to become outliers, it should be around 5-7 for 10 frame movies of about
   3e/A^2 on the K2.
 
+use_gpu
+  If you want to use a GPU set this to 1, but be careful to not use both the
+  cluster and the GPU as this is not supported.
+
 extra_opts
   If you want to use other options to alignframes specify them here.
 
@@ -181,7 +191,9 @@ CTF Estimation Options
 ----------------------
 
 apix
-  The pixel size of the motion-corrected tilt-series in Angstroms.
+  The pixel size of the raw movie frames if they exist, or the pixelsize of the
+  "_aligned.st" stack if alignframes and dose-weighting is not being done. The
+  actual pixelsize used in CTF estimation is apix * sum_bin.
 
 do_ctffind4
   If this is set to 1, the defocus will be estimated with CTFFIND4.
