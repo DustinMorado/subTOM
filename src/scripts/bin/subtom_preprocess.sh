@@ -704,11 +704,30 @@ done
 
 while [[ ${num_complete} -lt ${num_scripts} ]]
 do
+    touch check_fn_complete
+    sleep 60s
+
     num_complete=0
 
     for check_fn in "${check_fns[@]}"
     do
-        if [[ -f "${check_fn}" ]]
+        check_dir="$(dirname "${check_fn}")"
+        check_base="$(basename "${check_fn}")"
+
+        # The following will be ${check_fn} if the file is still being modified
+        # (i.e. more recently modified than check_fn_complete), and "" if the
+        # file has not been modified in more than a minute.
+        check_fn_="$(find ${check_dir} -regex ".*/${check_base}" -and \
+            -newer check_fn_complete)"
+
+        if [[ -n "${check_fn}" ]]
+        then
+            check_done=0
+        else
+            check_done=1
+        fi
+
+        if [[ -f "${check_fn}" && "${check_done}" -eq 1 ]]
         then
             num_complete=$((num_complete + 1))
         fi
@@ -753,13 +772,13 @@ do
 
         if [[ -f "error_${job_name}_preprocess_${log_fmt_idx}" ]]
         then
-            cat "error_${job_name}_preprocess_${log_fmt_idx}" >\
+            cat "error_${job_name}_preprocess_${log_fmt_idx}" >>\
                 "error_${job_name}_preprocess"
         fi
 
         if [[ -f "log_${job_name}_preprocess_${log_fmt_idx}" ]]
         then
-            cat "log_${job_name}_preprocess_${log_fmt_idx}" >\
+            cat "log_${job_name}_preprocess_${log_fmt_idx}" >>\
                 "log_${job_name}_preprocess"
         fi
     done
@@ -773,6 +792,7 @@ do
     echo -e "\nSTATUS Update: Preprocessing\n"
     echo -e "\t${num_complete} tilt-series out of ${num_scripts}\n"
     sleep 60s
+    rm check_fn_complete
 done
 
 ################################################################################
@@ -848,6 +868,7 @@ printf "| %-25s | %25s |\n" "gctf_exe" "${gctf_exe}" >> subTOM_protocol.md
 printf "| %-25s | %25s |\n" "exec_dir" "${exec_dir}" >> subTOM_protocol.md
 printf "| %-25s | %25s |\n" "mem_free" "${mem_free}" >> subTOM_protocol.md
 printf "| %-25s | %25s |\n" "mem_max" "${mem_max}" >> subTOM_protocol.md
+printf "| %-25s | %25s |\n" "job_name" "${job_name}" >> subTOM_protocol.md
 printf "| %-25s | %25s |\n" "run_local" "${run_local}" >> subTOM_protocol.md
 printf "| %-25s | %25s |\n" "ts_fmt" "${ts_fmt}" >> subTOM_protocol.md
 printf "| %-25s | %25s |\n" "start_idx" "${start_idx}" >> subTOM_protocol.md
@@ -895,6 +916,7 @@ printf "| %-25s | %25s |\n" "refine_shift_stop" "${refine_shift_stop}" >>\
 printf "| %-25s | %25s |\n" "truncate_above" "${truncate_above}" >>\
     subTOM_protocol.md
 
+printf "| %-25s | %25s |\n" "use_gpu" "${use_gpu}" >> subTOM_protocol.md
 printf "| %-25s | %25s |\n" "extra_opts" "${extra_opts}" >>\
     subTOM_protocol.md
 

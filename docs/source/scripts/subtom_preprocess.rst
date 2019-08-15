@@ -274,6 +274,8 @@ Example
 
     mem_max="64G"
 
+    job_name="subTOM"
+
     run_local=1
 
     ts_fmt="TS_XXXIDXXXX"
@@ -315,6 +317,8 @@ Example
     refine_shift_stop=0.1
 
     truncate_above=7
+
+    use_gpu=0
 
     extra_opts=''
 
