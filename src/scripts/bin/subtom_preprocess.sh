@@ -228,9 +228,9 @@ do
             check_fns[${#check_fns[*]}]="${ts_dir}/ctffind4/${ts}_output.ctf"
         elif [[ "${do_doseweight}" -eq 1 ]]
         then
-            check_fns[${#check_fns[*]}]="${ts_dir}/${ts}_dose-filt.st"
+            check_fns[${#check_fns[*]}]="${ts_dir}/${ts}_dose-filt.st.mdoc"
         else
-            check_fns[${#check_fns[*]}]="${ts_dir}/${ts}_aligned.st"
+            check_fns[${#check_fns[*]}]="${ts_dir}/${ts}_aligned.st.mdoc"
         fi
     fi
 
@@ -791,8 +791,8 @@ do
 
     echo -e "\nSTATUS Update: Preprocessing\n"
     echo -e "\t${num_complete} tilt-series out of ${num_scripts}\n"
-    sleep 60s
     rm check_fn_complete
+    sleep 60s
 done
 
 ################################################################################
