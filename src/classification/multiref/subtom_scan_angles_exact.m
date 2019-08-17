@@ -277,7 +277,7 @@ function subtom_scan_angles_exact(varargin)
     keep_class = fn_parser.Results.keep_class;
 
     if ischar(keep_class)
-        apply_mask = str2double(keep_class);
+        keep_class = str2double(keep_class);
     end
 
     try
