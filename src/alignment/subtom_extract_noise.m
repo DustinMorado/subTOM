@@ -495,7 +495,7 @@ function subtom_extract_noise(varargin)
         % Extract the subtomograms for each tomogram
         fprintf(1, 'Starting Noise Extraction and Amp. Spec. Calculation\n');
         noise_ampspec = extract_noise_ampspec(box_size, tomogram_fn, ...
-            noise_motl, preload_tomogram, use_tom_red, use_memmap);
+            noise_motl, tomo_row, preload_tomogram, use_tom_red, use_memmap);
 
         tom_emwrite(noise_ampspec_fn, noise_ampspec);
         subtom_check_em_file(noise_ampspec_fn, noise_ampspec);
@@ -511,11 +511,24 @@ function subtom_extract_noise(varargin)
     tomogram_size = getfield(getfield(tom_readmrcheader(tomogram_fn), ...
         'Header'), 'Size');
 
-    if max(tomogram_size) <= 500
+    % Make sure that the boxsize is not bigger in any dimension than the
+    % tomogram.
+    if box_size >= min(tomogram_size)
+        try
+            error('subTOM:volDimError', ...
+                'extract_noise: box_size is too large for given tomogram.');
+
+        catch ME
+            fprintf(2, '%s - %s\n', ME.identifier, ME.message);
+            rethrow(ME);
+        end
+    end
+
+    if max(tomogram_size) <= 512
         bin_factor = 1;
-    elseif max(tomogram_size ./ 2) <= 500
+    elseif max(tomogram_size ./ 2) <= 512
         bin_factor = 2;
-    elseif max(tomogram_size ./ 4) <= 500
+    elseif max(tomogram_size ./ 4) <= 512
         bin_factor = 4;
     else
         bin_factor = 8;
@@ -524,17 +537,35 @@ function subtom_extract_noise(varargin)
     % Create a mask volume that will hold possible positions for noise
     noise_mask = ones(round(tomogram_size ./ bin_factor));
 
-    % Noise absolute minimum tomogram limits
+    % We avoid taking noise volumes that will extend beyond the tomogram.
     extract_box_size = box_size;
     box_size = max(round(box_size / bin_factor), 1);
-    noise_mask(1:box_size, :, :) = 0;
-    noise_mask(:, 1:box_size, :) = 0;
-    noise_mask(:, :, 1:box_size) = 0;
+    box_center = floor(box_size / 2) + 1;
+    upper_limit = box_size - box_center;
+    lower_limit = box_center - 1;
+
+    % Noise absolute minimum tomogram limits
+    noise_mask(1:lower_limit, :, :) = 0;
+    noise_mask(:, 1:lower_limit, :) = 0;
+    noise_mask(:, :, 1:lower_limit) = 0;
 
     % Noise absolute maximum tomogram limits
-    noise_mask(size(noise_mask, 1) - (box_size - 1):end, :, :) = 0;
-    noise_mask(:, size(noise_mask, 2) - (box_size - 1):end, :) = 0;
-    noise_mask(:, :, size(noise_mask, 3) - (box_size - 1):end) = 0;
+    noise_mask(size(noise_mask, 1) - (upper_limit - 1):end, :, :) = 0;
+    noise_mask(:, size(noise_mask, 2) - (upper_limit - 1):end, :) = 0;
+    noise_mask(:, :, size(noise_mask, 3) - (upper_limit - 1):end) = 0;
+
+    % If the box size is too large we might have already removed all the
+    % positions and so we should error and let the user know.
+    if sum(noise_mask(:)) == 0
+        try
+            error('subTOM:volDimError', ...
+                'extract_noise: box_size is too large to find noise.');
+
+        catch ME
+            fprintf(2, '%s - %s\n', ME.identifier, ME.message);
+            rethrow(ME);
+        end
+    end
 
     % We define mask size as a factor of the box size which defines the amount
     % of overlap we allow between particles and noise particles. Values less
@@ -643,7 +674,7 @@ function subtom_extract_noise(varargin)
     fprintf(1, 'Starting Noise Extraction and Amp. Spec. Calculation\n');
     noise_motl = noise_motl(:, noise_motl(20, :) == 1);
     noise_ampspec = extract_noise_ampspec(extract_box_size, tomogram_fn, ...
-        noise_motl, preload_tomogram, use_tom_red, use_memmap);
+        noise_motl, tomo_row, preload_tomogram, use_tom_red, use_memmap);
 
     tom_emwrite(noise_ampspec_fn, noise_ampspec);
     subtom_check_em_file(noise_ampspec_fn, noise_ampspec);
@@ -661,12 +692,13 @@ end
 %                            EXTRACT_NOISE_AMPSPEC                             %
 %##############################################################################%
 function noise_ampspec_avg = extract_noise_ampspec(box_size, tomogram_fn, ...
-    motl_vec, preload_tomogram, use_tom_red, use_memmap)
+    motl_vec, tomo_row, preload_tomogram, use_tom_red, use_memmap)
 % EXTRACT_NOISE_AMPSPEC Calculate average noise amplitude spectrum.
 %     EXTRACT_NOISE_AMPSPEC(
 %         BOX_SIZE,
 %         TOMOGRAM_FN,
 %         MOTL_VEC,
+%         TOMO_ROW,
 %         PRELOAD_TOMOGRAM,
 %         USE_TOM_RED,
 %         USE_MEMMAP)
@@ -676,14 +708,23 @@ function noise_ampspec_avg = extract_noise_ampspec(box_size, tomogram_fn, ...
 %     the motive list MOTL_VEC. PRELOAD_TOMOGRAM, USE_TOM_RED, and USE_MEMMAP
 %     describe flags that describe how the subvolumes are extracted using
 %     different stratgies in terms of file I/O etc.
-%
-% Example:
-%     extract_noise_ampspec(128, ./data/tomos/bin1/01.rec, noise_motl, 1, 0, 0);
 
     % Initialize amplitude spectrum volume
     noise_ampspec_sum = zeros(box_size, box_size, box_size);
     num_noise = size(motl_vec, 2);
-    tomogram_number = max(motl_vec(5, 1), motl_vec(7, 1));
+
+    if num_noise == 0
+        try
+            error('subTOM:MOTLError', ...
+                'extract_noise:Noise MOTL is completely empty.');
+
+        catch ME
+            fprintf('%s - %s\n', ME.identifier, ME.message);
+            rethrow(ME);
+        end
+    end
+
+    tomogram_number = motl_vec(tomo_row, 1);
 
     % Read in the tomogram
     if preload_tomogram
