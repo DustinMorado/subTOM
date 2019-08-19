@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>subtom_reconstruct &mdash; subTOM 1.0.0 documentation</title>
+  <title>subtom_reconstruct &mdash; subTOM 1.0.3 documentation</title>
   
 
   
@@ -113,7 +113,10 @@
 <li class="toctree-l3"><a class="reference internal" href="#memory-options">Memory Options</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#other-cluster-options">Other Cluster Options</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#file-options">File Options</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#nova-ctf-options">Nova CTF Options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#general-ctf-options">General CTF Options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#nova-3d-ctf-options">Nova 3D-CTF Options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#imod-2d-ctf-options">IMOD 2D-CTF Options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#radial-filter-options">Radial Filter Options</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#imod-options">IMOD Options</a></li>
 </ul>
 </li>
@@ -274,6 +277,11 @@ there you should be polite!</p>
 <div class="section" id="other-cluster-options">
 <h3>Other Cluster Options<a class="headerlink" href="#other-cluster-options" title="Permalink to this headline">¶</a></h3>
 <dl class="simple">
+<dt>job_name</dt><dd><p>The job name prefix that will be used for the cluster submission scripts, log
+files, and error logs for the processing. Be careful that this name is unique
+because previous submission scripts, logs, and error logs with the same job
+name prefix will be overwritten in the case of a name collision.</p>
+</dd>
 <dt>run_local</dt><dd><p>If the user wants to skip the cluster and run the job locally, this value
 should be set to 1.</p>
 </dd>
@@ -296,22 +304,29 @@ start_idx and end_idx.</p>
 <dt>idx_fmt</dt><dd><p>The format string for the tomogram indexes. Likely two or three digit zero
 padding or maybe just flat integers.</p>
 </dd>
-<dt>do_rotate_tomo</dt><dd><p>Set this value to 1 if you want to use trimvol or clip rotx to rotate the
-tomogram from the PERPENDICULAR XZ generated tomograms to the standard XY
-PARALLEL orientation. Set this value to 0 if you want to skip this step which
-greatly speeds up processing and reduces the memory footprint, but at the cost
-of easy visualization of the tomogram.</p>
+</dl>
+</div>
+<div class="section" id="general-ctf-options">
+<h3>General CTF Options<a class="headerlink" href="#general-ctf-options" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt>defocus_file</dt><dd><p>Where the defocus list file is located. The string XXXIDXXXX will be replaced
+with the formatted tomogram index, i.e. XXXIDXXXX_output.txt will be turned
+into 01_output.txt.</p>
 </dd>
-<dt>do_trimvol</dt><dd><p>Set this value to 1 if you want to use “trimvol -rx” to flip the tomograms to
-the XY standard orientation from the XZ generated tomograms. Otherwise “clip
-rotx” will be used since it is much faster.</p>
+<dt>pixel_size</dt><dd><p>The pixel size of the tilt series in nanometers. <em>Note NANOMETERS!</em></p>
+</dd>
+<dt>amplitude_contrast</dt><dd><p>The amplitude contrast for CTF correction.</p>
+</dd>
+<dt>cs</dt><dd><p>The spherical aberration of the microscope in mm for CTF correction.</p>
+</dd>
+<dt>voltage</dt><dd><p>The voltage in KeV of the microscope for CTF correction.</p>
 </dd>
 </dl>
 </div>
-<div class="section" id="nova-ctf-options">
-<h3>Nova CTF Options<a class="headerlink" href="#nova-ctf-options" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="nova-3d-ctf-options">
+<h3>Nova 3D-CTF Options<a class="headerlink" href="#nova-3d-ctf-options" title="Permalink to this headline">¶</a></h3>
 <dl class="simple">
-<dt>do_ctf</dt><dd><p>Set this value to 1 if you want to do 3D-CTF correction during the
+<dt>do_3dctf</dt><dd><p>Set this value to 1 if you want to do 3D-CTF correction during the
 reconstruction of the tomograms. If this value is set to 0 NovaCTF will still
 be used but it will generate tomograms largely identical to IMOD’s WBP.</p>
 </dd>
@@ -319,12 +334,6 @@ be used but it will generate tomograms largely identical to IMOD’s WBP.</p>
 </dd>
 <dt>defocus_file_format</dt><dd><p>File format for the defocus list. Use ctffind4 for CTFFIND4, imod for
 CTFPLOTTER and gctf for Gctf.</p>
-</dd>
-<dt>defocus_file</dt><dd><p>Where the defocus list file is located. The string XXXIDXXXX will be replaced
-with the formatted tomogram index, i.e. XXXIDXXXX_output.txt will be turned
-into 01_output.txt.</p>
-</dd>
-<dt>pixel_size</dt><dd><p>The pixel size of the tilt series in nanometers. <em>Note NANOMETERS!</em></p>
 </dd>
 <dt>defocus_step</dt><dd><p>The strip size in nanometers to perform CTF correction in novaCTF refer to the
 paper for more information on this value and sensible defaults.</p>
@@ -336,12 +345,37 @@ mass of the tomogram provide a defocus_shifts file with the shifts. See the
 paper for more information on this value. If you do not want to use this
 option leave the value “”.</p>
 </dd>
-<dt>amplitude_contrast</dt><dd><p>The amplitude contrast for CTF correction.</p>
+</dl>
+</div>
+<div class="section" id="imod-2d-ctf-options">
+<h3>IMOD 2D-CTF Options<a class="headerlink" href="#imod-2d-ctf-options" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt>do_2dctf</dt><dd><p>Set this value to 1 if you want to do 2D-CTF correction during the
+reconstruction of the tomograms. As of now if you are doing 2D-CTF correction
+only “imod” is valid as a value for “defocus_file_format”.</p>
 </dd>
-<dt>cs</dt><dd><p>The spherical aberration of the microscope in mm for CTF correction.</p>
+<dt>defocus_shift</dt><dd><p>If you want to shift the defocus for some reason away from the center of the
+mass of the tomogram provide the number of pixels to shift here. The sign of
+the the shift is the same as for SHIFT in IMOD’s tilt.com, but depends on the
+binning of the data, whereas in tilt it is for unbinned data. Refer to the man
+page for ctfphaseflip for a more detailed description.</p>
 </dd>
-<dt>voltage</dt><dd><p>The voltage in KeV of the microscope for CTF correction.</p>
+<dt>defocus_tolerance</dt><dd><p>Defocus tolerance in nanometers, which is one factor that governs the width of
+the strips. The actual strip width is based on the width of this region and
+several other factors. Refer to the man page for ctfphaseflip for a more
+detailed description.</p>
 </dd>
+<dt>interpolation_width</dt><dd><p>The distance in pixels between the center lines of two consecutive strips.
+Refer to the man page for ctfphaseflip for a more detailed description.</p>
+</dd>
+<dt>use_gpu</dt><dd><p>If you want to use a GPU set this to 1, but be careful to not use both the
+cluster and the GPU as this is not supported.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="radial-filter-options">
+<h3>Radial Filter Options<a class="headerlink" href="#radial-filter-options" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
 <dt>do_radial</dt><dd><p>Set this value to 1 if you want to radial filter the projections before
 reconstruction. This corresponds to the W (weighted) in WBP, which is commonly
 what you want to do, however if you want to only back-project without the
@@ -363,6 +397,16 @@ aligned tilt-series stacks. Be careful that the value you give is appropriate
 for the unbinned aligned stack, which may be different than the value used in
 eTomo on the binned version.</p>
 </dd>
+<dt>do_rotate_tomo</dt><dd><p>Set this value to 1 if you want to use trimvol or clip rotx to rotate the
+tomogram from the PERPENDICULAR XZ generated tomograms to the standard XY
+PARALLEL orientation. Set this value to 0 if you want to skip this step which
+greatly speeds up processing and reduces the memory footprint, but at the cost
+of easy visualization of the tomogram.</p>
+</dd>
+<dt>do_trimvol</dt><dd><p>Set this value to 1 if you want to use “trimvol -rx” to flip the tomograms to
+the XY standard orientation from the XZ generated tomograms. Otherwise “clip
+rotx” will be used since it is much faster.</p>
+</dd>
 </dl>
 </div>
 </div>
@@ -382,6 +426,8 @@ eTomo on the binned version.</p>
 
 <span class="nv">num_threads</span><span class="o">=</span><span class="m">1</span>
 
+<span class="nv">job_name</span><span class="o">=</span><span class="s2">&quot;subTOM&quot;</span>
+
 <span class="nv">run_local</span><span class="o">=</span><span class="m">0</span>
 
 <span class="nv">tomo_fmt</span><span class="o">=</span><span class="s2">&quot;TS_XXXIDXXXX_dose-filt&quot;</span>
@@ -394,19 +440,21 @@ eTomo on the binned version.</p>
 
 <span class="nv">idx_fmt</span><span class="o">=</span><span class="s2">&quot;%02d&quot;</span>
 
-<span class="nv">do_rotate_vol</span><span class="o">=</span><span class="m">1</span>
+<span class="nv">defocus_file</span><span class="o">=</span><span class="s2">&quot;ctfplotter/TS_XXXIDXXXX_output.txt&quot;</span>
 
-<span class="nv">do_trimvol</span><span class="o">=</span><span class="m">0</span>
+<span class="nv">pixel_size</span><span class="o">=</span><span class="m">0</span>.1
 
-<span class="nv">do_ctf</span><span class="o">=</span><span class="m">1</span>
+<span class="nv">amplitude_contrast</span><span class="o">=</span><span class="m">0</span>.07
+
+<span class="nv">cs</span><span class="o">=</span><span class="m">2</span>.7
+
+<span class="nv">voltage</span><span class="o">=</span><span class="m">300</span>
+
+<span class="nv">do_3dctf</span><span class="o">=</span><span class="m">1</span>
 
 <span class="nv">correction_type</span><span class="o">=</span><span class="s2">&quot;multiplication&quot;</span>
 
 <span class="nv">defocus_file_format</span><span class="o">=</span><span class="s2">&quot;imod&quot;</span>
-
-<span class="nv">defocus_file</span><span class="o">=</span><span class="s2">&quot;ctfplotter/TS_XXXIDXXXX_output.txt&quot;</span>
-
-<span class="nv">pixel_size</span><span class="o">=</span><span class="m">0</span>.1
 
 <span class="nv">defocus_step</span><span class="o">=</span><span class="m">15</span>
 
@@ -414,11 +462,15 @@ eTomo on the binned version.</p>
 
 <span class="nv">defocus_shift_file</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
 
-<span class="nv">amplitude_contrast</span><span class="o">=</span><span class="m">0</span>.07
+<span class="nv">do_2dctf</span><span class="o">=</span><span class="m">0</span>
 
-<span class="nv">cs</span><span class="o">=</span><span class="m">2</span>.7
+<span class="nv">defocus_shift</span><span class="o">=</span><span class="m">0</span>
 
-<span class="nv">voltage</span><span class="o">=</span><span class="m">300</span>
+<span class="nv">defocus_tolerance</span><span class="o">=</span><span class="m">200</span>
+
+<span class="nv">interpolation_width</span><span class="o">=</span><span class="m">20</span>
+
+<span class="nv">use_gpu</span><span class="o">=</span><span class="m">0</span>
 
 <span class="nv">do_radial</span><span class="o">=</span><span class="m">1</span>
 
@@ -427,6 +479,10 @@ eTomo on the binned version.</p>
 <span class="nv">radial_falloff</span><span class="o">=</span><span class="m">0</span>.035
 
 <span class="nv">erase_radius</span><span class="o">=</span><span class="m">32</span>
+
+<span class="nv">do_rotate_vol</span><span class="o">=</span><span class="m">1</span>
+
+<span class="nv">do_trimvol</span><span class="o">=</span><span class="m">0</span>
 </pre></div>
 </div>
 </div>

@@ -25,11 +25,13 @@ scratch_dir="${PWD}"
 #                                 EXECUTABLES                                  #
 ################################################################################
 # Absolute path to the novaCTF executable.
-novactf_exe="$(which novaCTF)"
+#novactf_exe="$(which novaCTF)"
+novactf_exe=""
 
 # Absolute path to the IMOD newstack executable. The directory of this will be
 # used for the other IMOD programs used in the processing.
-newstack_exe="$(which newstack)"
+#newstack_exe="$(which newstack)"
+newstack_exe=""
 
 # Directory for subTOM executables.
 exec_dir="XXXINSTALLATION_DIRXXX/bin"
@@ -54,6 +56,9 @@ num_threads=1
 ################################################################################
 #                              OTHER LSF OPTIONS                               #
 ################################################################################
+# BE CAREFUL THAT THE NAME DOESN'T CORRESPOND TO THE BEGINNING OF ANY OTHER FILE
+job_name="subTOM"
+
 # If you want to skip the cluster and run the job locally set this to 1.
 run_local=0
 
@@ -90,27 +95,35 @@ idx_fmt="%02d"
 # three digit zero padding e.g. 001
 #idx_fmt="%03d"
 
-# Set this value to 1 if you want to use trimvol or clip rotx to rotate the
-# tomogram from the PERPENDICULAR XZ generated tomograms to the standard XY
-# PARALLEL orientation. Set this value to 0 if you want to skip this step which
-# greatly speeds up processing and reduces the memory footprint, but at the cost
-# of easy visualization of the tomogram.
-do_rotate_tomo=1
+################################################################################
+#                             GENERAL CTF OPTIONS                              #
+################################################################################
+# Where the defocus list file is located. The string XXXIDXXXX will be replaced
+# with the formatted tomogram index, i.e. XXXIDXXXX_output.txt will be turned
+# into 01_output.txt.
+defocus_file="ctfplotter/TS_XXXIDXXXX_output.txt"
 
-# Set this value to 1 if you want to use "trimvol -rx" to flip the tomograms to
-# the XY standard orientation from the XZ generated tomograms. Otherwise "clip
-# rotx" will be used since it is much faster.
-do_trimvol=0
+# The pixel size of the tilt series in nanometers. Note NANOMETERS!
+pixel_size=0.1
+
+# The amplitude contrast for CTF correction.
+amplitude_contrast=0.07
+
+# The spherical aberration of the microscope in mm for CTF correction.
+cs=2.7
+
+# The voltage in KeV of the microscope for CTF correction.
+voltage=300
 
 ################################################################################
-#                               NOVA CTF OPTIONS                               #
+#                             NOVA 3D-CTF OPTIONS                              #
 ################################################################################
 # Set this value to 1 if you want to do 3D-CTF correction during the
 # reconstruction of the tomograms. If this value is set to 0 NovaCTF will still
 # be used but it will generate tomograms largely identical to IMOD's WBP.
-do_ctf=1
+do_3dctf=1
 
-# Type of CTF correction to perform.
+# Type of 3D-CTF correction to perform.
 #correction_type="phaseflip"
 correction_type="multiplication"
 
@@ -119,14 +132,6 @@ correction_type="multiplication"
 #defocus_file_format="gctf"
 #defocus_file_format="ctffind4"
 defocus_file_format="imod"
-
-# Where the defocus list file is located. The string XXXIDXXXX will be replaced
-# with the formatted tomogram index, i.e. XXXIDXXXX_output.txt will be turned
-# into 01_output.txt.
-defocus_file="ctfplotter/TS_XXXIDXXXX_output.txt"
-
-# The pixel size of the tilt series in nanometers. Note NANOMETERS!
-pixel_size=0.1
 
 # The strip size in nanometers to perform CTF correction in novaCTF refer to the
 # paper for more information on this value and sensible defaults.
@@ -142,15 +147,38 @@ correct_astigmatism=1
 #defocus_shift_file="TS_XXXIDXXXX_defocus_shift.txt"
 defocus_shift_file=""
 
-# The amplitude contrast for CTF correction.
-amplitude_contrast=0.07
+################################################################################
+#                             IMOD 2D-CTF OPTIONS                              #
+################################################################################
+# Set this value to 1 if you want to do 2D-CTF correction during the
+# reconstruction of the tomograms. As of now if you are doing 2D-CTF correction
+# only "imod" is valid as a value for "defocus_file_format".
+do_2dctf=1
 
-# The spherical aberration of the microscope in mm for CTF correction.
-cs=2.7
+# If you want to shift the defocus for some reason away from the center of the
+# mass of the tomogram provide the number of pixels to shift here. The sign of
+# the the shift is the same as for SHIFT in IMOD's tilt.com, but depends on the
+# binning of the data, whereas in tilt it is for unbinned data. Refer to the man
+# page for ctfphaseflip for a more detailed description.
+defocus_shift=0
 
-# The voltage in KeV of the microscope for CTF correction.
-voltage=300
+# Defocus tolerance in nanometers, which is one factor that governs the width of
+# the strips. The actual strip width is based on the width of this region and
+# several other factors. Refer to the man page for ctfphaseflip for a more
+# detailed description.
+defocus_tolerance=200
 
+# The distance in pixels between the center lines of two consecutive strips.
+# Refer to the man page for ctfphaseflip for a more detailed description.
+interpolation_width=20
+
+# If you want to use a GPU set this to 1, but be careful to not use both the
+# cluster and the GPU as this is not supported.
+use_gpu=0
+
+################################################################################
+#                            RADIAL FILTER OPTIONS                             #
+################################################################################
 # Set this value to 1 if you want to radial filter the projections before
 # reconstruction. This corresponds to the W (weighted) in WBP, which is commonly
 # what you want to do, however if you want to only back-project without the
@@ -170,6 +198,18 @@ radial_falloff=0.0
 # for the unbinned aligned stack, which may be different than the value used in
 # eTomo on the binned version.
 erase_radius="1"
+
+# Set this value to 1 if you want to use trimvol or clip rotx to rotate the
+# tomogram from the PERPENDICULAR XZ generated tomograms to the standard XY
+# PARALLEL orientation. Set this value to 0 if you want to skip this step which
+# greatly speeds up processing and reduces the memory footprint, but at the cost
+# of easy visualization of the tomogram.
+do_rotate_tomo=1
+
+# Set this value to 1 if you want to use "trimvol -rx" to flip the tomograms to
+# the XY standard orientation from the XZ generated tomograms. Otherwise "clip
+# rotx" will be used since it is much faster.
+do_trimvol=0
 
 ################################################################################
 #                                                                              #

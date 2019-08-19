@@ -60,6 +60,12 @@ num_threads
 Other Cluster Options
 ---------------------
 
+job_name
+  The job name prefix that will be used for the cluster submission scripts, log
+  files, and error logs for the processing. Be careful that this name is unique
+  because previous submission scripts, logs, and error logs with the same job
+  name prefix will be overwritten in the case of a name collision.
+
 run_local
   If the user wants to skip the cluster and run the job locally, this value
   should be set to 1.
@@ -86,22 +92,30 @@ idx_fmt
   The format string for the tomogram indexes. Likely two or three digit zero
   padding or maybe just flat integers.
 
-do_rotate_tomo
-  Set this value to 1 if you want to use trimvol or clip rotx to rotate the
-  tomogram from the PERPENDICULAR XZ generated tomograms to the standard XY
-  PARALLEL orientation. Set this value to 0 if you want to skip this step which
-  greatly speeds up processing and reduces the memory footprint, but at the cost
-  of easy visualization of the tomogram.
+General CTF Options
+-------------------
 
-do_trimvol
-  Set this value to 1 if you want to use "trimvol -rx" to flip the tomograms to
-  the XY standard orientation from the XZ generated tomograms. Otherwise "clip
-  rotx" will be used since it is much faster.
+defocus_file
+  Where the defocus list file is located. The string XXXIDXXXX will be replaced
+  with the formatted tomogram index, i.e. XXXIDXXXX_output.txt will be turned
+  into 01_output.txt.
 
-Nova CTF Options
-----------------
+pixel_size
+  The pixel size of the tilt series in nanometers. *Note NANOMETERS!*
 
-do_ctf
+amplitude_contrast
+  The amplitude contrast for CTF correction.
+
+cs
+  The spherical aberration of the microscope in mm for CTF correction.
+
+voltage
+  The voltage in KeV of the microscope for CTF correction.
+
+Nova 3D-CTF Options
+-------------------
+
+do_3dctf
   Set this value to 1 if you want to do 3D-CTF correction during the
   reconstruction of the tomograms. If this value is set to 0 NovaCTF will still
   be used but it will generate tomograms largely identical to IMOD's WBP.
@@ -112,14 +126,6 @@ correction_type
 defocus_file_format
   File format for the defocus list. Use ctffind4 for CTFFIND4, imod for
   CTFPLOTTER and gctf for Gctf.
-
-defocus_file
-  Where the defocus list file is located. The string XXXIDXXXX will be replaced
-  with the formatted tomogram index, i.e. XXXIDXXXX_output.txt will be turned
-  into 01_output.txt.
-
-pixel_size
-  The pixel size of the tilt series in nanometers. *Note NANOMETERS!*
 
 defocus_step
   The strip size in nanometers to perform CTF correction in novaCTF refer to the
@@ -134,14 +140,37 @@ defocus_shift_file
   paper for more information on this value. If you do not want to use this
   option leave the value "".
 
-amplitude_contrast
-  The amplitude contrast for CTF correction.
+IMOD 2D-CTF Options
+-------------------
 
-cs
-  The spherical aberration of the microscope in mm for CTF correction.
+do_2dctf
+  Set this value to 1 if you want to do 2D-CTF correction during the
+  reconstruction of the tomograms. As of now if you are doing 2D-CTF correction
+  only "imod" is valid as a value for "defocus_file_format".
 
-voltage
-  The voltage in KeV of the microscope for CTF correction.
+defocus_shift
+  If you want to shift the defocus for some reason away from the center of the
+  mass of the tomogram provide the number of pixels to shift here. The sign of
+  the the shift is the same as for SHIFT in IMOD's tilt.com, but depends on the
+  binning of the data, whereas in tilt it is for unbinned data. Refer to the man
+  page for ctfphaseflip for a more detailed description.
+
+defocus_tolerance
+  Defocus tolerance in nanometers, which is one factor that governs the width of
+  the strips. The actual strip width is based on the width of this region and
+  several other factors. Refer to the man page for ctfphaseflip for a more
+  detailed description.
+
+interpolation_width
+  The distance in pixels between the center lines of two consecutive strips.
+  Refer to the man page for ctfphaseflip for a more detailed description.
+
+use_gpu
+  If you want to use a GPU set this to 1, but be careful to not use both the
+  cluster and the GPU as this is not supported.
+
+Radial Filter Options
+---------------------
 
 do_radial
   Set this value to 1 if you want to radial filter the projections before
@@ -166,6 +195,18 @@ erase_radius
   for the unbinned aligned stack, which may be different than the value used in
   eTomo on the binned version.
 
+do_rotate_tomo
+  Set this value to 1 if you want to use trimvol or clip rotx to rotate the
+  tomogram from the PERPENDICULAR XZ generated tomograms to the standard XY
+  PARALLEL orientation. Set this value to 0 if you want to skip this step which
+  greatly speeds up processing and reduces the memory footprint, but at the cost
+  of easy visualization of the tomogram.
+
+do_trimvol
+  Set this value to 1 if you want to use "trimvol -rx" to flip the tomograms to
+  the XY standard orientation from the XZ generated tomograms. Otherwise "clip
+  rotx" will be used since it is much faster.
+
 -------
 Example
 -------
@@ -186,6 +227,8 @@ Example
 
     num_threads=1
 
+    job_name="subTOM"
+
     run_local=0
 
     tomo_fmt="TS_XXXIDXXXX_dose-filt"
@@ -198,19 +241,21 @@ Example
 
     idx_fmt="%02d"
 
-    do_rotate_vol=1
+    defocus_file="ctfplotter/TS_XXXIDXXXX_output.txt"
 
-    do_trimvol=0
+    pixel_size=0.1
 
-    do_ctf=1
+    amplitude_contrast=0.07
+
+    cs=2.7
+
+    voltage=300
+
+    do_3dctf=1
 
     correction_type="multiplication"
 
     defocus_file_format="imod"
-
-    defocus_file="ctfplotter/TS_XXXIDXXXX_output.txt"
-
-    pixel_size=0.1
 
     defocus_step=15
 
@@ -218,11 +263,15 @@ Example
 
     defocus_shift_file=""
 
-    amplitude_contrast=0.07
+    do_2dctf=0
 
-    cs=2.7
+    defocus_shift=0
 
-    voltage=300
+    defocus_tolerance=200
+
+    interpolation_width=20
+
+    use_gpu=0
 
     do_radial=1
 
@@ -231,3 +280,7 @@ Example
     radial_falloff=0.035
 
     erase_radius=32
+
+    do_rotate_vol=1
+
+    do_trimvol=0

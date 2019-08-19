@@ -110,25 +110,25 @@ do
     fi
 
     # Check for the raw frames
-    num_tif_frames=$(find "${scratch_dir}/${frame_dir}" -name "${ts}_*.tif" | \
-        wc -l)
+    num_tif_frames=$(find -L "${scratch_dir}/${frame_dir}" \
+        -name "${ts}_*.tif" | wc -l)
 
-    num_mrc_frames=$(find "${scratch_dir}/${frame_dir}" -name "${ts}_*.mrc" | \
-        wc -l)
+    num_mrc_frames=$(find -L "${scratch_dir}/${frame_dir}" \
+        -name "${ts}_*.mrc" | wc -l)
 
     if [[ "${num_tif_frames}" -gt 0 ]]
     then
         frame_ext=tif
         num_frames="${num_tif_frames}"
-        one_frame=$(find "${scratch_dir}/${frame_dir}" -name "${ts}_*.tif" | \
-            head -n 1)
+        one_frame=$(find -L "${scratch_dir}/${frame_dir}" \
+            -name "${ts}_*.tif" | head -n 1)
 
     elif [[ "${num_mrc_frames}" -gt 0 ]]
     then
         frame_ext=mrc
         num_frames="${num_mrc_frames}"
-        one_frame=$(find "${scratch_dir}/${frame_dir}" -name "${ts}_*.mrc" | \
-            head -n 1)
+        one_frame=$(find -L "${scratch_dir}/${frame_dir}" \
+            -name "${ts}_*.mrc" | head -n 1)
 
     else
         frame_ext=""
@@ -180,7 +180,7 @@ do
             num_sub_frames=$("${imod_exe_dir}"/header -size "${one_frame}" |\
                 awk '{ print $3 }')
 
-            frame_fns=($(find "${scratch_dir}/${frame_dir}" \
+            frame_fns=($(find -L "${scratch_dir}/${frame_dir}" \
                 -name "${ts}_*.${frame_ext}" | xargs -n 1 -I {} \
                 basename {} ".${frame_ext}" | sort -t_ -n \
                 -k"${idx_field},${idx_field}"))
@@ -704,7 +704,7 @@ done
 
 while [[ ${num_complete} -lt ${num_scripts} ]]
 do
-    touch check_fn_complete
+    touch "check_${job_name}"
     sleep 60s
 
     num_complete=0
@@ -715,10 +715,10 @@ do
         check_base="$(basename "${check_fn}")"
 
         # The following will be ${check_fn} if the file is still being modified
-        # (i.e. more recently modified than check_fn_complete), and "" if the
+        # (i.e. more recently modified than check_${job_name}), and "" if the
         # file has not been modified in more than a minute.
         check_fn_="$(find ${check_dir} -regex ".*/${check_base}" -and \
-            -newer check_fn_complete)"
+            -newer "check_${job_name}")"
 
         if [[ -n "${check_fn_}" ]]
         then
@@ -791,7 +791,7 @@ do
 
     echo -e "\nSTATUS Update: Preprocessing\n"
     echo -e "\t${num_complete} tilt-series out of ${num_scripts}\n"
-    rm check_fn_complete
+    rm "check_${job_name}"
     sleep 60s
 done
 
