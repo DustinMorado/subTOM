@@ -17,11 +17,11 @@
 # maximum per user.
 #
 # This subtomogram averaging script uses five MATLAB compiled scripts below:
-# - subtom_scan_angles_exact
+# - subtom_scan_angles_exact_multiref
 # - subtom_cat_motls
-# - subtom_parallel_sums
-# - subtom_weighted_average
-# - subtom_compare_motls
+# - subtom_parallel_sums_cls
+# - subtom_weighted_average_cls
+# - subtom_compare_motls_multiref
 # DRM 05-2019
 ################################################################################
 set -e           # Crash on error
@@ -212,8 +212,9 @@ do
     all_motl_base="$(basename "${all_motl_fn_prefix}")_${avg_iteration}"
 
     ref_dir="${scratch_dir}/$(dirname "${ref_fn_prefix}")"
-    ref_base="$(basename "${ref_fn_prefix}")_class_[0-9]*_${avg_iteration}"
-    ref_complete=$(find "${ref_dir}" -name "${ref_base}.em" | wc -l)
+    ref_base="$(basename "${ref_fn_prefix}")"
+    ref_complete=$(find "${ref_dir}" -regex \
+        ".*/${ref_base}_class_[0-9]+_${iteration}.em" | wc -l)
 
     if [[ ${ref_complete} -eq ${num_classes} ]]
     then
@@ -224,7 +225,6 @@ do
 
     weight_sum_dir="${scratch_dir}/$(dirname "${weight_sum_fn_prefix}")"
     weight_sum_base="$(basename "${weight_sum_fn_prefix}")"
-    weight_sum_base="${weight_sum_base}_class_[0-9]*_${avg_iteration}"
 
     output_diffs_fn="${all_motl_fn_prefix}_${iteration}_${avg_iteration}"
     output_diffs_fn="${output_diffs_fn}_diff.csv"
@@ -382,8 +382,8 @@ export LD_LIBRARY_PATH="\${ldpath}"
 ###"log_${job_name_ali}_${job_idx}"
 ALIJOB
 
-            num_complete=$(find "${all_motl_dir}" \
-                -name "${all_motl_base}_[0-9]*.em" | wc -l)
+            num_complete=$(find "${all_motl_dir}" -regex \
+                ".*/${all_motl_base}_[0-9]+.em" | wc -l)
 
             num_complete_prev=0
             unchanged_count=0
@@ -394,7 +394,7 @@ ALIJOB
             then
                 sed -i 's/\#\#\#//' "${job_name_ali}_${job_idx}"
                 "./${job_name_ali}_${job_idx}" &
-            elif [[ ${num_complete} -lt ${num_avg_batch} ]]
+            elif [[ ${num_complete} -lt ${num_ali_batch} ]]
             then
                 qsub "${job_name_ali}_${job_idx}"
             fi
@@ -406,8 +406,8 @@ ALIJOB
 
         while [[ ${num_complete} -lt ${num_ali_batch} ]]
         do
-            num_complete=$(find "${all_motl_dir}" \
-                -name "${all_motl_base}_[0-9]*.em" | wc -l)
+            num_complete=$(find "${all_motl_dir}" -regex \
+                ".*/${all_motl_base}_[0-9]+.em" | wc -l)
 
             if [[ ${num_complete} -eq ${num_complete_prev} ]]
             then
@@ -522,7 +522,7 @@ ALIJOB
             cp "${scratch_dir}/${all_motl_fn}" "${local_dir}/${all_motl_fn}"
         fi
 
-        find "${all_motl_dir}" -name "${all_motl_base}_[0-9]*.em" -delete
+        find "${all_motl_dir}" -regex ".*/${all_motl_base}_[0-9]+.em" -delete
 
         echo "FINISHED Alignment in Iteration Number: ${iteration}"
     else
@@ -534,7 +534,7 @@ ALIJOB
 #                              PARALLEL AVERAGING                              #
 ################################################################################
 
-    if [[ ! -f "${ref_complete}" ]]
+    if [[ "${ref_complete}" -eq 0 ]]
     then
         echo "STARTING Averaging in Iteration Number: ${avg_iteration}"
 
@@ -612,8 +612,9 @@ export LD_LIBRARY_PATH="\${ldpath}"
 ###"log_${job_name_sums}_${job_idx}"
 PSUMJOB
 
-            num_complete=$(find "${ref_dir}" \
-                -name "${ref_base}_[0-9]*.em" | wc -l)
+            num_complete=$(find "${ref_dir}" -regex \
+                ".*/${ref_base}_class_[0-9]+_${avg_iteration}_[0-9]+.em" |\
+                wc -l)
 
             num_complete_prev=0
             unchanged_count=0
@@ -638,8 +639,9 @@ PSUMJOB
 
         while [[ ${num_complete} -lt ${num_to_complete} ]]
         do
-            num_complete=$(find "${ref_dir}" \
-                -name "${ref_base}_[0-9]*.em" | wc -l)
+            num_complete=$(find "${ref_dir}" -regex \
+                ".*/${ref_base}_class_[0-9]+_${avg_iteration}_[0-9]+.em" |\
+                wc -l)
 
             if [[ ${num_complete} -eq ${num_complete_prev} ]]
             then
@@ -741,17 +743,31 @@ PSUMJOB
 
         if [[ ${skip_local_copy} -ne 1 ]]
         then
-            cp "${scratch_dir}/${ref_fn_prefix}_class"_*_${avg_iteration}.em \
-                "${local_ref_dir}/."
+            find "${ref_dir}" -regex \
+                ".*/${ref_base}_class_[0-9]+_debug_raw_${avg_iteration}.em" \
+                -print0 | xargs -0 -I {} cp -- {} "${local_ref_dir}/."
 
-            temp_path="${scratch_dir}/${weight_sum_fn_prefix}_class"
-            cp "${temp_path}"_*debug*_${avg_iteration}.em \
-                "${local_weight_sum_dir}/."
+            find "${ref_dir}" -regex \
+                ".*/${ref_base}_class_[0-9]+_${avg_iteration}.em" -print0 |\
+                xargs -0 -I {} cp -- {} "${local_ref_dir}/."
+
+            find "${weight_sum_dir}" -regex \
+                ".*/${weight_sum_base}_class_[0-9]+_debug_${avg_iteration}.em" \
+                -print0 | xargs -0 -I {} cp -- {} "${local_weight_sum_dir}/."
+
+            regex=".*/${weight_sum_base}_class_[0-9]+_debug_inv"
+            regex="${regex}_${avg_iteration}.em"
+            find "${weight_sum_dir}" -regex "${regex}" -print0 |\
+                xargs -0 -I {} cp -- {} "${local_weight_sum_dir}/."
 
         fi
 
-        find "${ref_dir}" -name "${ref_base}_[0-9]*.em" -delete
-        find "${weight_sum_dir}" -name "${weight_sum_base}_[0-9]*.em" -delete
+        find "${ref_dir}" -regex \
+            "${ref_base}_class_[0-9]+_${avg_iteration}_[0-9]+.em" -delete
+
+        find "${weight_sum_dir}" -regex \
+            ".*/${weight_sum_base}_class_[0-9]+_${avg_iteration}_[0-9]+.em" \
+            -delete
 
         echo "FINISHED Averaging in Iteration Number: ${avg_iteration}"
     else
