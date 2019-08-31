@@ -772,7 +772,7 @@ PSUMJOB
         echo "FINISHED Averaging in Iteration Number: ${avg_iteration}"
     else
         echo "SKIPPED Averaging in Iteration Number: ${iteration}"
-        echo "${scratch_dir}/${ref_fn} already exists."
+        echo "All references already exist."
     fi
 
 ################################################################################
