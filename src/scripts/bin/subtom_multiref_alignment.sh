@@ -214,7 +214,7 @@ do
     ref_dir="${scratch_dir}/$(dirname "${ref_fn_prefix}")"
     ref_base="$(basename "${ref_fn_prefix}")"
     ref_complete=$(find "${ref_dir}" -regex \
-        ".*/${ref_base}_class_[0-9]+_${iteration}.em" | wc -l)
+        ".*/${ref_base}_class_[0-9]+_${avg_iteration}.em" | wc -l)
 
     if [[ ${ref_complete} -eq ${num_classes} ]]
     then
