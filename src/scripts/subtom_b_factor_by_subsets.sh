@@ -24,6 +24,12 @@
 # Other paths are relative to this one.
 scratch_dir="${PWD}"
 
+# Absolute path to the folder on a group share, if your scratch directory is
+# cleaned and deleted regularly you can set a local directory to which you can
+# copy the important results. If you do not need to do this, you can skip this
+# step with the option skip_local_copy below.
+local_dir=""
+
 # Absolute path to the MCR directory for each job
 mcr_cache_dir="${scratch_dir}/mcr"
 
@@ -34,13 +40,16 @@ exec_dir="XXXINSTALLATION_DIRXXX/bin"
 #                                  VARIABLES                                   #
 ################################################################################
 # Parallel Summing executable
-sum_exec="${exec_dir}/analysis/b_factor_by_subsets/subtom_parallel_sums"
+sum_exec="${exec_dir}/analysis/b_factor_by_subsets/subtom_parallel_sums_bfactor"
 
 # Final Averaging executable
-avg_exec="${exec_dir}/analysis/b_factor_by_subsets/subtom_weighted_average"
+avg_exec="${exec_dir}/analysis/b_factor_by_subsets/subtom_weighted_average_bfactor"
 
 # FSC executable
-fsc_exec="${exec_dir}/analysis/b_factor_by_subsets/subtom_maskcorrected_fsc"
+fsc_exec="${exec_dir}/analysis/b_factor_by_subsets/subtom_maskcorrected_fsc_bfactor"
+
+# MOTL dump executable
+motl_dump_exec="${exec_dir}/MOTL/motl_dump"
 
 ################################################################################
 #                                MEMORY OPTIONS                                #
@@ -67,6 +76,9 @@ max_jobs="4000"
 
 # If you want to skip the cluster and run the job locally set this to 1.
 run_local="0"
+
+# If you want to skip the copying of data to local_dir set this to 1.
+skip_local_copy="1"
 
 ################################################################################
 #                                                                              #

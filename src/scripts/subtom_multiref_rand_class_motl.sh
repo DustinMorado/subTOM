@@ -14,8 +14,6 @@
 # This subtomogram parallel averaging script uses two MATLAB compiled scripts
 # below:
 # - subtom_rand_class_motl
-# - subtom_parallel_sums
-# - subtom_weighted_average
 # DRM 05-2019
 ################################################################################
 #                                 DIRECTORIES                                  #

@@ -1,0 +1,671 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>subtom_msa &mdash; subTOM 1.1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="subtom_eigenvolumes_msa" href="../functions/subtom_eigenvolumes_msa.html" />
+    <link rel="prev" title="Multivariate Statistical Analysis Classification" href="../introduction.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> subTOM
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Table of Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../conventions.html">Conventions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html">Tutorial</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Links to Individual Script Documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../scripts/introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../scripts/subtom_alignment.html">subtom_alignment.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../scripts/subtom_average.html">subtom_average.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../scripts/subtom_cat_motls.html">subtom_cat_motls.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../scripts/subtom_clean_motl.html">subtom_clean_motl.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../scripts/subtom_compare_motls.html">subtom_compare_motls.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../scripts/subtom_even_odd_motl.html">subtom_even_odd_motl.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../scripts/subtom_extract_noise.html">subtom_extract_noise.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../scripts/subtom_extract_subtomograms.html">subtom_extract_subtomograms.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../scripts/subtom_maskcorrected_fsc.html">subtom_maskcorrected_fsc.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../scripts/subtom_preprocess.html">subtom_preprocess.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../scripts/subtom_plot_filter.html">subtom_plot_filter.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../scripts/subtom_plot_scanned_angles.html">subtom_plot_scanned_angles.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../scripts/subtom_reconstruct.html">subtom_reconstruct.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../scripts/subtom_scale_motl.html">subtom_scale_motl.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../scripts/subtom_seed_positions.html">subtom_seed_positions.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../scripts/subtom_shape.html">subtom_shape.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../scripts/subtom_split_motl_by_row.html">subtom_split_motl_by_row.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../scripts/subtom_transform_motl.html">subtom_transform_motl.sh</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Links to Individual Function Documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../functions/introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functions/subtom_cat_motls.html">subtom_cat_motls.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functions/subtom_clean_motl.html">subtom_clean_motl.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functions/subtom_compare_motls.html">subtom_compare_motls.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functions/subtom_even_odd_motl.html">subtom_even_odd_motl.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functions/subtom_extract_noise.html">subtom_extract_noise.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functions/subtom_extract_subtomograms.html">subtom_extract_subtomograms.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functions/subtom_maskcorrected_fsc.html">subtom_maskcorrected_fsc.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functions/subtom_parallel_sums.html">subtom_parallel_sums.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functions/subtom_plot_filter.html">subtom_plot_filter.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functions/subtom_plot_scanned_angles.html">subtom_plot_scanned_angles.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functions/subtom_scale_motl.html">subtom_scale_motl.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functions/subtom_scan_angles_exact.html">subtom_scan_angles_exact.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functions/subtom_seed_positions.html">subtom_seed_positions.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functions/subtom_shape.html">subtom_shape.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functions/subtom_split_motl_by_row.html">subtom_split_motl_by_row.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functions/subtom_transform_motl.html">subtom_transform_motl.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functions/subtom_weighted_average.html">subtom_weighted_average.m</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Classification Documentation:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../general/index.html">General Utilities</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">MSA</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../introduction.html">Introduction</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">subtom_msa.sh</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#options">Options</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#directories">Directories</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#variables">Variables</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#memory-options">Memory Options</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#other-cluster-options">Other Cluster Options</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#parallelization-options">Parallelization Options</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#x-matrix-options">X-Matrix Options</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#x-matrix-file-options">X-Matrix File Options</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#eigenvolumes-options">Eigenvolumes Options</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#eigenvolumes-file-options">Eigenvolumes File Options</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#eigencoefficient-options">Eigencoefficient Options</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#eigencoefficient-file-options">Eigencoefficient File Options</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#clustering-options">Clustering Options</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#clustering-file-options">Clustering File Options</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#averaging-file-options">Averaging File Options</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../functions/subtom_eigenvolumes_msa.html">subtom_eigenvolumes_msa</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../functions/subtom_join_eigencoeffs_msa.html">subtom_join_eigencoeffs_msa</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../functions/subtom_join_xmatrix.html">subtom_join_xmatrix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../functions/subtom_parallel_eigencoeffs_msa.html">subtom_parallel_eigencoeffs_msa</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../functions/subtom_parallel_xmatrix_msa.html">subtom_parallel_xmatrix_msa</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#indices-and-tables">Indices and tables</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../multireference/index.html">Multireference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pca/index.html">PCA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../wmd/index.html">WMD</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Analysis Documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../analysis/b_factor_by_subsets/index.html">B-Factor from Subsets</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">subTOM</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">subTOM: Multivariate Statistical Analysis</a> &raquo;</li>
+        
+      <li>subtom_msa</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/classification/msa/scripts/subtom_msa.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="subtom-msa">
+<h1>subtom_msa<a class="headerlink" href="#subtom-msa" title="Permalink to this headline">¶</a></h1>
+<p>The main MSA pipeline process script of subTOM.</p>
+<p>This subtomogram classification script uses nine MATLAB compiled scripts
+below:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../../general/functions/subtom_parallel_prealign.html"><span class="doc">subtom_parallel_prealign</span></a></p></li>
+<li><p><a class="reference internal" href="../functions/subtom_parallel_xmatrix_msa.html"><span class="doc">subtom_parallel_xmatrix_msa</span></a></p></li>
+<li><p><a class="reference internal" href="../functions/subtom_join_xmatrix.html"><span class="doc">subtom_join_xmatrix</span></a></p></li>
+<li><p><a class="reference internal" href="../functions/subtom_eigenvolumes_msa.html"><span class="doc">subtom_eigenvolumes_msa</span></a></p></li>
+<li><p><a class="reference internal" href="../functions/subtom_parallel_eigencoeffs_msa.html"><span class="doc">subtom_parallel_eigencoeffs_msa</span></a></p></li>
+<li><p><a class="reference internal" href="../functions/subtom_join_eigencoeffs_msa.html"><span class="doc">subtom_join_eigencoeffs_msa</span></a></p></li>
+<li><p><a class="reference internal" href="../../general/functions/subtom_cluster.html"><span class="doc">subtom_cluster</span></a></p></li>
+<li><p><a class="reference internal" href="../../general/functions/subtom_parallel_sums_cls.html"><span class="doc">subtom_parallel_sums_cls</span></a></p></li>
+<li><p><a class="reference internal" href="../../general/functions/subtom_weighted_average_cls.html"><span class="doc">subtom_weighted_average_cls</span></a></p></li>
+</ul>
+<div class="section" id="options">
+<h2>Options<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="directories">
+<h3>Directories<a class="headerlink" href="#directories" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt>scratch_dir</dt><dd><p>Absolute path to the folder with the input to be processed.
+Other paths are relative to this one.</p>
+</dd>
+<dt>local_dir</dt><dd><p>Absolute path to the folder on a group share, if the scratch directory is
+cleaned and deleted regularly this can set a local directory to which the
+important results will be copied. If this is not needed it can be skipped with
+the option skip_local_copy below.</p>
+</dd>
+<dt>mcr_cache_dir</dt><dd><p>Absolute path to MCR directory for the processing.</p>
+</dd>
+<dt>exec_dir</dt><dd><p>Directory for executables</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="variables">
+<h3>Variables<a class="headerlink" href="#variables" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt>cluster_exec</dt><dd><p>Cluster executable.</p>
+</dd>
+<dt>par_eigcoeff_exec</dt><dd><p>Parallel Eigencoefficient executable.</p>
+</dd>
+<dt>eigcoeff_exec</dt><dd><p>Final Eigencoefficient executable.</p>
+</dd>
+<dt>eigvol_exec</dt><dd><p>Eigenvolume Calculation executable.</p>
+</dd>
+<dt>preali_exec</dt><dd><p>Parallel Subtomogram prealign executable.</p>
+</dd>
+<dt>par_xmatrix_exec</dt><dd><p>Parallel X-Matrix executable.</p>
+</dd>
+<dt>xmatrix_exec</dt><dd><p>Final X-Matrix executable.</p>
+</dd>
+<dt>sum_exec</dt><dd><p>Parallel Summing executable</p>
+</dd>
+<dt>avg_exec</dt><dd><p>Final Averaging executable</p>
+</dd>
+<dt>motl_dump_exec</dt><dd><p>MOTL dump executable</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="memory-options">
+<h3>Memory Options<a class="headerlink" href="#memory-options" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt>mem_free</dt><dd><p>The amount of memory the job requires. This variable determines whether a
+number of CPUs will be requested to be dedicated for each job. At 24G, one
+half of the CPUs on a node will be dedicated for each of the processes (12
+CPUs). At 48G, all of the CPUs on the node will be dedicated for each of the
+processes (24 CPUs).</p>
+</dd>
+<dt>mem_max</dt><dd><p>The upper bound on the amount of memory the job is allowed to use.  If any of
+the processes request or require more memory than this, the queue will kill
+the process. This is more of an option for safety of the cluster to prevent
+the user from crashing the cluster requesting too much memory.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="other-cluster-options">
+<h3>Other Cluster Options<a class="headerlink" href="#other-cluster-options" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt>job_name</dt><dd><p>The job name prefix that will be used for the cluster submission scripts, log
+files, and error logs for the processing. Be careful that this name is unique
+because previous submission scripts, logs, and error logs with the same job
+name prefix will be overwritten in the case of a name collision.</p>
+</dd>
+<dt>array_max</dt><dd><p>The maximum number of jobs per cluster submission script. Cluster submission
+scripts work using the array feature common to queuing systems, and this value
+is the maximum array size used in a script. If the user requests more batches
+of processing than this value, then the submission scripts will be split into
+files of up to array_max jobs.</p>
+</dd>
+<dt>max_jobs</dt><dd><p>The maximum number of jobs for alignment. If the number of batches / exceeds
+this value the script will immediately quit.</p>
+</dd>
+<dt>run_local</dt><dd><p>If the user wants to skip the cluster and run the job locally, this value
+should be set to 1.</p>
+</dd>
+<dt>skip_local_copy</dt><dd><p>Set this option to 1 to skip the copying of data to local_dir.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="parallelization-options">
+<h3>Parallelization Options<a class="headerlink" href="#parallelization-options" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt>iteration</dt><dd><p>The index of the references to generate : input will be
+all_motl_fn_prefix_iteration.em (define as integer e.g. iteration=1)</p>
+</dd>
+<dt>num_xmatrix_prealign_batch</dt><dd><p>Number of batches to split the parallel particle prealignment for the
+X-Matrix calculation into. If you are not doing prealignment you can ignore
+this option.</p>
+</dd>
+<dt>num_xmatrix_batch</dt><dd><p>Number of batches to split the parallel X-Matrix calculation job into.</p>
+</dd>
+<dt>num_eig_coeff_prealign_batch</dt><dd><p>Number of batches to split the parallel particle prealignment for the
+Eigencoefficients calculations into. If you are not doing prealignment you can
+ignore this option.</p>
+</dd>
+<dt>num_eig_coeff_batch</dt><dd><p>Number of batches to split the parallel Eigencoefficient calculation into.</p>
+</dd>
+<dt>num_avg_batch</dt><dd><p>The number of batches to split the parallel subtomogram averaging job into.</p>
+</dd>
+</dl>
+<div class="section" id="subtomogram-classification-workflow-options">
+<h4>Subtomogram Classification Workflow Options<a class="headerlink" href="#subtomogram-classification-workflow-options" title="Permalink to this headline">¶</a></h4>
+</div>
+</div>
+<div class="section" id="x-matrix-options">
+<h3>X-Matrix Options<a class="headerlink" href="#x-matrix-options" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt>high_pass_fp</dt><dd><p>High pass filter cutoff (in transform units (pixels): calculate as (box_size *
+pixelsize) / (resolution_real) (define as integer).</p>
+</dd>
+<dt>high_pass_sigma</dt><dd><p>High pass filter falloff sigma (in transform units (pixels): describes a
+Gaussian sigma for the falloff of the high-pass filter past the cutoff above.</p>
+</dd>
+<dt>low_pass_fp</dt><dd><p>Low pass filter (in transform units (pixels): calculate as (box_size *
+pixelsize) / (resolution_real) (define as integer).</p>
+</dd>
+<dt>low_pass_sigma</dt><dd><p>Low pass filter falloff sigma (in transform units (pixels): describes a
+Gaussian sigma for the falloff of the low-pass filter past the cutoff above.</p>
+</dd>
+<dt>nfold</dt><dd><p>Symmetry to apply to each pair of particle and reference in X-Matrix
+calculation, if no symmetry nfold=1 (define as integer e.g. nfold=3).</p>
+</dd>
+<dt>xmatrix_prealign</dt><dd><p>If you want to pre-align all of the particles to speed up the X-Matrix
+calculation, set the following to 1, otherwise the particles will be aligned
+during the computation.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="x-matrix-file-options">
+<h3>X-Matrix File Options<a class="headerlink" href="#x-matrix-file-options" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt>xmatrix_all_motl_fn_prefix</dt><dd><p>Relative path and name of the concatenated motivelist of all particles (e.g.
+allmotl_iter.em , the variable will be written as a string e.g.
+xmatrix_all_motl_fn_prefix=’sub-directory/allmotl’).</p>
+</dd>
+<dt>xmatrix_fn_prefix</dt><dd><p>Relative path and name of the X-Matrix.</p>
+</dd>
+<dt>ptcl_fn_prefix</dt><dd><p>Relative path and name of the subtomograms (e.g. part_n.em , the variable will
+be written as a string e.g. ptcl_fn_prefix=’sub-directory/part’).</p>
+</dd>
+<dt>mask_fn</dt><dd><p>Relative path and name of the classification mask. This should be a binary
+mask as correlations are done in real-space, and calculations will only be
+done using voxels passed by the mask, so smaller masks will run faster. If you
+want to use the default spherical mask set mask_fn to ‘none’.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="eigenvolumes-options">
+<h3>Eigenvolumes Options<a class="headerlink" href="#eigenvolumes-options" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt>num_eigs</dt><dd><p>The number of Eigenvectors and Eigenvalues to calculate.</p>
+</dd>
+<dt>eigs_iterations</dt><dd><p>The following allows you to adjust the number of iterations to use in the
+decomposition. If you want to use the default number of iterations leave this
+set to ‘default’.</p>
+</dd>
+<dt>eigs_tolerance</dt><dd><p>The following allows you to adjust the convergence tolerance of the
+decomposition calculation. If you want to use the default tolerance leave this
+set to ‘default’.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="eigenvolumes-file-options">
+<h3>Eigenvolumes File Options<a class="headerlink" href="#eigenvolumes-file-options" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt>eig_vec_fn_prefix</dt><dd><p>Relative path and name of the Eigenvectors.</p>
+</dd>
+<dt>eig_val_fn_prefix</dt><dd><p>Relative path and name of the Eigenvalues.</p>
+</dd>
+<dt>eig_vol_fn_prefix</dt><dd><p>Relative path and name of the Eigenvolumes.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="eigencoefficient-options">
+<h3>Eigencoefficient Options<a class="headerlink" href="#eigencoefficient-options" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt>apply_weight</dt><dd><p>If the following is set to 1, the Eigenvolume will have the particles
+missing-wedge weight applied to it before the correlation is calculated.</p>
+</dd>
+<dt>tomo_row</dt><dd><p>Which row in the motl file contains the correct tomogram number.
+Usually row 5 and 7 both correspond to the correct value and can be used
+interchangeably, but there are instances when 5 contains a sequential ordered
+value starting from 1, while 7 contains the correct corresponding tomogram.</p>
+</dd>
+<dt>eig_coeff_prealign</dt><dd><p>If you want to pre-align all of the particles to speed up the Eigencoefficient
+calculation, set the following to 1, otherwise the particles will be aligned
+during the computation.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="eigencoefficient-file-options">
+<h3>Eigencoefficient File Options<a class="headerlink" href="#eigencoefficient-file-options" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt>eig_coeff_all_motl_fn_prefix</dt><dd><p>Relative path and name of the concatenated motivelist to project onto the
+Eigenvolumes. This can be a larger motivelist than the one used to calculate
+the X-Matrix and Eigenvolumes.</p>
+</dd>
+<dt>eig_coeff_fn_prefix</dt><dd><p>Relative path and name of the Eigencoefficients.</p>
+</dd>
+<dt>weight_fn_prefix</dt><dd><p>Relative path and name of the weight file, if you are not applying the weight
+to the Eigenvolumes this can be left alone.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="clustering-options">
+<h3>Clustering Options<a class="headerlink" href="#clustering-options" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt>cluster_type</dt><dd><p>The following determines which algorithm will be used to cluster the
+determined Eigencoefficients. The valid options are K-means clustering,
+‘kmeans’, Hierarchical Ascendent Clustering using a Ward Criterion, ‘hac’, and
+a Gaussian Mixture Model, ‘gaussmix’.</p>
+</dd>
+<dt>eig_idxs</dt><dd><p>Determines which Eigencoefficients are used to cluster. The format should be a
+semicolon-separated list that also supports ranges with a dash (-), for
+example 1-5;7;15-19 would select the first five Eigencoefficients, the seventh
+and the fifteenth through the nineteenth for classification. If it is left as
+“all” all coefficients will be used.</p>
+</dd>
+<dt>num_classes</dt><dd><p>How many classes should the particles be clustered into.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="clustering-file-options">
+<h3>Clustering File Options<a class="headerlink" href="#clustering-file-options" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt>cluster_all_motl_fn_prefix</dt><dd><p>Relative path and name of the concatenated motivelist of the output classified
+particles.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="averaging-file-options">
+<h3>Averaging File Options<a class="headerlink" href="#averaging-file-options" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt>ref_fn_prefix</dt><dd><p>Relative path and name prefix of the reference volumes (e.g.  ref_iter.em, the
+variable will be written as a string e.g.  ref_fn_prefix=’sub-directory/ref’)</p>
+</dd>
+<dt>weight_sum_fn_prefix</dt><dd><p>Relative path and name prefix of the partial weight files.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">scratch_dir</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span><span class="s2">&quot;</span>
+
+<span class="nv">local_dir</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+
+<span class="nv">mcr_cache_dir</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">scratch_dir</span><span class="si">}</span><span class="s2">/mcr&quot;</span>
+
+<span class="nv">exec_dir</span><span class="o">=</span><span class="s2">&quot;XXXINSTALLATION_DIRXXX/bin&quot;</span>
+
+<span class="nv">cluster_exec</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">exec_dir</span><span class="si">}</span><span class="s2">/classification/general/subtom_cluster&quot;</span>
+
+<span class="nv">par_eigcoeff_exec</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">exec_dir</span><span class="si">}</span><span class="s2">/classification/msa/subtom_parallel_eigencoeffs_msa&quot;</span>
+
+<span class="nv">eigcoeff_exec</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">exec_dir</span><span class="si">}</span><span class="s2">/classification/msa/subtom_join_eigencoeffs_msa&quot;</span>
+
+<span class="nv">eigvol_exec</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">exec_dir</span><span class="si">}</span><span class="s2">/classification/msa/subtom_eigenvolumes_msa&quot;</span>
+
+<span class="nv">preali_exec</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">exec_dir</span><span class="si">}</span><span class="s2">/classification/general/subtom_parallel_prealign&quot;</span>
+
+<span class="nv">par_xmatrix_exec</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">exec_dir</span><span class="si">}</span><span class="s2">/classification/msa/subtom_parallel_xmatrix_msa&quot;</span>
+
+<span class="nv">xmatrix_exec</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">exec_dir</span><span class="si">}</span><span class="s2">/classification/msa/subtom_join_xmatrix&quot;</span>
+
+<span class="nv">sum_exec</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">exec_dir</span><span class="si">}</span><span class="s2">/classification/general/subtom_parallel_sums_cls&quot;</span>
+
+<span class="nv">avg_exec</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">exec_dir</span><span class="si">}</span><span class="s2">/classification/general/subtom_weighted_average_cls&quot;</span>
+
+<span class="nv">motl_dump_exec</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">exec_dir</span><span class="si">}</span><span class="s2">/MOTL/motl_dump&quot;</span>
+
+<span class="nv">mem_free</span><span class="o">=</span><span class="s2">&quot;1G&quot;</span>
+
+<span class="nv">mem_max</span><span class="o">=</span><span class="s2">&quot;64G&quot;</span>
+
+<span class="nv">job_name</span><span class="o">=</span><span class="s2">&quot;subTOM&quot;</span>
+
+<span class="nv">array_max</span><span class="o">=</span><span class="s2">&quot;1000&quot;</span>
+
+<span class="nv">max_jobs</span><span class="o">=</span><span class="s2">&quot;4000&quot;</span>
+
+<span class="nv">run_local</span><span class="o">=</span><span class="s2">&quot;0&quot;</span>
+
+<span class="nv">skip_local_copy</span><span class="o">=</span><span class="s2">&quot;1&quot;</span>
+
+<span class="nv">iteration</span><span class="o">=</span><span class="s2">&quot;1&quot;</span>
+
+<span class="nv">num_xmatrix_prealign_batch</span><span class="o">=</span><span class="s2">&quot;1&quot;</span>
+
+<span class="nv">num_xmatrix_batch</span><span class="o">=</span><span class="s2">&quot;1&quot;</span>
+
+<span class="nv">num_eig_coeff_prealign_batch</span><span class="o">=</span><span class="s2">&quot;1&quot;</span>
+
+<span class="nv">num_eig_coeff_batch</span><span class="o">=</span><span class="s2">&quot;1&quot;</span>
+
+<span class="nv">num_avg_batch</span><span class="o">=</span><span class="s2">&quot;1&quot;</span>
+
+<span class="nv">high_pass_fp</span><span class="o">=</span><span class="s2">&quot;1&quot;</span>
+
+<span class="nv">high_pass_sigma</span><span class="o">=</span><span class="s2">&quot;2&quot;</span>
+
+<span class="nv">low_pass_fp</span><span class="o">=</span><span class="s2">&quot;12&quot;</span>
+
+<span class="nv">low_pass_sigma</span><span class="o">=</span><span class="s2">&quot;3&quot;</span>
+
+<span class="nv">nfold</span><span class="o">=</span><span class="s2">&quot;1&quot;</span>
+
+<span class="nv">xmatrix_prealign</span><span class="o">=</span><span class="m">0</span>
+
+<span class="nv">xmatrix_all_motl_fn_prefix</span><span class="o">=</span><span class="s2">&quot;combinedmotl/allmotl&quot;</span>
+
+<span class="nv">xmatrix_fn_prefix</span><span class="o">=</span><span class="s2">&quot;class/xmatrix_msa&quot;</span>
+
+<span class="nv">ptcl_fn_prefix</span><span class="o">=</span><span class="s2">&quot;subtomograms/subtomo&quot;</span>
+
+<span class="nv">mask_fn</span><span class="o">=</span><span class="s2">&quot;none&quot;</span>
+
+<span class="nv">num_eigs</span><span class="o">=</span><span class="s1">&#39;40&#39;</span>
+
+<span class="nv">eigs_iterations</span><span class="o">=</span><span class="s1">&#39;default&#39;</span>
+
+<span class="nv">eigs_tolerance</span><span class="o">=</span><span class="s1">&#39;default&#39;</span>
+
+<span class="nv">eig_vec_fn_prefix</span><span class="o">=</span><span class="s2">&quot;class/eigvec_msa&quot;</span>
+
+<span class="nv">eig_val_fn_prefix</span><span class="o">=</span><span class="s2">&quot;class/eigval_msa&quot;</span>
+
+<span class="nv">eig_vol_fn_prefix</span><span class="o">=</span><span class="s2">&quot;class/eigvol_msa&quot;</span>
+
+<span class="nv">apply_weight</span><span class="o">=</span><span class="s2">&quot;0&quot;</span>
+
+<span class="nv">tomo_row</span><span class="o">=</span><span class="s2">&quot;7&quot;</span>
+
+<span class="nv">eig_coeff_prealign</span><span class="o">=</span><span class="s2">&quot;0&quot;</span>
+
+<span class="nv">eig_coeff_all_motl_fn_prefix</span><span class="o">=</span><span class="s2">&quot;combinedmotl/allmotl&quot;</span>
+
+<span class="nv">eig_coeff_fn_prefix</span><span class="o">=</span><span class="s2">&quot;class/eigcoeff_msa&quot;</span>
+
+<span class="nv">weight_fn_prefix</span><span class="o">=</span><span class="s2">&quot;otherinputs/ampspec&quot;</span>
+
+<span class="nv">cluster_type</span><span class="o">=</span><span class="s2">&quot;kmeans&quot;</span>
+
+<span class="nv">eig_idxs</span><span class="o">=</span><span class="s2">&quot;all&quot;</span>
+
+<span class="nv">num_classes</span><span class="o">=</span><span class="m">2</span>
+
+<span class="nv">cluster_all_motl_fn_prefix</span><span class="o">=</span><span class="s2">&quot;class/allmotl_msa&quot;</span>
+
+<span class="nv">ref_fn_prefix</span><span class="o">=</span><span class="s2">&quot;class/ref_msa&quot;</span>
+
+<span class="nv">weight_sum_fn_prefix</span><span class="o">=</span><span class="s2">&quot;class/wei_msa&quot;</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../functions/subtom_eigenvolumes_msa.html" class="btn btn-neutral float-right" title="subtom_eigenvolumes_msa" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../introduction.html" class="btn btn-neutral float-left" title="Multivariate Statistical Analysis Classification" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Dustin Reed Morado
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

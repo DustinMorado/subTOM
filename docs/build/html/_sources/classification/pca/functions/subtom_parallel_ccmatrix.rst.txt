@@ -8,7 +8,7 @@ Calculates pairwise Constrained Cross-Correlation scores of aligned particles.
 
     subtom_parallel_ccmatrix(
         'all_motl_fn_prefix', all_motl_fn_prefix ('combinedmotl/allmotl'),
-        'ccmatrix_fn_prefix', ccmatrix_fn_prefix ('pca/ccmatrix'),
+        'ccmatrix_fn_prefix', ccmatrix_fn_prefix ('class/ccmatrix_pca'),
         'weight_fn_prefix', weight_fn_prefix ('otherinputs/ampspec'),
         'ptcl_fn_prefix', ptcl_fn_prefix ('subtomograms/subtomo'),
         'mask_fn', mask_fn ('none'),
@@ -46,7 +46,7 @@ Example
 
     subtom_parallel_ccmatrix(
         'all_motl_fn_prefix', 'combinedmotl/allmotl', ...
-        'ccmatrix_fn_prefix', 'pca/ccmatrix', ...
+        'ccmatrix_fn_prefix', 'class/ccmatrix', ...
         'weight_fn_prefix', 'otherinputs/ampspec', ...
         'ptcl_fn_prefix', 'subtomograms/alisubtomo', ...
         'mask_fn', 'otherinputs/classification_mask.em', ...
@@ -65,16 +65,12 @@ Example
 See Also
 --------
 
-* :doc:`subtom_cluster`
 * :doc:`subtom_eigs`
 * :doc:`subtom_join_ccmatrix`
-* :doc:`subtom_join_eigencoeffs`
+* :doc:`subtom_join_eigencoeffs_pca`
 * :doc:`subtom_join_eigenvolumes`
-* :doc:`subtom_parallel_eigencoeffs`
+* :doc:`subtom_parallel_eigencoeffs_pca`
 * :doc:`subtom_parallel_eigenvolumes`
-* :doc:`subtom_parallel_prealign`
-* :doc:`subtom_parallel_sums`
-* :doc:`subtom_parallel_xmatrix`
+* :doc:`subtom_parallel_xmatrix_pca`
 * :doc:`subtom_prepare_ccmatrix`
 * :doc:`subtom_svds`
-* :doc:`subtom_weighted_average`

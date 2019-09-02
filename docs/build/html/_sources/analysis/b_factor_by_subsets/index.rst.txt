@@ -27,9 +27,9 @@ cryo-tomography data.
     :maxdepth: 1
     :caption: Links to Individual Function Documentation:
 
-    subtom_maskcorrected_fsc.m <functions/subtom_maskcorrected_fsc>
-    subtom_parallel_sums.m <functions/subtom_parallel_sums>
-    subtom_weighted_average.m <functions/subtom_weighted_average>
+    subtom_maskcorrected_fsc_bfactor.m <functions/subtom_maskcorrected_fsc_bfactor>
+    subtom_parallel_sums_bfactor.m <functions/subtom_parallel_sums_bfactor>
+    subtom_weighted_average_bfactor.m <functions/subtom_weighted_average_bfactor>
 
 Indices and tables
 ==================

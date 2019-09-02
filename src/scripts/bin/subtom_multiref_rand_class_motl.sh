@@ -31,6 +31,13 @@ then
     mkdir -p "${mcr_cache_dir}"
 fi
 
+output_motl_dir="${scratch_dir}/$(dirname "${output_motl_fn}")"
+
+if [[ ! -d "${output_motl_dir}" ]]
+then
+    mkdir -p "${output_motl_dir}"
+fi
+
 ################################################################################
 #                            CREATE INITIAL CLASSES                            #
 ################################################################################
@@ -40,17 +47,14 @@ ldpath="${ldpath}:XXXMCR_DIRXXX/sys/os/glnxa64"
 ldpath="${ldpath}:XXXMCR_DIRXXX/sys/opengl/lib/glnxa64"
 export LD_LIBRARY_PATH="${ldpath}"
 
-mcr_cache_dir_rand_class="${mcr_cache_dir}/rand_class_motl"
+mcr_cache_dir_="${mcr_cache_dir}/rand_class_motl"
 
-if [[ ! -d "${mcr_cache_dir_rand_class}" ]]
+if [[ -d "${mcr_cache_dir_}" ]]
 then
-    mkdir -p "${mcr_cache_dir_rand_class}"
-else
-    rm -rf "${mcr_cache_dir_rand_class}"
-    mkdir -p "${mcr_cache_dir_rand_class}"
+    rm -rf "${mcr_cache_dir_}"
 fi
 
-export MCR_CACHE_ROOT="${mcr_cache_dir_rand_class}"
+export MCR_CACHE_ROOT="${mcr_cache_dir_}"
 
 "${rand_exec}" \
     input_motl_fn \
@@ -60,7 +64,7 @@ export MCR_CACHE_ROOT="${mcr_cache_dir_rand_class}"
     num_classes \
     "${num_classes}"
 
-rm -rf "${mcr_cache_dir_rand_class}"
+rm -rf "${mcr_cache_dir_}"
 
 if [[ ! -f subTOM_protocol.md ]]
 then

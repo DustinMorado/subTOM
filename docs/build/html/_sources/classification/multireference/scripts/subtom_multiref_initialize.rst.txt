@@ -9,8 +9,8 @@ each class.
 This subtomogram averaging script uses three MATLAB compiled scripts below:
 
 - :doc:`../functions/subtom_rand_class_motl`
-- :doc:`../functions/subtom_parallel_sums`
-- :doc:`../functions/subtom_weighted_average`
+- :doc:`../../general/functions/subtom_parallel_sums_cls`
+- :doc:`../../general/functions/subtom_weighted_average_cls`
 
 -------
 Options
@@ -155,9 +155,9 @@ Example
 
     exec_dir="/net/dstore2/teraraid/dmorado/software/subTOM/bin"
 
-    sum_exec="${exec_dir}/classification/multiref/subtom_parallel_sums"
+    sum_exec="${exec_dir}/classification/general/subtom_parallel_sums_cls"
 
-    avg_exec="${exec_dir}/classification/multiref/subtom_weighted_average"
+    avg_exec="${exec_dir}/classification/general/subtom_weighted_average_cls"
 
     rand_exec="${exec_dir}/classification/multiref/subtom_rand_class_motl"
 

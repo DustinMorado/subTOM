@@ -46,19 +46,19 @@ exec_dir="XXXINSTALLATION_DIRXXX/bin"
 #                                  VARIABLES                                   #
 ################################################################################
 # Alignment executable
-align_exec=${exec_dir}/alignment/subtom_scan_angles_exact
+align_exec="${exec_dir}/alignment/subtom_scan_angles_exact"
 
 # Concatenate MOTLs executable
-cat_exec=${exec_dir}/MOTL/subtom_cat_motls
+cat_exec="${exec_dir}/MOTL/subtom_cat_motls"
 
 # Parallel Summing executable
-sum_exec=${exec_dir}/alignment/subtom_parallel_sums
+sum_exec="${exec_dir}/alignment/subtom_parallel_sums"
 
 # Final Averaging executable
-avg_exec=${exec_dir}/alignment/subtom_weighted_average
+avg_exec="${exec_dir}/alignment/subtom_weighted_average"
 
 # Compare MOTLs executable
-compare_exec=${exec_dir}/MOTL/subtom_compare_motls
+compare_exec="${exec_dir}/MOTL/subtom_compare_motls"
 
 ################################################################################
 #                                MEMORY OPTIONS                                #
@@ -80,7 +80,7 @@ mem_free_avg="1G"
 mem_max_avg="64G"
 
 ################################################################################
-#                              OTHER LSF OPTIONS                               #
+#                            OTHER CLUSTER OPTIONS                             #
 ################################################################################
 # BE CAREFUL THAT THE NAME DOESN'T CORRESPOND TO THE BEGINNING OF ANY OTHER FILE
 job_name="subTOM"

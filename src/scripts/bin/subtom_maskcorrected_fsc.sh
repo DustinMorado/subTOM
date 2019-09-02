@@ -18,13 +18,8 @@ set -o nounset   # Crash on unset variables
 
 source "${1}"
 
-mcr_cache_dir="${mcr_cache_dir}/maskcorrected_FSC"
-
 if [[ ! -d "${mcr_cache_dir}" ]]
 then
-    mkdir -p "${mcr_cache_dir}"
-else
-    rm -rf "${mcr_cache_dir}"
     mkdir -p "${mcr_cache_dir}"
 fi
 
@@ -35,13 +30,27 @@ then
     mkdir -p "${output_dir}"
 fi
 
+if [[ "${fsc_mask_fn}" == "none" ]]
+then
+    fsc_mask_fn_="none"
+else
+    fsc_mask_fn_="${scratch_dir}/${fsc_mask_fn}"
+fi
+
 ldpath="XXXMCR_DIRXXX/runtime/glnxa64"
 ldpath="${ldpath}:XXXMCR_DIRXXX/bin/glnxa64"
 ldpath="${ldpath}:XXXMCR_DIRXXX/sys/os/glnxa64"
 ldpath="${ldpath}:XXXMCR_DIRXXX/sys/opengl/lib/glnxa64"
 export LD_LIBRARY_PATH="${ldpath}"
 
-export MCR_CACHE_ROOT="${mcr_cache_dir}"
+mcr_cache_dir_="${mcr_cache_dir}/maskcorrected_fsc"
+
+if [[ -d "${mcr_cache_dir_}" ]]
+then
+    rm -rf "${mcr_cache_dir_}"
+fi
+
+export MCR_CACHE_ROOT="${mcr_cache_dir_}"
 
 "${fsc_exec}" \
     ref_a_fn_prefix \
@@ -51,7 +60,7 @@ export MCR_CACHE_ROOT="${mcr_cache_dir}"
     iteration \
     "${iteration}" \
     fsc_mask_fn \
-    "${scratch_dir}/${fsc_mask_fn}" \
+    "${fsc_mask_fn_}" \
     output_fn_prefix \
     "${scratch_dir}/${output_fn_prefix}" \
     filter_a_fn \
@@ -81,7 +90,7 @@ export MCR_CACHE_ROOT="${mcr_cache_dir}"
     box_gaussian \
     "${box_gaussian}"
 
-rm -rf "${mcr_cache_dir}"
+rm -rf "${mcr_cache_dir_}"
 
 if [[ ! -f subTOM_protocol.md ]]
 then

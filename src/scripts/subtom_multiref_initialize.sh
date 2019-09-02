@@ -14,8 +14,8 @@
 # This subtomogram parallel averaging script uses two MATLAB compiled scripts
 # below:
 # - subtom_rand_class_motl
-# - subtom_parallel_sums
-# - subtom_weighted_average
+# - subtom_parallel_sums_cls
+# - subtom_weighted_average_cls
 # DRM 05-2019
 ################################################################################
 #                                 DIRECTORIES                                  #
@@ -40,10 +40,10 @@ exec_dir="XXXINSTALLATION_DIRXXX/bin"
 #                                  VARIABLES                                   #
 ################################################################################
 # Parallel Summing executable.
-sum_exec="${exec_dir}/classification/multiref/subtom_parallel_sums"
+sum_exec="${exec_dir}/classification/general/subtom_parallel_sums_cls"
 
 # Final Averaging executable.
-avg_exec="${exec_dir}/classification/multiref/subtom_weighted_average"
+avg_exec="${exec_dir}/classification/general/subtom_weighted_average_cls"
 
 # Randomize Motive List executable.
 rand_exec="${exec_dir}/classification/multiref/subtom_rand_class_motl"

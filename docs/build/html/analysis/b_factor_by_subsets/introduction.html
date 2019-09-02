@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>B-Factor by Subsets &mdash; subTOM 1.0.3 documentation</title>
+  <title>B-Factor by Subsets &mdash; subTOM 1.1.0 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                1.0
+                1.1
               </div>
             
           
@@ -136,17 +136,20 @@
 </ul>
 <p class="caption"><span class="caption-text">Classification Documentation:</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../classification/general/index.html">General Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../classification/msa/index.html">MSA</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../classification/multireference/index.html">Multireference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../classification/pca/index.html">PCA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../classification/wmd/index.html">WMD</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Analysis Documentation:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">B-Factor from Subsets</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="scripts/subtom_b_factor_by_subsets.html">subtom_b_factor_by_subsets.sh</a></li>
-<li class="toctree-l2"><a class="reference internal" href="functions/subtom_maskcorrected_fsc.html">subtom_maskcorrected_fsc.m</a></li>
-<li class="toctree-l2"><a class="reference internal" href="functions/subtom_parallel_sums.html">subtom_parallel_sums.m</a></li>
-<li class="toctree-l2"><a class="reference internal" href="functions/subtom_weighted_average.html">subtom_weighted_average.m</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functions/subtom_maskcorrected_fsc_bfactor.html">subtom_maskcorrected_fsc_bfactor.m</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functions/subtom_parallel_sums_bfactor.html">subtom_parallel_sums_bfactor.m</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functions/subtom_weighted_average_bfactor.html">subtom_weighted_average_bfactor.m</a></li>
 <li class="toctree-l2"><a class="reference internal" href="index.html#indices-and-tables">Indices and tables</a></li>
 </ul>
 </li>
@@ -226,13 +229,13 @@ decays over smaller and smaller subsets of the particles that form each
 half-map. A linear function is fit to the reciprocal square of resolutions
 determined by Gold-standard FSCs against the natural log of asymmetric units.</p>
 <p>The method is described in detail in Rosenthal, Henderson 2003, and here the
-averaging and analysis functions <code class="docutils literal notranslate"><span class="pre">subtom_maskcorrected_fsc</span></code>,
-<code class="docutils literal notranslate"><span class="pre">subtom_parallel_sums</span></code>, and <code class="docutils literal notranslate"><span class="pre">subtom_weighted_average</span></code> have been slightly
-modified to first generate the average of successively smaller subsets, with
-each subset being roughly half of the subset before it until the subset would be
-less than 128 particles. Then the resolution of each subset is determined and
-the B-factor is estimated and this estimate B-factor can then be used to sharpen
-the final post-processed map.</p>
+averaging and analysis functions <code class="docutils literal notranslate"><span class="pre">subtom_maskcorrected_fsc_bfactor</span></code>,
+<code class="docutils literal notranslate"><span class="pre">subtom_parallel_sums_bfactor</span></code>, and <code class="docutils literal notranslate"><span class="pre">subtom_weighted_average_bfactor</span></code> have
+been slightly modified from their non-bfactor counterparts to first generate the
+average of successively smaller subsets, with each subset being roughly half of
+the subset before it until the subset would be less than 128 particles. Then the
+resolution of each subset is determined and the B-factor is estimated and this
+estimate B-factor can then be used to sharpen the final post-processed map.</p>
 </div>
 
 
@@ -255,7 +258,7 @@ the final post-processed map.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Dustin Reed Morado
+        &copy; Copyright 2019, Dustin Reed Morado
 
     </p>
   </div>

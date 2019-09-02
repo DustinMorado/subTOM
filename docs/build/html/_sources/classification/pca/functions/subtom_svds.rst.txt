@@ -43,16 +43,12 @@ Example
 See Also
 --------
 
-* :doc:`subtom_cluster`
 * :doc:`subtom_eigs`
 * :doc:`subtom_join_ccmatrix`
-* :doc:`subtom_join_eigencoeffs`
+* :doc:`subtom_join_eigencoeffs_pca`
 * :doc:`subtom_join_eigenvolumes`
 * :doc:`subtom_parallel_ccmatrix`
-* :doc:`subtom_parallel_eigencoeffs`
+* :doc:`subtom_parallel_eigencoeffs_pca`
 * :doc:`subtom_parallel_eigenvolumes`
-* :doc:`subtom_parallel_prealign`
-* :doc:`subtom_parallel_sums`
-* :doc:`subtom_parallel_xmatrix`
+* :doc:`subtom_parallel_xmatrix_pca`
 * :doc:`subtom_prepare_ccmatrix`
-* :doc:`subtom_weighted_average`

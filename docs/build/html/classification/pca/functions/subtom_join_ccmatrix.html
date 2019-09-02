@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>subtom_join_ccmatrix &mdash; subTOM 1.0.3 documentation</title>
+  <title>subtom_join_ccmatrix &mdash; subTOM 1.1.0 documentation</title>
   
 
   
@@ -36,7 +36,7 @@
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="subtom_join_eigencoeffs" href="subtom_join_eigencoeffs.html" />
+    <link rel="next" title="subtom_join_eigencoeffs_pca" href="subtom_join_eigencoeffs_pca.html" />
     <link rel="prev" title="subtom_eigs" href="subtom_eigs.html" /> 
 </head>
 
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                1.0
+                1.1
               </div>
             
           
@@ -136,31 +136,30 @@
 </ul>
 <p class="caption"><span class="caption-text">Classification Documentation:</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../general/index.html">General Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../msa/index.html">MSA</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../multireference/index.html">Multireference</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">PCA</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../introduction.html">Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../scripts/subtom_pca.html">subtom_pca.sh</a></li>
-<li class="toctree-l2"><a class="reference internal" href="subtom_cluster.html">subtom_cluster</a></li>
 <li class="toctree-l2"><a class="reference internal" href="subtom_eigs.html">subtom_eigs</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">subtom_join_ccmatrix</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#example">Example</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#see-also">See Also</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="subtom_join_eigencoeffs.html">subtom_join_eigencoeffs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="subtom_join_eigencoeffs_pca.html">subtom_join_eigencoeffs_pca</a></li>
 <li class="toctree-l2"><a class="reference internal" href="subtom_join_eigenvolumes.html">subtom_join_eigenvolumes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="subtom_parallel_ccmatrix.html">subtom_parallel_ccmatrix</a></li>
-<li class="toctree-l2"><a class="reference internal" href="subtom_parallel_eigencoeffs.html">subtom_parallel_eigencoeffs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="subtom_parallel_eigencoeffs_pca.html">subtom_parallel_eigencoeffs_pca</a></li>
 <li class="toctree-l2"><a class="reference internal" href="subtom_parallel_eigenvolumes.html">subtom_parallel_eigenvolumes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="subtom_parallel_prealign.html">subtom_parallel_prealign</a></li>
-<li class="toctree-l2"><a class="reference internal" href="subtom_parallel_sums.html">subtom_parallel_sums</a></li>
-<li class="toctree-l2"><a class="reference internal" href="subtom_parallel_xmatrix.html">subtom_parallel_xmatrix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="subtom_parallel_xmatrix_pca.html">subtom_parallel_xmatrix_pca</a></li>
 <li class="toctree-l2"><a class="reference internal" href="subtom_prepare_ccmatrix.html">subtom_prepare_ccmatrix</a></li>
 <li class="toctree-l2"><a class="reference internal" href="subtom_svds.html">subtom_svds</a></li>
-<li class="toctree-l2"><a class="reference internal" href="subtom_weighted_average.html">subtom_weighted_average</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../index.html#indices-and-tables">Indices and tables</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../../wmd/index.html">WMD</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Analysis Documentation:</span></p>
 <ul>
@@ -236,20 +235,21 @@
 <p>Combines chunks of the Cross-Correlation matrix into the final full matrix.</p>
 <div class="highlight-Matlab notranslate"><div class="highlight"><pre><span></span><span class="n">subtom_join_ccmatrix</span><span class="p">(</span>
     <span class="s">&#39;all_motl_fn_prefix&#39;</span><span class="p">,</span> <span class="n">all_motl_fn_prefix</span> <span class="p">(</span><span class="s">&#39;combinedmotl/allmotl&#39;</span><span class="p">),</span>
-    <span class="s">&#39;ccmatrix_fn_prefix&#39;</span><span class="p">,</span> <span class="n">ccmatrix_fn_prefix</span> <span class="p">(</span><span class="s">&#39;pca/ccmatrix&#39;</span><span class="p">),</span>
+    <span class="s">&#39;ccmatrix_fn_prefix&#39;</span><span class="p">,</span> <span class="n">ccmatrix_fn_prefix</span> <span class="p">(</span><span class="s">&#39;class/ccmatrix_pca&#39;</span><span class="p">),</span>
     <span class="s">&#39;iteration&#39;</span><span class="p">,</span> <span class="n">iteration</span> <span class="p">(</span><span class="mi">1</span><span class="p">),</span>
     <span class="s">&#39;num_ccmatrix_batch&#39;</span><span class="p">,</span> <span class="n">num_ccmatrix_batch</span> <span class="p">(</span><span class="mi">1</span><span class="p">))</span>
 </pre></div>
 </div>
-<p>Looks for partial chunks of the ccmatrix with the file name
-<code class="docutils literal notranslate"><span class="pre">ccmatrix_fn_prefix</span></code> _ <code class="docutils literal notranslate"><span class="pre">iteration</span></code> _#.em where # is from 1 to
+<p>Looks for partial chunks of the ccmatrix with the file name given by
+<code class="docutils literal notranslate"><span class="pre">ccmatrix_fn_prefix</span></code>, <code class="docutils literal notranslate"><span class="pre">iteration</span></code>  and # where # is from 1 to
 <code class="docutils literal notranslate"><span class="pre">num_ccmatrix_batch</span></code>, and then combines these chunks into the final ccmatrix
-and writes it out to <code class="docutils literal notranslate"><span class="pre">ccmatrix_fn_prefix</span></code> _ <code class="docutils literal notranslate"><span class="pre">iteration</span></code>.em</p>
+and writes it out to the file specified by <code class="docutils literal notranslate"><span class="pre">ccmatrix_fn_prefix</span></code> and
+<code class="docutils literal notranslate"><span class="pre">iteration</span></code></p>
 <div class="section" id="example">
 <h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-Matlab notranslate"><div class="highlight"><pre><span></span><span class="n">subtom_join_ccmatrix</span><span class="p">(</span><span class="c">...</span>
     <span class="s">&#39;all_motl_fn_prefix&#39;</span><span class="p">,</span> <span class="s">&#39;combinedmotl/allmotl&#39;</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;ccmatrix_fn_prefix&#39;</span><span class="p">,</span> <span class="s">&#39;pca/ccmatrix&#39;</span><span class="p">,</span> <span class="c">...</span>
+    <span class="s">&#39;ccmatrix_fn_prefix&#39;</span><span class="p">,</span> <span class="s">&#39;class/ccmatrix&#39;</span><span class="p">,</span> <span class="c">...</span>
     <span class="s">&#39;iteration&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="c">...</span>
     <span class="s">&#39;num_ccmatrix_batch&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 </pre></div>
@@ -258,19 +258,15 @@ and writes it out to <code class="docutils literal notranslate"><span class="pre
 <div class="section" id="see-also">
 <h2>See Also<a class="headerlink" href="#see-also" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><p><a class="reference internal" href="subtom_cluster.html"><span class="doc">subtom_cluster</span></a></p></li>
 <li><p><a class="reference internal" href="subtom_eigs.html"><span class="doc">subtom_eigs</span></a></p></li>
-<li><p><a class="reference internal" href="subtom_join_eigencoeffs.html"><span class="doc">subtom_join_eigencoeffs</span></a></p></li>
+<li><p><a class="reference internal" href="subtom_join_eigencoeffs_pca.html"><span class="doc">subtom_join_eigencoeffs_pca</span></a></p></li>
 <li><p><a class="reference internal" href="subtom_join_eigenvolumes.html"><span class="doc">subtom_join_eigenvolumes</span></a></p></li>
 <li><p><a class="reference internal" href="subtom_parallel_ccmatrix.html"><span class="doc">subtom_parallel_ccmatrix</span></a></p></li>
-<li><p><a class="reference internal" href="subtom_parallel_eigencoeffs.html"><span class="doc">subtom_parallel_eigencoeffs</span></a></p></li>
+<li><p><a class="reference internal" href="subtom_parallel_eigencoeffs_pca.html"><span class="doc">subtom_parallel_eigencoeffs_pca</span></a></p></li>
 <li><p><a class="reference internal" href="subtom_parallel_eigenvolumes.html"><span class="doc">subtom_parallel_eigenvolumes</span></a></p></li>
-<li><p><a class="reference internal" href="subtom_parallel_prealign.html"><span class="doc">subtom_parallel_prealign</span></a></p></li>
-<li><p><a class="reference internal" href="subtom_parallel_sums.html"><span class="doc">subtom_parallel_sums</span></a></p></li>
-<li><p><a class="reference internal" href="subtom_parallel_xmatrix.html"><span class="doc">subtom_parallel_xmatrix</span></a></p></li>
+<li><p><a class="reference internal" href="subtom_parallel_xmatrix_pca.html"><span class="doc">subtom_parallel_xmatrix_pca</span></a></p></li>
 <li><p><a class="reference internal" href="subtom_prepare_ccmatrix.html"><span class="doc">subtom_prepare_ccmatrix</span></a></p></li>
 <li><p><a class="reference internal" href="subtom_svds.html"><span class="doc">subtom_svds</span></a></p></li>
-<li><p><a class="reference internal" href="subtom_weighted_average.html"><span class="doc">subtom_weighted_average</span></a></p></li>
 </ul>
 </div>
 </div>
@@ -283,7 +279,7 @@ and writes it out to <code class="docutils literal notranslate"><span class="pre
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="subtom_join_eigencoeffs.html" class="btn btn-neutral float-right" title="subtom_join_eigencoeffs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="subtom_join_eigencoeffs_pca.html" class="btn btn-neutral float-right" title="subtom_join_eigencoeffs_pca" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="subtom_eigs.html" class="btn btn-neutral float-left" title="subtom_eigs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -295,7 +291,7 @@ and writes it out to <code class="docutils literal notranslate"><span class="pre
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Dustin Reed Morado
+        &copy; Copyright 2019, Dustin Reed Morado
 
     </p>
   </div>

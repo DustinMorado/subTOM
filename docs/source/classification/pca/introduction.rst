@@ -22,13 +22,13 @@ basis vectors and their respective weights.
 
 The particles that were compared against are then projected onto these vectors
 by first constructing a matrix of the aligned data with
-``subtom_parallel_xmatrix`` and then projected in parallel batches with
+``subtom_parallel_xmatrix_pca`` and then projected in parallel batches with
 ``subtom_parallel_eigenvolumes`` and joined with ``subtom_join_eigenvolumes``.
 These volumes are then used to determine the low-rank approximation coefficients
 in volume space for clustering. A larger particle superset can be projected onto
 the volumes to speed up classification of large datasets. Coefficients are also
-calculated in parallel in batches with ``subtom_parallel_eigcoeffs`` and joined
-with ``subtom_join_eigencoeffs``.
+calculated in parallel in batches with ``subtom_parallel_eigcoeffs_pca`` and
+joined with ``subtom_join_eigencoeffs_pca``.
 
 Finally using a user-selected subset of the determined coefficients, the data is
 clustered either by Hierarchical Ascendant Clustering using a Ward distance

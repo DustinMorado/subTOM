@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>subtom_pca &mdash; subTOM 1.0.3 documentation</title>
+  <title>subtom_pca &mdash; subTOM 1.1.0 documentation</title>
   
 
   
@@ -36,7 +36,7 @@
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="subtom_cluster" href="../functions/subtom_cluster.html" />
+    <link rel="next" title="subtom_eigs" href="../functions/subtom_eigs.html" />
     <link rel="prev" title="Principal Component Analysis Classification" href="../introduction.html" /> 
 </head>
 
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                1.0
+                1.1
               </div>
             
           
@@ -136,6 +136,8 @@
 </ul>
 <p class="caption"><span class="caption-text">Classification Documentation:</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../general/index.html">General Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../msa/index.html">MSA</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../multireference/index.html">Multireference</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">PCA</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../introduction.html">Introduction</a></li>
@@ -148,10 +150,9 @@
 <li class="toctree-l4"><a class="reference internal" href="#parallelization-options">Parallelization Options</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#cc-matrix-options">CC-Matrix Options</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#cc-matrix-file-options">CC-Matrix File Options</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#x-matrix-options">X-Matrix Options</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#x-matrix-file-options">X-Matrix File Options</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#eigendecomposition-options">Eigendecomposition Options</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#eigendecomposition-file-options">Eigendecomposition File Options</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#x-matrix-file-options">X-Matrix File Options</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#eigenvolumes-file-options">Eigenvolumes File Options</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#eigencoefficient-options">Eigencoefficient Options</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#eigencoefficient-file-options">Eigencoefficient File Options</a></li>
@@ -163,23 +164,20 @@
 <li class="toctree-l3"><a class="reference internal" href="#example">Example</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../functions/subtom_cluster.html">subtom_cluster</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../functions/subtom_eigs.html">subtom_eigs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../functions/subtom_join_ccmatrix.html">subtom_join_ccmatrix</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../functions/subtom_join_eigencoeffs.html">subtom_join_eigencoeffs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../functions/subtom_join_eigencoeffs_pca.html">subtom_join_eigencoeffs_pca</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../functions/subtom_join_eigenvolumes.html">subtom_join_eigenvolumes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../functions/subtom_parallel_ccmatrix.html">subtom_parallel_ccmatrix</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../functions/subtom_parallel_eigencoeffs.html">subtom_parallel_eigencoeffs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../functions/subtom_parallel_eigencoeffs_pca.html">subtom_parallel_eigencoeffs_pca</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../functions/subtom_parallel_eigenvolumes.html">subtom_parallel_eigenvolumes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../functions/subtom_parallel_prealign.html">subtom_parallel_prealign</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../functions/subtom_parallel_sums.html">subtom_parallel_sums</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../functions/subtom_parallel_xmatrix.html">subtom_parallel_xmatrix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../functions/subtom_parallel_xmatrix_pca.html">subtom_parallel_xmatrix_pca</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../functions/subtom_prepare_ccmatrix.html">subtom_prepare_ccmatrix</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../functions/subtom_svds.html">subtom_svds</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../functions/subtom_weighted_average.html">subtom_weighted_average</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../index.html#indices-and-tables">Indices and tables</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../../wmd/index.html">WMD</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Analysis Documentation:</span></p>
 <ul>
@@ -252,25 +250,24 @@
             
   <div class="section" id="subtom-pca">
 <h1>subtom_pca<a class="headerlink" href="#subtom-pca" title="Permalink to this headline">¶</a></h1>
-<p>The main PCA pipeline process script of subTOM. Iteratively aligns
-and averages a collection of subvolumes, against multiple references.</p>
+<p>The main PCA pipeline process script of subTOM.</p>
 <p>This subtomogram classification script uses fourteen MATLAB compiled scripts
 below:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="../functions/subtom_parallel_prealign.html"><span class="doc">subtom_parallel_prealign</span></a></p></li>
+<li><p><a class="reference internal" href="../../general/functions/subtom_parallel_prealign.html"><span class="doc">subtom_parallel_prealign</span></a></p></li>
 <li><p><a class="reference internal" href="../functions/subtom_prepare_ccmatrix.html"><span class="doc">subtom_prepare_ccmatrix</span></a></p></li>
 <li><p><a class="reference internal" href="../functions/subtom_parallel_ccmatrix.html"><span class="doc">subtom_parallel_ccmatrix</span></a></p></li>
 <li><p><a class="reference internal" href="../functions/subtom_join_ccmatrix.html"><span class="doc">subtom_join_ccmatrix</span></a></p></li>
 <li><p><a class="reference internal" href="../functions/subtom_eigs.html"><span class="doc">subtom_eigs</span></a></p></li>
 <li><p><a class="reference internal" href="../functions/subtom_svds.html"><span class="doc">subtom_svds</span></a></p></li>
-<li><p><a class="reference internal" href="../functions/subtom_parallel_xmatrix.html"><span class="doc">subtom_parallel_xmatrix</span></a></p></li>
+<li><p><a class="reference internal" href="../functions/subtom_parallel_xmatrix_pca.html"><span class="doc">subtom_parallel_xmatrix_pca</span></a></p></li>
 <li><p><a class="reference internal" href="../functions/subtom_parallel_eigenvolumes.html"><span class="doc">subtom_parallel_eigenvolumes</span></a></p></li>
 <li><p><a class="reference internal" href="../functions/subtom_join_eigenvolumes.html"><span class="doc">subtom_join_eigenvolumes</span></a></p></li>
-<li><p><a class="reference internal" href="../functions/subtom_parallel_eigencoeffs.html"><span class="doc">subtom_parallel_eigencoeffs</span></a></p></li>
-<li><p><a class="reference internal" href="../functions/subtom_join_eigencoeffs.html"><span class="doc">subtom_join_eigencoeffs</span></a></p></li>
-<li><p><a class="reference internal" href="../functions/subtom_cluster.html"><span class="doc">subtom_cluster</span></a></p></li>
-<li><p><a class="reference internal" href="../functions/subtom_parallel_sums.html"><span class="doc">subtom_parallel_sums</span></a></p></li>
-<li><p><a class="reference internal" href="../functions/subtom_weighted_average.html"><span class="doc">subtom_weighted_average</span></a></p></li>
+<li><p><a class="reference internal" href="../functions/subtom_parallel_eigencoeffs_pca.html"><span class="doc">subtom_parallel_eigencoeffs_pca</span></a></p></li>
+<li><p><a class="reference internal" href="../functions/subtom_join_eigencoeffs_pca.html"><span class="doc">subtom_join_eigencoeffs_pca</span></a></p></li>
+<li><p><a class="reference internal" href="../../general/functions/subtom_cluster.html"><span class="doc">subtom_cluster</span></a></p></li>
+<li><p><a class="reference internal" href="../../general/functions/subtom_parallel_sums_cls.html"><span class="doc">subtom_parallel_sums_cls</span></a></p></li>
+<li><p><a class="reference internal" href="../../general/functions/subtom_weighted_average_cls.html"><span class="doc">subtom_weighted_average_cls</span></a></p></li>
 </ul>
 <div class="section" id="options">
 <h2>Options<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h2>
@@ -372,11 +369,21 @@ should be set to 1.</p>
 <dt>iteration</dt><dd><p>The index of the references to generate : input will be
 all_motl_fn_prefix_iteration.em (define as integer e.g. iteration=1)</p>
 </dd>
+<dt>num_ccmatrix_prealign_batch</dt><dd><p>Number of batches to split the parallel particle prealignment for the
+CC-Matrix calculation into. If you are not doing prealignment you can ignore
+this option.</p>
+</dd>
 <dt>num_ccmatrix_batch</dt><dd><p>Number of batches to split the parallel CC-Matrix calculation job into.</p>
 </dd>
 <dt>num_xmatrix_batch</dt><dd><p>Number of batches to split the parallel X-Matrix calculation job into. This
-also determines the number of batches the Eigenvolumes, and Eigencoefficients
-calculations will be split into.</p>
+also determines the number of batches the Eigenvolumes calculation will be
+split into.</p>
+</dd>
+<dt>num_eig_coeff_prealign_batch</dt><dd><p>Number of batches to split the parallel particle prealignment for the
+Eigencoefficients calculations into. If you are not doing prealignment you can
+ignore this option.</p>
+</dd>
+<dt>num_eig_coeff_batch</dt><dd><p>Number of batches to split the parallel Eigencoefficient calculation into.</p>
 </dd>
 <dt>num_avg_batch</dt><dd><p>The number of batches to split the parallel subtomogram averaging job into.</p>
 </dd>
@@ -400,9 +407,14 @@ pixelsize) / (resolution_real) (define as integer).</p>
 <dt>low_pass_sigma</dt><dd><p>Low pass filter falloff sigma (in transform units (pixels): describes a
 Gaussian sigma for the falloff of the low-pass filter past the cutoff above.</p>
 </dd>
-<dt>ccmatrix_nfold</dt><dd><p>Symmetry to apply to each pair of particle and reference in CC-Matrix
+<dt>nfold</dt><dd><p>Symmetry to apply to each pair of particle and reference in CC-Matrix
 calculation, if no symmetry ccmatrix_nfold=1 (define as integer e.g.
 ccmatrix_nfold=3)</p>
+</dd>
+<dt>tomo_row</dt><dd><p>Which row in the motl file contains the correct tomogram number.
+Usually row 5 and 7 both correspond to the correct value and can be used
+interchangeably, but there are instances when 5 contains a sequential ordered
+value starting from 1, while 7 contains the correct corresponding tomogram.</p>
 </dd>
 <dt>ccmatrix_prealign</dt><dd><p>If you want to pre-align all of the particles to speed up the CC-Matrix
 calculation, set the following to 1, otherwise the particles will be aligned
@@ -428,22 +440,6 @@ want to use the default spherical mask set mask_fn to ‘none’.</p>
 <dt>weight_fn_prefix</dt><dd><p>Relative path and name of the weight file.</p>
 </dd>
 <dt>ccmatrix_fn_prefix</dt><dd><p>Relative path and name of the CC-Matrix.</p>
-</dd>
-</dl>
-</div>
-<div class="section" id="x-matrix-options">
-<h3>X-Matrix Options<a class="headerlink" href="#x-matrix-options" title="Permalink to this headline">¶</a></h3>
-<dl class="simple">
-<dt>xmatrix_nfold</dt><dd><p>Symmetry to apply to each pair of particle and reference in X-Matrix
-calculation, This will affect the symmetry of the Eigenvolumes as well, if no
-symmetry nfold=1 (define as integer e.g. nfold=3)</p>
-</dd>
-</dl>
-</div>
-<div class="section" id="x-matrix-file-options">
-<h3>X-Matrix File Options<a class="headerlink" href="#x-matrix-file-options" title="Permalink to this headline">¶</a></h3>
-<dl class="simple">
-<dt>xmatrix_fn_prefix</dt><dd><p>Relative path and name of the X-Matrix.</p>
 </dd>
 </dl>
 </div>
@@ -493,6 +489,13 @@ leave this set to ‘default’.</p>
 </dd>
 </dl>
 </div>
+<div class="section" id="x-matrix-file-options">
+<h3>X-Matrix File Options<a class="headerlink" href="#x-matrix-file-options" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt>xmatrix_fn_prefix</dt><dd><p>Relative path and name of the X-Matrix.</p>
+</dd>
+</dl>
+</div>
 <div class="section" id="eigenvolumes-file-options">
 <h3>Eigenvolumes File Options<a class="headerlink" href="#eigenvolumes-file-options" title="Permalink to this headline">¶</a></h3>
 <dl class="simple">
@@ -503,35 +506,20 @@ leave this set to ‘default’.</p>
 <div class="section" id="eigencoefficient-options">
 <h3>Eigencoefficient Options<a class="headerlink" href="#eigencoefficient-options" title="Permalink to this headline">¶</a></h3>
 <dl class="simple">
-<dt>use_fast</dt><dd><p>If the following is set to 1, then a very fast-approximation of the
-Eigencoefficients will be calculated using the transition formulas. This
-option requires that the coeff_all_motl_fn_prefix be identical to
-ccmatrix_all_motl_fn_prefix.</p>
-</dd>
-<dt>use_eig_vec</dt><dd><p>If the following is set to 1, then the conjugate-space Eigenvectors will be
-used in place of the Eigenvolumes to calculate the Eigencoefficients. This
-should be identical to the results using Eigenvolumes, but is here just
-in-case.</p>
-</dd>
 <dt>apply_weight</dt><dd><p>If the following is set to 1, the Eigenvolume (or conjugate-space Eigenvector)
 will have the particles missing-wedge weight applied to it before the
 Correlation is calculated.</p>
 </dd>
-<dt>eigcoeff_prealign</dt><dd><p>If you want to pre-align all of the particles to speed up the Eigencoefficient
+<dt>eig_coeff_prealign</dt><dd><p>If you want to pre-align all of the particles to speed up the Eigencoefficient
 calculation, set the following to 1, otherwise the particles will be aligned
 during the computation.</p>
-</dd>
-<dt>tomo_row</dt><dd><p>Which row in the motl file contains the correct tomogram number.
-Usually row 5 and 7 both correspond to the correct value and can be used
-interchangeably, but there are instances when 5 contains a sequential ordered
-value starting from 1, while 7 contains the correct corresponding tomogram.</p>
 </dd>
 </dl>
 </div>
 <div class="section" id="eigencoefficient-file-options">
 <h3>Eigencoefficient File Options<a class="headerlink" href="#eigencoefficient-file-options" title="Permalink to this headline">¶</a></h3>
 <dl class="simple">
-<dt>eigcoeff_all_motl_fn_prefix</dt><dd><p>Relative path and name of the concatenated motivelist to project onto the
+<dt>eig_coeff_all_motl_fn_prefix</dt><dd><p>Relative path and name of the concatenated motivelist to project onto the
 Eigenvolumes (conjugate-space Eigenvectors). This can be a larger motivelist
 than the one used to calculate the CC-Matrix and Eigenvolumes.</p>
 </dd>
@@ -548,10 +536,10 @@ determined Eigencoefficients. The valid options are K-means clustering,
 a Gaussian Mixture Model, ‘gaussmix’.</p>
 </dd>
 <dt>eig_idxs</dt><dd><p>Determines which Eigencoefficients are used to cluster. The format should be a
-comma-separated list that also supports ranges with a dash (-), for example
-1-5,7,15-19 would select the first five Eigencoefficients, the seventh and the
-fifteenth through the nineteenth for classification. If it is left as “all”
-all coefficients will be used.</p>
+semicolon-separated list that also supports ranges with a dash (-), for
+example 1-5;7;15-19 would select the first five Eigencoefficients, the seventh
+and the fifteenth through the nineteenth for classification. If it is left as
+“all” all coefficients will be used.</p>
 </dd>
 <dt>num_classes</dt><dd><p>How many classes should the particles be clustered into.</p>
 </dd>
@@ -586,7 +574,7 @@ variable will be written as a string e.g.  ref_fn_prefix=’sub-directory/ref’
 
 <span class="nv">exec_dir</span><span class="o">=</span><span class="s2">&quot;XXXINSTALLATION_DIRXXX/bin&quot;</span>
 
-<span class="nv">cluster_exec</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">exec_dir</span><span class="si">}</span><span class="s2">/classification/pca/subtom_cluster&quot;</span>
+<span class="nv">cluster_exec</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">exec_dir</span><span class="si">}</span><span class="s2">/classification/general/subtom_cluster&quot;</span>
 
 <span class="nv">eigs_exec</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">exec_dir</span><span class="si">}</span><span class="s2">/classification/pca/subtom_eigs&quot;</span>
 
@@ -596,23 +584,23 @@ variable will be written as a string e.g.  ref_fn_prefix=’sub-directory/ref’
 
 <span class="nv">ccmatrix_exec</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">exec_dir</span><span class="si">}</span><span class="s2">/classification/pca/subtom_join_ccmatrix&quot;</span>
 
-<span class="nv">par_eigcoeff_exec</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">exec_dir</span><span class="si">}</span><span class="s2">/classification/pca/subtom_parallel_eigencoeffs&quot;</span>
+<span class="nv">par_eigcoeff_exec</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">exec_dir</span><span class="si">}</span><span class="s2">/classification/pca/subtom_parallel_eigencoeffs_pca&quot;</span>
 
-<span class="nv">eigcoeff_exec</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">exec_dir</span><span class="si">}</span><span class="s2">/classification/pca/subtom_join_eigencoeffs&quot;</span>
+<span class="nv">eigcoeff_exec</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">exec_dir</span><span class="si">}</span><span class="s2">/classification/pca/subtom_join_eigencoeffs_pca&quot;</span>
 
 <span class="nv">par_eigvol_exec</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">exec_dir</span><span class="si">}</span><span class="s2">/classification/pca/subtom_parallel_eigenvolumes&quot;</span>
 
 <span class="nv">eigvol_exec</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">exec_dir</span><span class="si">}</span><span class="s2">/classification/pca/subtom_join_eigenvolumes&quot;</span>
 
-<span class="nv">preali_exec</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">exec_dir</span><span class="si">}</span><span class="s2">/classification/pca/subtom_parallel_prealign&quot;</span>
+<span class="nv">preali_exec</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">exec_dir</span><span class="si">}</span><span class="s2">/classification/general/subtom_parallel_prealign&quot;</span>
 
-<span class="nv">xmatrix_exec</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">exec_dir</span><span class="si">}</span><span class="s2">/classification/pca/subtom_parallel_xmatrix&quot;</span>
+<span class="nv">xmatrix_exec</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">exec_dir</span><span class="si">}</span><span class="s2">/classification/pca/subtom_parallel_xmatrix_pca&quot;</span>
 
 <span class="nv">svds_exec</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">exec_dir</span><span class="si">}</span><span class="s2">/classification/pca/subtom_svds&quot;</span>
 
-<span class="nv">sum_exec</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">exec_dir</span><span class="si">}</span><span class="s2">/classification/pca/subtom_parallel_sums&quot;</span>
+<span class="nv">sum_exec</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">exec_dir</span><span class="si">}</span><span class="s2">/classification/general/subtom_parallel_sums_cls&quot;</span>
 
-<span class="nv">avg_exec</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">exec_dir</span><span class="si">}</span><span class="s2">/classification/pca/subtom_weighted_average&quot;</span>
+<span class="nv">avg_exec</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">exec_dir</span><span class="si">}</span><span class="s2">/classification/general/subtom_weighted_average_cls&quot;</span>
 
 <span class="nv">motl_dump_exec</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">exec_dir</span><span class="si">}</span><span class="s2">/MOTL/motl_dump&quot;</span>
 
@@ -632,9 +620,15 @@ variable will be written as a string e.g.  ref_fn_prefix=’sub-directory/ref’
 
 <span class="nv">iteration</span><span class="o">=</span><span class="s2">&quot;1&quot;</span>
 
+<span class="nv">num_ccmatrix_prealign_batch</span><span class="o">=</span><span class="s2">&quot;1&quot;</span>
+
 <span class="nv">num_ccmatrix_batch</span><span class="o">=</span><span class="s2">&quot;1&quot;</span>
 
 <span class="nv">num_xmatrix_batch</span><span class="o">=</span><span class="s2">&quot;1&quot;</span>
+
+<span class="nv">num_eig_coeff_prealign_batch</span><span class="o">=</span><span class="s2">&quot;1&quot;</span>
+
+<span class="nv">num_eig_coeff_batch</span><span class="o">=</span><span class="s2">&quot;1&quot;</span>
 
 <span class="nv">num_avg_batch</span><span class="o">=</span><span class="s2">&quot;1&quot;</span>
 
@@ -646,7 +640,9 @@ variable will be written as a string e.g.  ref_fn_prefix=’sub-directory/ref’
 
 <span class="nv">low_pass_sigma</span><span class="o">=</span><span class="s2">&quot;3&quot;</span>
 
-<span class="nv">ccmatrix_nfold</span><span class="o">=</span><span class="s2">&quot;1&quot;</span>
+<span class="nv">nfold</span><span class="o">=</span><span class="s2">&quot;1&quot;</span>
+
+<span class="nv">tomo_row</span><span class="o">=</span><span class="s2">&quot;7&quot;</span>
 
 <span class="nv">ccmatrix_prealign</span><span class="o">=</span><span class="m">0</span>
 
@@ -658,11 +654,7 @@ variable will be written as a string e.g.  ref_fn_prefix=’sub-directory/ref’
 
 <span class="nv">weight_fn_prefix</span><span class="o">=</span><span class="s2">&quot;otherinputs/ampspec&quot;</span>
 
-<span class="nv">ccmatrix_fn_prefix</span><span class="o">=</span><span class="s2">&quot;pca/ccmatrix&quot;</span>
-
-<span class="nv">xmatrix_nfold</span><span class="o">=</span><span class="s2">&quot;1&quot;</span>
-
-<span class="nv">xmatrix_fn_prefix</span><span class="o">=</span><span class="s2">&quot;pca/xmatrix&quot;</span>
+<span class="nv">ccmatrix_fn_prefix</span><span class="o">=</span><span class="s2">&quot;class/ccmatrix_pca&quot;</span>
 
 <span class="nv">decomp_type</span><span class="o">=</span><span class="s1">&#39;svds&#39;</span>
 
@@ -678,25 +670,21 @@ variable will be written as a string e.g.  ref_fn_prefix=’sub-directory/ref’
 
 <span class="nv">svds_tolerance</span><span class="o">=</span><span class="s1">&#39;default&#39;</span>
 
-<span class="nv">eig_vec_fn_prefix</span><span class="o">=</span><span class="s2">&quot;pca/eigvec&quot;</span>
+<span class="nv">eig_vec_fn_prefix</span><span class="o">=</span><span class="s2">&quot;class/eigvec_pca&quot;</span>
 
-<span class="nv">eig_val_fn_prefix</span><span class="o">=</span><span class="s2">&quot;pca/eigval&quot;</span>
+<span class="nv">eig_val_fn_prefix</span><span class="o">=</span><span class="s2">&quot;class/eigval_pca&quot;</span>
 
-<span class="nv">eig_vol_fn_prefix</span><span class="o">=</span><span class="s2">&quot;pca/eigvol&quot;</span>
+<span class="nv">xmatrix_fn_prefix</span><span class="o">=</span><span class="s2">&quot;class/xmatrix_pca&quot;</span>
 
-<span class="nv">use_fast</span><span class="o">=</span><span class="s2">&quot;0&quot;</span>
-
-<span class="nv">use_eig_vec</span><span class="o">=</span><span class="s2">&quot;0&quot;</span>
+<span class="nv">eig_vol_fn_prefix</span><span class="o">=</span><span class="s2">&quot;class/eigvol_pca&quot;</span>
 
 <span class="nv">apply_weight</span><span class="o">=</span><span class="s2">&quot;0&quot;</span>
 
-<span class="nv">eigcoeff_prealign</span><span class="o">=</span><span class="s2">&quot;0&quot;</span>
+<span class="nv">eig_coeff_prealign</span><span class="o">=</span><span class="s2">&quot;0&quot;</span>
 
-<span class="nv">tomo_row</span><span class="o">=</span><span class="s2">&quot;7&quot;</span>
+<span class="nv">eig_coeff_all_motl_fn_prefix</span><span class="o">=</span><span class="s2">&quot;combinedmotl/allmotl&quot;</span>
 
-<span class="nv">eigcoeff_all_motl_fn_prefix</span><span class="o">=</span><span class="s2">&quot;combinedmotl/allmotl&quot;</span>
-
-<span class="nv">eig_coeff_fn_prefix</span><span class="o">=</span><span class="s2">&quot;pca/eigcoeff&quot;</span>
+<span class="nv">eig_coeff_fn_prefix</span><span class="o">=</span><span class="s2">&quot;class/eigcoeff_pca&quot;</span>
 
 <span class="nv">cluster_type</span><span class="o">=</span><span class="s2">&quot;kmeans&quot;</span>
 
@@ -704,11 +692,11 @@ variable will be written as a string e.g.  ref_fn_prefix=’sub-directory/ref’
 
 <span class="nv">num_classes</span><span class="o">=</span><span class="m">2</span>
 
-<span class="nv">cluster_all_motl_fn_prefix</span><span class="o">=</span><span class="s2">&quot;pca/allmotl&quot;</span>
+<span class="nv">cluster_all_motl_fn_prefix</span><span class="o">=</span><span class="s2">&quot;class/allmotl_pca&quot;</span>
 
-<span class="nv">ref_fn_prefix</span><span class="o">=</span><span class="s2">&quot;ref/ref&quot;</span>
+<span class="nv">ref_fn_prefix</span><span class="o">=</span><span class="s2">&quot;class/ref_pca&quot;</span>
 
-<span class="nv">weight_sum_fn_prefix</span><span class="o">=</span><span class="s2">&quot;otherinputs/wei&quot;</span>
+<span class="nv">weight_sum_fn_prefix</span><span class="o">=</span><span class="s2">&quot;class/wei_pca&quot;</span>
 </pre></div>
 </div>
 </div>
@@ -722,7 +710,7 @@ variable will be written as a string e.g.  ref_fn_prefix=’sub-directory/ref’
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../functions/subtom_cluster.html" class="btn btn-neutral float-right" title="subtom_cluster" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../functions/subtom_eigs.html" class="btn btn-neutral float-right" title="subtom_eigs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="../introduction.html" class="btn btn-neutral float-left" title="Principal Component Analysis Classification" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -734,7 +722,7 @@ variable will be written as a string e.g.  ref_fn_prefix=’sub-directory/ref’
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Dustin Reed Morado
+        &copy; Copyright 2019, Dustin Reed Morado
 
     </p>
   </div>

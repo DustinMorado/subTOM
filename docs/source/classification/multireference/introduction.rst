@@ -13,6 +13,6 @@ each subset do not change any more.
 
 Within subTOM a function ``subtom_rand_class_motl`` serves to initialize random
 classes and initial references if the user does not alread have them, and then
-the subTOM functions ``subtom_scan_angles_exact``, ``subtom_parallel_sums``,
-``subtom_weighted_average`` and ``subtom_compare_motls`` have been modified to
-fit the new modus of multireference classification and alignment.
+the subTOM functions ``subtom_scan_angles_exact_multiref``, and
+``subtom_compare_motls_multiref`` have been modified to fit the new modus of
+multireference classification and alignment.

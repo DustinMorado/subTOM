@@ -152,7 +152,7 @@ function transform_motl(varargin)
     shift_x = fn_parser.Results.shift_x;
 
     if ischar(shift_x)
-        shift_x = str2double(shift_x)
+        shift_x = str2double(shift_x);
     end
 
     try
@@ -167,7 +167,7 @@ function transform_motl(varargin)
     shift_y = fn_parser.Results.shift_y;
 
     if ischar(shift_y)
-        shift_y = str2double(shift_y)
+        shift_y = str2double(shift_y);
     end
 
     try
@@ -182,7 +182,7 @@ function transform_motl(varargin)
     shift_z = fn_parser.Results.shift_z;
 
     if ischar(shift_z)
-        shift_z = str2double(shift_z)
+        shift_z = str2double(shift_z);
     end
 
     try
@@ -197,7 +197,7 @@ function transform_motl(varargin)
     rotate_phi = fn_parser.Results.rotate_phi;
 
     if ischar(rotate_phi)
-        rotate_phi = str2double(rotate_phi)
+        rotate_phi = str2double(rotate_phi);
     end
 
     try
@@ -212,7 +212,7 @@ function transform_motl(varargin)
     rotate_psi = fn_parser.Results.rotate_psi;
 
     if ischar(rotate_psi)
-        rotate_psi = str2double(rotate_psi)
+        rotate_psi = str2double(rotate_psi);
     end
 
     try
@@ -227,7 +227,7 @@ function transform_motl(varargin)
     rotate_theta = fn_parser.Results.rotate_theta;
 
     if ischar(rotate_theta)
-        rotate_theta = str2double(rotate_theta)
+        rotate_theta = str2double(rotate_theta);
     end
 
     try

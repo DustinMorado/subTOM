@@ -23,20 +23,16 @@ subTOM: Principal Component Analysis
     :maxdepth: 1
     :caption: Links to Individual Function Documentation:
 
-    subtom_cluster <functions/subtom_cluster>
     subtom_eigs <functions/subtom_eigs>
     subtom_join_ccmatrix <functions/subtom_join_ccmatrix>
-    subtom_join_eigencoeffs <functions/subtom_join_eigencoeffs>
+    subtom_join_eigencoeffs_pca <functions/subtom_join_eigencoeffs_pca>
     subtom_join_eigenvolumes <functions/subtom_join_eigenvolumes>
     subtom_parallel_ccmatrix <functions/subtom_parallel_ccmatrix>
-    subtom_parallel_eigencoeffs <functions/subtom_parallel_eigencoeffs>
+    subtom_parallel_eigencoeffs_pca <functions/subtom_parallel_eigencoeffs_pca>
     subtom_parallel_eigenvolumes <functions/subtom_parallel_eigenvolumes>
-    subtom_parallel_prealign <functions/subtom_parallel_prealign>
-    subtom_parallel_sums <functions/subtom_parallel_sums>
-    subtom_parallel_xmatrix <functions/subtom_parallel_xmatrix>
+    subtom_parallel_xmatrix_pca <functions/subtom_parallel_xmatrix_pca>
     subtom_prepare_ccmatrix <functions/subtom_prepare_ccmatrix>
     subtom_svds <functions/subtom_svds>
-    subtom_weighted_average <functions/subtom_weighted_average>
 
 Indices and tables
 ==================

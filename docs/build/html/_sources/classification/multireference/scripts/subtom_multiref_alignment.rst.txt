@@ -7,11 +7,11 @@ and averages a collection of subvolumes, against multiple references.
 
 This subtomogram alignment script uses five MATLAB compiled scripts below:
 
-- :doc:`../functions/subtom_scan_angles_exact`
+- :doc:`../functions/subtom_scan_angles_exact_multiref`
 - :doc:`../../../functions/subtom_cat_motls`
-- :doc:`../functions/subtom_parallel_sums`
-- :doc:`../functions/subtom_weighted_average`
-- :doc:`../functions/subtom_compare_motls`
+- :doc:`../../general/functions/subtom_parallel_sums_cls`
+- :doc:`../../general/functions/subtom_weighted_average_cls`
+- :doc:`../functions/subtom_compare_motls_multiref`
 
 -------
 Options
@@ -264,15 +264,15 @@ Example
 
     exec_dir="/net/dstore2/teraraid/dmorado/software/subTOM/bin"
 
-    align_exec="${exec_dir}/classification/multiref/subtom_scan_angles_exact"
+    align_exec="${exec_dir}/classification/multiref/subtom_scan_angles_exact_multiref"
 
     cat_exec="${exec_dir}/MOTL/subtom_cat_motls"
 
-    sum_exec="${exec_dir}/classification/multiref/subtom_parallel_sums"
+    sum_exec="${exec_dir}/classification/general/subtom_parallel_sums_cls"
 
-    avg_exec="${exec_dir}/classification/multiref/subtom_weighted_average"
+    avg_exec="${exec_dir}/classification/general/subtom_weighted_average_cls"
 
-    compare_exec="${exec_dir}/classification/multiref/subtom_compare_motls"
+    compare_exec="${exec_dir}/classification/multiref/subtom_compare_motls_multiref"
 
     motl_dump_exec="${exec_dir}/MOTL/motl_dump"
 

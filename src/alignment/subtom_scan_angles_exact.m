@@ -568,6 +568,18 @@ function subtom_scan_angles_exact(varargin)
         align_mask = tom_spheremask(ones(box_size), radius, sigma);
     else
         align_mask = getfield(tom_emread(align_mask_fn), 'Value');
+
+        if ~all(size(align_mask) == box_size)
+            try
+                error('subTOM:volDimError', ...
+                    'scan_angles_exact:%s and %s %s.', ...
+                    align_mask_fn, check_fn, 'are not same size');
+
+            catch ME
+                fprintf(2, '%s - %s\n', ME.identifier, ME.message);
+                rethrow(ME);
+            end
+        end
     end
 
     % Read in CC mask if shifts are being refined

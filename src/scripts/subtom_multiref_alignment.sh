@@ -17,11 +17,11 @@
 # maximum per user.
 #
 # This subtomogram averaging script uses five MATLAB compiled scripts below:
-# - subtom_scan_angles_exact
+# - subtom_scan_angles_exact_multiref
 # - subtom_cat_motls
-# - subtom_parallel_sums
-# - subtom_weighted_average
-# - subtom_compare_motls
+# - subtom_parallel_sums_cls
+# - subtom_weighted_average_cls
+# - subtom_compare_motls_multiref
 # DRM 05-2019
 ################################################################################
 #                                 DIRECTORIES                                  #
@@ -46,19 +46,19 @@ exec_dir="XXXINSTALLATION_DIRXXX/bin"
 #                                  VARIABLES                                   #
 ################################################################################
 # Alignment executable
-align_exec="${exec_dir}/classification/multiref/subtom_scan_angles_exact"
+align_exec="${exec_dir}/classification/multiref/subtom_scan_angles_exact_multiref"
 
 # Concatenate MOTLs executable
 cat_exec="${exec_dir}/MOTL/subtom_cat_motls"
 
 # Parallel Summing executable
-sum_exec="${exec_dir}/classification/multiref/subtom_parallel_sums"
+sum_exec="${exec_dir}/classification/general/subtom_parallel_sums_cls"
 
 # Final Averaging executable
-avg_exec="${exec_dir}/classification/multiref/subtom_weighted_average"
+avg_exec="${exec_dir}/classification/general/subtom_weighted_average_cls"
 
 # Compare MOTLs executable
-compare_exec="${exec_dir}/classification/multiref/subtom_compare_motls"
+compare_exec="${exec_dir}/classification/multiref/subtom_compare_motls_multiref"
 
 # MOTL dump executable
 motl_dump_exec="${exec_dir}/MOTL/motl_dump"

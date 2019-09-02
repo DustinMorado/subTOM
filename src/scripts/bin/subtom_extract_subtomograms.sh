@@ -42,23 +42,6 @@ num_tomos=$("${motl_dump_exec}" \
     "${scratch_dir}/${all_motl_fn_prefix}_${iteration}.em" | \
     sort -n | uniq | wc -l)
 
-job_name="${job_name}_extract_tomo_array"
-
-if [[ -f "${job_name}" ]]
-then
-    rm -f "${job_name}"
-fi
-
-if [[ -f "error_${job_name}" ]]
-then
-    rm -f "error_${job_name}"
-fi
-
-if [[ -f "log_${job_name}" ]]
-then
-    rm -f "log_${job_name}"
-fi
-
 if [[ ${mem_free%G} -ge 48 ]]
 then
     dedmem=',dedicated=24'
@@ -74,15 +57,37 @@ fi
 #                            SUBTOMOGRAM EXTRACTION                            #
 #                                                                              #
 ################################################################################
-cat > "${job_name}" <<-JOBDATA
+job_name_="${job_name}_extract_subtomograms"
+script_fn="${job_name_}"
+
+if [[ -f "${script_fn}" ]]
+then
+    rm -f "${script_fn}"
+fi
+
+error_fn="error_${script_fn}"
+
+if [[ -f "${error_fn}" ]]
+then
+    rm -f "${error_fn}"
+fi
+
+log_fn="log_${script_fn}"
+
+if [[ -f "${log_fn}" ]]
+then
+    rm -f "${log_fn}"
+fi
+
+cat>"${script_fn}"<<-JOBDATA
 #!/bin/bash
-#$ -N "${job_name}"
+#$ -N "${script_fn}"
 #$ -S /bin/bash
 #$ -V
 #$ -cwd
 #$ -l mem_free=${mem_free},h_vmem=${mem_max}${dedmem}
-#$ -e "error_${job_name}"
-#$ -o "log_${job_name}"
+#$ -e "${error_fn}"
+#$ -o "${log_fn}"
 #$ -t 1-${num_tomos}
 set +C # Turn off prevention of redirection file overwriting
 set -e # Turn on exit on error
@@ -97,14 +102,11 @@ ldpath="XXXMCR_DIRXXX/runtime/glnxa64:\${ldpath}"
 export LD_LIBRARY_PATH="\${ldpath}"
 
 ###for SGE_TASK_ID in {1..${num_tomos}}; do
-    mcr_cache_dir="${mcr_cache_dir}/${job_name}_\${SGE_TASK_ID}"
+    mcr_cache_dir="${mcr_cache_dir}/${job_name_}_\${SGE_TASK_ID}"
 
-    if [[ ! -d "\${mcr_cache_dir}" ]]
+    if [[ -d "\${mcr_cache_dir}" ]]
     then
-        mkdir -p "\${mcr_cache_dir}"
-    else
         rm -rf "\${mcr_cache_dir}"
-        mkdir -p "\${mcr_cache_dir}"
     fi
 
     export MCR_CACHE_ROOT="\${mcr_cache_dir}"
@@ -137,26 +139,23 @@ export LD_LIBRARY_PATH="\${ldpath}"
         use_memmap \\
         "${use_memmap}"
 
-    rm -rf "\${mcr_cache_dir}"
-###done 2> "error_${job_name}" > "log_${job_name}"
+###done 2>"${error_fn}" >"${log_fn}"
 JOBDATA
 
-chmod u+x "${job_name}"
+echo -e "\nSTARTING - Parallel Volume Extraction - Iteration: ${iteration}\n"
+chmod u+x "${script_fn}"
 
 if [[ "${run_local}" -eq 1 ]]
 then
-    sed -i 's/\#\#\#//' "${job_name}"
-    "./${job_name}" &
+    sed -i 's/\#\#\#//' "${script_fn}"
+    "./${script_fn}" &
 else
-    qsub "${job_name}"
+    qsub "${script_fn}"
 fi
-
-echo "Parallel tomogram extraction submitted"
 
 ################################################################################
 #                       SUBTOMOGRAM EXTRACTION PROGRESS                        #
 ################################################################################
-
 if [[ "${reextract}" -eq 1 ]]
 then
     touch "${stats_dir}/empty_file"
@@ -183,27 +182,22 @@ do
             ".*/${stats_base}_[0-9]+.csv" | wc -l)
     fi
 
-    if [[ -f "error_${job_name}" ]]
+    if [[ -f "${error_fn}" ]]
     then
-        echo -e "\nERROR Update: Subtomogram Extraction\n"
-        tail "error_${job_name}"
+        echo -e "\nERROR Update: Volume Extraction - Iteration: ${iteration}\n"
+        tail "${error_fn}"
     fi
 
-    if [[ -f "log_${job_name}" ]]
+    if [[ -f "${log_fn}" ]]
     then
-        echo -e "\nLOG Update: Subtomogram Extraction\n"
-        tail "log_${job_name}"
+        echo -e "\nLOG Update: Volume Extraction - Iteration: ${iteration}\n"
+        tail "${log_fn}"
     fi
 
-    echo -e "\nSTATUS Update: Subtomogram Extraction\n"
+    echo -e "\nSTATUS Update: Volume Extraction - Iteration: ${iteration}\n"
     echo -e "\t${check_count} tomograms extracted out of ${num_tomos}\n"
     sleep 60s
 done
-
-if [[ -f ${stats_dir}/empty_file ]]
-then
-    rm "${stats_dir}/empty_file"
-fi
 
 ################################################################################
 #                       SUBTOMOGRAM EXTRACTION CLEAN UP                        #
@@ -213,19 +207,27 @@ then
     mkdir extract_tomo
 fi
 
-if [[ -f "${job_name}" ]]
+if [[ -f "${script_fn}" ]]
 then
-    mv "${job_name}" extract_tomo/.
+    mv "${script_fn}" extract_tomo/.
 fi
 
-if [[ -f "log_${job_name}" ]]
+if [[ -f "${log_fn}" ]]
 then
-    mv "log_${job_name}" extract_tomo/.
+    mv "${log_fn}" extract_tomo/.
 fi
 
-if [[ -f "error_${job_name}" ]]
+if [[ -f "${error_fn}" ]]
 then
-    mv "error_${job_name}" extract_tomo/.
+    mv "${error_fn}" extract_tomo/.
+fi
+
+find "${mcr_cache_dir}" -regex ".*/${job_name_}_[0-9]+" -print0 |\
+    xargs -0 -I {} rm -rf -- {}
+
+if [[ -f ${stats_dir}/empty_file ]]
+then
+    rm "${stats_dir}/empty_file"
 fi
 
 if [[ ! -f subTOM_protocol.md ]]

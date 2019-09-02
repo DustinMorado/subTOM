@@ -58,17 +58,14 @@ ldpath="${ldpath}:XXXMCR_DIRXXX/sys/os/glnxa64"
 ldpath="${ldpath}:XXXMCR_DIRXXX/sys/opengl/lib/glnxa64"
 export LD_LIBRARY_PATH="${ldpath}"
 
-mcr_cache_dir="${mcr_cache_dir}/cat_motls"
+mcr_cache_dir_="${mcr_cache_dir}/cat_motls"
 
-if [[ ! -d "${mcr_cache_dir}" ]]
+if [[ -d "${mcr_cache_dir_}" ]]
 then
-    mkdir -p "${mcr_cache_dir}"
-else
-    rm -rf "${mcr_cache_dir}"
-    mkdir -p "${mcr_cache_dir}"
+    rm -rf "${mcr_cache_dir_}"
 fi
 
-export MCR_CACHE_ROOT="${mcr_cache_dir}"
+export MCR_CACHE_ROOT="${mcr_cache_dir_}"
 
 "${cat_motls_exec}" \
     write_motl \
@@ -85,7 +82,7 @@ export MCR_CACHE_ROOT="${mcr_cache_dir}"
     "${do_quiet}" \
     ${input_motl_fns_[*]}
 
-rm -rf "${mcr_cache_dir}"
+rm -rf "${mcr_cache_dir_}"
 
 if [[ ! -f subTOM_protocol.md ]]
 then

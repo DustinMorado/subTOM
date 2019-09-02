@@ -32,9 +32,9 @@ function subtom_eigs(varargin)
     % defaults we create an input parser to allow for the options to be put in
     % an arbitrary order if at all.
     fn_parser = inputParser;
-    addParameter(fn_parser, 'ccmatrix_fn_prefix', 'pca/ccmatrix');
-    addParameter(fn_parser, 'eig_vec_fn_prefix', 'pca/eigvec');
-    addParameter(fn_parser, 'eig_val_fn_prefix', 'pca/eigval');
+    addParameter(fn_parser, 'ccmatrix_fn_prefix', 'class/ccmatrix_pca');
+    addParameter(fn_parser, 'eig_vec_fn_prefix', 'class/eigvec_pca');
+    addParameter(fn_parser, 'eig_val_fn_prefix', 'class/eigval_pca');
     addParameter(fn_parser, 'iteration', 1);
     addParameter(fn_parser, 'num_eigs', 40);
     addParameter(fn_parser, 'eigs_iterations', 'default');
@@ -255,4 +255,13 @@ function subtom_eigs(varargin)
 
     tom_emwrite(eig_val_fn, sorted_eig_val);
     subtom_check_em_file(eig_val_fn, sorted_eig_val);
+
+    % Write out the fast version of the Eigencoefficients, which comes from
+    % Equation (5) in the Borland 90' paper.
+    eig_vec_coeffs = sorted_eig_vec * diag(sqrt(abs(sorted_eig_val)));
+    eig_vec_coeffs_fn = sprintf('%s_eigcoeffs_%d.em', eig_vec_fn_prefix, ...
+        iteration);
+
+    tom_emwrite(eig_vec_coeffs_fn, eig_vec_coeffs);
+    subtom_check_em_file(eig_vec_coeffs_fn, eig_vec_coeffs);
 end

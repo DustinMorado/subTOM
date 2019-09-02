@@ -43,7 +43,7 @@ function subtom_parallel_ccmatrix(varargin)
     % an arbitrary order if at all.
     fn_parser = inputParser;
     addParameter(fn_parser, 'all_motl_fn_prefix', 'combinedmotl/allmotl');
-    addParameter(fn_parser, 'ccmatrix_fn_prefix', 'pca/ccmatrix');
+    addParameter(fn_parser, 'ccmatrix_fn_prefix', 'class/ccmatrix_pca');
     addParameter(fn_parser, 'weight_fn_prefix', 'otherinputs/ampspec');
     addParameter(fn_parser, 'ptcl_fn_prefix', 'subtomograms/subtomo');
     addParameter(fn_parser, 'mask_fn', 'none');

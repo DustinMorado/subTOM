@@ -24,7 +24,7 @@ function subtom_prepare_ccmatrix(varargin)
     % an arbitrary order if at all.
     fn_parser = inputParser;
     addParameter(fn_parser, 'all_motl_fn_prefix', 'combinedmotl/allmotl');
-    addParameter(fn_parser, 'ccmatrix_fn_prefix', 'pca/ccmatrix');
+    addParameter(fn_parser, 'ccmatrix_fn_prefix', 'class/ccmatrix_pca');
     addParameter(fn_parser, 'iteration', '1');
     addParameter(fn_parser, 'num_ccmatrix_batch', '1');
     parse(fn_parser, varargin{:});

@@ -2,26 +2,25 @@
 subtom_pca
 ==========
 
-The main PCA pipeline process script of subTOM. Iteratively aligns
-and averages a collection of subvolumes, against multiple references.
+The main PCA pipeline process script of subTOM.
 
 This subtomogram classification script uses fourteen MATLAB compiled scripts
 below:
 
-- :doc:`../functions/subtom_parallel_prealign`
+- :doc:`../../general/functions/subtom_parallel_prealign`
 - :doc:`../functions/subtom_prepare_ccmatrix`
 - :doc:`../functions/subtom_parallel_ccmatrix`
 - :doc:`../functions/subtom_join_ccmatrix`
 - :doc:`../functions/subtom_eigs`
 - :doc:`../functions/subtom_svds`
-- :doc:`../functions/subtom_parallel_xmatrix`
+- :doc:`../functions/subtom_parallel_xmatrix_pca`
 - :doc:`../functions/subtom_parallel_eigenvolumes`
 - :doc:`../functions/subtom_join_eigenvolumes`
-- :doc:`../functions/subtom_parallel_eigencoeffs`
-- :doc:`../functions/subtom_join_eigencoeffs`
-- :doc:`../functions/subtom_cluster`
-- :doc:`../functions/subtom_parallel_sums`
-- :doc:`../functions/subtom_weighted_average`
+- :doc:`../functions/subtom_parallel_eigencoeffs_pca`
+- :doc:`../functions/subtom_join_eigencoeffs_pca`
+- :doc:`../../general/functions/subtom_cluster`
+- :doc:`../../general/functions/subtom_parallel_sums_cls`
+- :doc:`../../general/functions/subtom_weighted_average_cls`
 
 -------
 Options
@@ -144,13 +143,26 @@ iteration
   The index of the references to generate : input will be
   all_motl_fn_prefix_iteration.em (define as integer e.g. iteration=1)
 
+num_ccmatrix_prealign_batch
+  Number of batches to split the parallel particle prealignment for the
+  CC-Matrix calculation into. If you are not doing prealignment you can ignore
+  this option.
+
 num_ccmatrix_batch
   Number of batches to split the parallel CC-Matrix calculation job into.
 
 num_xmatrix_batch
   Number of batches to split the parallel X-Matrix calculation job into. This
-  also determines the number of batches the Eigenvolumes, and Eigencoefficients
-  calculations will be split into.
+  also determines the number of batches the Eigenvolumes calculation will be
+  split into.
+
+num_eig_coeff_prealign_batch
+  Number of batches to split the parallel particle prealignment for the
+  Eigencoefficients calculations into. If you are not doing prealignment you can
+  ignore this option.
+
+num_eig_coeff_batch
+  Number of batches to split the parallel Eigencoefficient calculation into.
 
 num_avg_batch
   The number of batches to split the parallel subtomogram averaging job into.
@@ -177,10 +189,16 @@ low_pass_sigma
   Low pass filter falloff sigma (in transform units (pixels): describes a
   Gaussian sigma for the falloff of the low-pass filter past the cutoff above.
 
-ccmatrix_nfold
+nfold
   Symmetry to apply to each pair of particle and reference in CC-Matrix
   calculation, if no symmetry ccmatrix_nfold=1 (define as integer e.g.
   ccmatrix_nfold=3)
+
+tomo_row
+  Which row in the motl file contains the correct tomogram number.
+  Usually row 5 and 7 both correspond to the correct value and can be used
+  interchangeably, but there are instances when 5 contains a sequential ordered
+  value starting from 1, while 7 contains the correct corresponding tomogram.
 
 ccmatrix_prealign
   If you want to pre-align all of the particles to speed up the CC-Matrix
@@ -210,20 +228,6 @@ weight_fn_prefix
 
 ccmatrix_fn_prefix
   Relative path and name of the CC-Matrix.
-
-X-Matrix Options
-----------------
-
-xmatrix_nfold
-  Symmetry to apply to each pair of particle and reference in X-Matrix
-  calculation, This will affect the symmetry of the Eigenvolumes as well, if no
-  symmetry nfold=1 (define as integer e.g. nfold=3)
-
-X-Matrix File Options
----------------------
-
-xmatrix_fn_prefix
-  Relative path and name of the X-Matrix.
 
 Eigendecomposition Options
 --------------------------
@@ -276,6 +280,12 @@ eig_vec_fn_prefix
 eig_val_fn_prefix
   Relative path and name of the Eigenvalues (or Singular Values).
 
+X-Matrix File Options
+---------------------
+
+xmatrix_fn_prefix
+  Relative path and name of the X-Matrix.
+
 Eigenvolumes File Options
 -------------------------
 
@@ -285,38 +295,20 @@ eig_vol_fn_prefix
 Eigencoefficient Options
 ------------------------
 
-use_fast
-  If the following is set to 1, then a very fast-approximation of the
-  Eigencoefficients will be calculated using the transition formulas. This
-  option requires that the coeff_all_motl_fn_prefix be identical to
-  ccmatrix_all_motl_fn_prefix.
-
-use_eig_vec
-  If the following is set to 1, then the conjugate-space Eigenvectors will be
-  used in place of the Eigenvolumes to calculate the Eigencoefficients. This
-  should be identical to the results using Eigenvolumes, but is here just
-  in-case.
-
 apply_weight
   If the following is set to 1, the Eigenvolume (or conjugate-space Eigenvector)
   will have the particles missing-wedge weight applied to it before the
   Correlation is calculated.
 
-eigcoeff_prealign
+eig_coeff_prealign
   If you want to pre-align all of the particles to speed up the Eigencoefficient
   calculation, set the following to 1, otherwise the particles will be aligned
   during the computation.
 
-tomo_row
-  Which row in the motl file contains the correct tomogram number.
-  Usually row 5 and 7 both correspond to the correct value and can be used
-  interchangeably, but there are instances when 5 contains a sequential ordered
-  value starting from 1, while 7 contains the correct corresponding tomogram.
-
 Eigencoefficient File Options
 -----------------------------
 
-eigcoeff_all_motl_fn_prefix
+eig_coeff_all_motl_fn_prefix
   Relative path and name of the concatenated motivelist to project onto the
   Eigenvolumes (conjugate-space Eigenvectors). This can be a larger motivelist
   than the one used to calculate the CC-Matrix and Eigenvolumes.
@@ -335,10 +327,10 @@ cluster_type
 
 eig_idxs
   Determines which Eigencoefficients are used to cluster. The format should be a
-  comma-separated list that also supports ranges with a dash (-), for example
-  1-5,7,15-19 would select the first five Eigencoefficients, the seventh and the
-  fifteenth through the nineteenth for classification. If it is left as "all"
-  all coefficients will be used.
+  semicolon-separated list that also supports ranges with a dash (-), for
+  example 1-5;7;15-19 would select the first five Eigencoefficients, the seventh
+  and the fifteenth through the nineteenth for classification. If it is left as
+  "all" all coefficients will be used.
 
 num_classes
   How many classes should the particles be clustered into.
@@ -374,7 +366,7 @@ Example
 
     exec_dir="XXXINSTALLATION_DIRXXX/bin"
 
-    cluster_exec="${exec_dir}/classification/pca/subtom_cluster"
+    cluster_exec="${exec_dir}/classification/general/subtom_cluster"
 
     eigs_exec="${exec_dir}/classification/pca/subtom_eigs"
 
@@ -384,23 +376,23 @@ Example
 
     ccmatrix_exec="${exec_dir}/classification/pca/subtom_join_ccmatrix"
 
-    par_eigcoeff_exec="${exec_dir}/classification/pca/subtom_parallel_eigencoeffs"
+    par_eigcoeff_exec="${exec_dir}/classification/pca/subtom_parallel_eigencoeffs_pca"
 
-    eigcoeff_exec="${exec_dir}/classification/pca/subtom_join_eigencoeffs"
+    eigcoeff_exec="${exec_dir}/classification/pca/subtom_join_eigencoeffs_pca"
 
     par_eigvol_exec="${exec_dir}/classification/pca/subtom_parallel_eigenvolumes"
 
     eigvol_exec="${exec_dir}/classification/pca/subtom_join_eigenvolumes"
 
-    preali_exec="${exec_dir}/classification/pca/subtom_parallel_prealign"
+    preali_exec="${exec_dir}/classification/general/subtom_parallel_prealign"
 
-    xmatrix_exec="${exec_dir}/classification/pca/subtom_parallel_xmatrix"
+    xmatrix_exec="${exec_dir}/classification/pca/subtom_parallel_xmatrix_pca"
 
     svds_exec="${exec_dir}/classification/pca/subtom_svds"
 
-    sum_exec="${exec_dir}/classification/pca/subtom_parallel_sums"
+    sum_exec="${exec_dir}/classification/general/subtom_parallel_sums_cls"
 
-    avg_exec="${exec_dir}/classification/pca/subtom_weighted_average"
+    avg_exec="${exec_dir}/classification/general/subtom_weighted_average_cls"
 
     motl_dump_exec="${exec_dir}/MOTL/motl_dump"
 
@@ -420,9 +412,15 @@ Example
 
     iteration="1"
 
+    num_ccmatrix_prealign_batch="1"
+
     num_ccmatrix_batch="1"
 
     num_xmatrix_batch="1"
+
+    num_eig_coeff_prealign_batch="1"
+
+    num_eig_coeff_batch="1"
 
     num_avg_batch="1"
 
@@ -434,7 +432,9 @@ Example
 
     low_pass_sigma="3"
 
-    ccmatrix_nfold="1"
+    nfold="1"
+
+    tomo_row="7"
 
     ccmatrix_prealign=0
 
@@ -446,11 +446,7 @@ Example
 
     weight_fn_prefix="otherinputs/ampspec"
 
-    ccmatrix_fn_prefix="pca/ccmatrix"
-
-    xmatrix_nfold="1"
-
-    xmatrix_fn_prefix="pca/xmatrix"
+    ccmatrix_fn_prefix="class/ccmatrix_pca"
 
     decomp_type='svds'
 
@@ -466,25 +462,21 @@ Example
 
     svds_tolerance='default'
 
-    eig_vec_fn_prefix="pca/eigvec"
+    eig_vec_fn_prefix="class/eigvec_pca"
 
-    eig_val_fn_prefix="pca/eigval"
+    eig_val_fn_prefix="class/eigval_pca"
 
-    eig_vol_fn_prefix="pca/eigvol"
+    xmatrix_fn_prefix="class/xmatrix_pca"
 
-    use_fast="0"
-
-    use_eig_vec="0"
+    eig_vol_fn_prefix="class/eigvol_pca"
 
     apply_weight="0"
 
-    eigcoeff_prealign="0"
+    eig_coeff_prealign="0"
 
-    tomo_row="7"
+    eig_coeff_all_motl_fn_prefix="combinedmotl/allmotl"
 
-    eigcoeff_all_motl_fn_prefix="combinedmotl/allmotl"
-
-    eig_coeff_fn_prefix="pca/eigcoeff"
+    eig_coeff_fn_prefix="class/eigcoeff_pca"
 
     cluster_type="kmeans"
 
@@ -492,8 +484,8 @@ Example
 
     num_classes=2
 
-    cluster_all_motl_fn_prefix="pca/allmotl"
+    cluster_all_motl_fn_prefix="class/allmotl_pca"
 
-    ref_fn_prefix="ref/ref"
+    ref_fn_prefix="class/ref_pca"
 
-    weight_sum_fn_prefix="otherinputs/wei"
+    weight_sum_fn_prefix="class/wei_pca"

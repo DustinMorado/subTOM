@@ -35,8 +35,8 @@ function subtom_rand_class_motl(varargin)
     if isempty(input_motl_fn)
         try
             error('subTOM:missingRequired', ...
-                'rand_class_motl:Parameter %s is required.', ...
-                'input_motl_fn');
+                'rand_class_motl:Parameter %s is required.', 'input_motl_fn');
+
         catch ME
             fprintf(2, '%s - %s\n', ME.identifier, ME.message);
             rethrow(ME);
@@ -47,6 +47,7 @@ function subtom_rand_class_motl(varargin)
         try
             error('subTOM:missingFileError', ...
                 'rand_class_motl:File %s does not exist.', input_motl_fn);
+
         catch ME
             fprintf(2, '%s - %s\n', ME.identifier, ME.message);
             rethrow(ME);
@@ -71,8 +72,8 @@ function subtom_rand_class_motl(varargin)
     if isempty(output_motl_fn)
         try
             error('subTOM:missingRequired', ...
-                'rand_class_motl:Parameter %s is required.', ...
-                'output_motl_fn');
+                'rand_class_motl:Parameter %s is required.', 'output_motl_fn');
+
         catch ME
             fprintf(2, '%s - %s\n', ME.identifier, ME.message);
             rethrow(ME);

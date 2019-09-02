@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>subtom_multiref_alignment &mdash; subTOM 1.0.3 documentation</title>
+  <title>subtom_multiref_alignment &mdash; subTOM 1.1.0 documentation</title>
   
 
   
@@ -36,7 +36,7 @@
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="subtom_multiref_average" href="subtom_multiref_average.html" />
+    <link rel="next" title="subtom_multiref_initialize" href="subtom_multiref_initialize.html" />
     <link rel="prev" title="Multireference Classification" href="../introduction.html" /> 
 </head>
 
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                1.0
+                1.1
               </div>
             
           
@@ -136,6 +136,8 @@
 </ul>
 <p class="caption"><span class="caption-text">Classification Documentation:</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../general/index.html">General Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../msa/index.html">MSA</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Multireference</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../introduction.html">Introduction</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">subtom_multiref_alignment.sh</a><ul>
@@ -153,18 +155,16 @@
 <li class="toctree-l3"><a class="reference internal" href="#example">Example</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="subtom_multiref_average.html">subtom_multiref_average.sh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="subtom_multiref_initialize.html">subtom_multiref_initialize.sh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="subtom_multiref_rand_class_motl.html">subtom_multiref_rand_class_motl.sh</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../functions/subtom_compare_motls.html">subtom_compare_motls.m</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../functions/subtom_parallel_sums.html">subtom_parallel_sums.m</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../functions/subtom_compare_motls_multiref.html">subtom_compare_motls_multiref.m</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../functions/subtom_rand_class_motl.html">subtom_rand_class_motl.m</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../functions/subtom_scan_angles_exact.html">subtom_scan_angles_exact.m</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../functions/subtom_weighted_average.html">subtom_weighted_average.m</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../functions/subtom_scan_angles_exact_multiref.html">subtom_scan_angles_exact_multiref.m</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../index.html#indices-and-tables">Indices and tables</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../pca/index.html">PCA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../wmd/index.html">WMD</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Analysis Documentation:</span></p>
 <ul>
@@ -241,11 +241,11 @@
 and averages a collection of subvolumes, against multiple references.</p>
 <p>This subtomogram alignment script uses five MATLAB compiled scripts below:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="../functions/subtom_scan_angles_exact.html"><span class="doc">subtom_scan_angles_exact</span></a></p></li>
+<li><p><a class="reference internal" href="../functions/subtom_scan_angles_exact_multiref.html"><span class="doc">subtom_scan_angles_exact_multiref</span></a></p></li>
 <li><p><a class="reference internal" href="../../../functions/subtom_cat_motls.html"><span class="doc">subtom_cat_motls</span></a></p></li>
-<li><p><a class="reference internal" href="../functions/subtom_parallel_sums.html"><span class="doc">subtom_parallel_sums</span></a></p></li>
-<li><p><a class="reference internal" href="../functions/subtom_weighted_average.html"><span class="doc">subtom_weighted_average</span></a></p></li>
-<li><p><a class="reference internal" href="../functions/subtom_compare_motls.html"><span class="doc">subtom_compare_motls</span></a></p></li>
+<li><p><a class="reference internal" href="../../general/functions/subtom_parallel_sums_cls.html"><span class="doc">subtom_parallel_sums_cls</span></a></p></li>
+<li><p><a class="reference internal" href="../../general/functions/subtom_weighted_average_cls.html"><span class="doc">subtom_weighted_average_cls</span></a></p></li>
+<li><p><a class="reference internal" href="../functions/subtom_compare_motls_multiref.html"><span class="doc">subtom_compare_motls_multiref</span></a></p></li>
 </ul>
 <div class="section" id="options">
 <h2>Options<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h2>
@@ -461,15 +461,15 @@ These particles will still be aligned at each iteration.</p>
 
 <span class="nv">exec_dir</span><span class="o">=</span><span class="s2">&quot;/net/dstore2/teraraid/dmorado/software/subTOM/bin&quot;</span>
 
-<span class="nv">align_exec</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">exec_dir</span><span class="si">}</span><span class="s2">/classification/multiref/subtom_scan_angles_exact&quot;</span>
+<span class="nv">align_exec</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">exec_dir</span><span class="si">}</span><span class="s2">/classification/multiref/subtom_scan_angles_exact_multiref&quot;</span>
 
 <span class="nv">cat_exec</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">exec_dir</span><span class="si">}</span><span class="s2">/MOTL/subtom_cat_motls&quot;</span>
 
-<span class="nv">sum_exec</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">exec_dir</span><span class="si">}</span><span class="s2">/classification/multiref/subtom_parallel_sums&quot;</span>
+<span class="nv">sum_exec</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">exec_dir</span><span class="si">}</span><span class="s2">/classification/general/subtom_parallel_sums_cls&quot;</span>
 
-<span class="nv">avg_exec</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">exec_dir</span><span class="si">}</span><span class="s2">/classification/multiref/subtom_weighted_average&quot;</span>
+<span class="nv">avg_exec</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">exec_dir</span><span class="si">}</span><span class="s2">/classification/general/subtom_weighted_average_cls&quot;</span>
 
-<span class="nv">compare_exec</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">exec_dir</span><span class="si">}</span><span class="s2">/classification/multiref/subtom_compare_motls&quot;</span>
+<span class="nv">compare_exec</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">exec_dir</span><span class="si">}</span><span class="s2">/classification/multiref/subtom_compare_motls_multiref&quot;</span>
 
 <span class="nv">motl_dump_exec</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">exec_dir</span><span class="si">}</span><span class="s2">/MOTL/motl_dump&quot;</span>
 
@@ -556,7 +556,7 @@ These particles will still be aligned at each iteration.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="subtom_multiref_average.html" class="btn btn-neutral float-right" title="subtom_multiref_average" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="subtom_multiref_initialize.html" class="btn btn-neutral float-right" title="subtom_multiref_initialize" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="../introduction.html" class="btn btn-neutral float-left" title="Multireference Classification" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -568,7 +568,7 @@ These particles will still be aligned at each iteration.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Dustin Reed Morado
+        &copy; Copyright 2019, Dustin Reed Morado
 
     </p>
   </div>

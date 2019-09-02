@@ -9,10 +9,10 @@ Computes projections of data onto Eigenvectors.
     subtom_parallel_eigenvolumes(
         'all_motl_fn_prefix', all_motl_fn_prefix ('combinedmotl/allmotl'),
         'ptcl_fn_prefix', ptcl_fn_prefix ('subtomograms/subtomo'),
-        'eig_vec_fn_prefix', eig_vec_fn_prefix ('pca/eigvec'),
-        'eig_val_fn_prefix', eig_val_fn_prefix ('pca/eigval'),
-        'xmatrix_fn_prefix', xmatrix_fn_prefix ('pca/xmatrix'),
-        'eig_vol_fn_prefix', eig_vol_fn_prefix ('pca/eigvol'),
+        'eig_vec_fn_prefix', eig_vec_fn_prefix ('class/eigvec_pca'),
+        'eig_val_fn_prefix', eig_val_fn_prefix ('class/eigval_pca'),
+        'xmatrix_fn_prefix', xmatrix_fn_prefix ('class/xmatrix_pca'),
+        'eig_vol_fn_prefix', eig_vol_fn_prefix ('class/eigvol_pca'),
         'mask_fn', mask_fn ('none'),
         'iteration', iteration (1),
         'num_xmatrix_batch', num_xmatrix_batch (1),
@@ -41,10 +41,10 @@ Example
     subtom_parallel_eigenvolumes(
         'all_motl_fn_prefix', 'combinedmotl/allmotl', ...
         'ptcl_fn_prefix', 'subtomograms/subtomo', ...
-        'eig_vec_fn_prefix', 'pca/eigvec', ...
-        'eig_val_fn_prefix', 'pca/eigval', ...
-        'xmatrix_fn_prefix', 'pca/xmatrix', ...
-        'eig_vol_fn_prefix', 'pca/eigvol', ...
+        'eig_vec_fn_prefix', 'class/eigvec', ...
+        'eig_val_fn_prefix', 'class/eigval', ...
+        'xmatrix_fn_prefix', 'class/xmatrix', ...
+        'eig_vol_fn_prefix', 'class/eigvol', ...
         'mask_fn', 'otherinputs/classification_mask.em', ...
         'iteration', 1, ...
         'num_xmatrix_batch', 100, ...
@@ -54,16 +54,12 @@ Example
 See Also
 --------
 
-* :doc:`subtom_cluster`
 * :doc:`subtom_eigs`
 * :doc:`subtom_join_ccmatrix`
-* :doc:`subtom_join_eigencoeffs`
+* :doc:`subtom_join_eigencoeffs_pca`
 * :doc:`subtom_join_eigenvolumes`
 * :doc:`subtom_parallel_ccmatrix`
-* :doc:`subtom_parallel_eigencoeffs`
-* :doc:`subtom_parallel_prealign`
-* :doc:`subtom_parallel_sums`
-* :doc:`subtom_parallel_xmatrix`
+* :doc:`subtom_parallel_eigencoeffs_pca`
+* :doc:`subtom_parallel_xmatrix_pca`
 * :doc:`subtom_prepare_ccmatrix`
 * :doc:`subtom_svds`
-* :doc:`subtom_weighted_average`

@@ -33,7 +33,5 @@ Example
 See Also
 --------
 
-* :doc:`subtom_compare_motls`
-* :doc:`subtom_parallel_sums`
-* :doc:`subtom_scan_angles_exact`
-* :doc:`subtom_weighted_average`
+* :doc:`subtom_compare_motls_multiref`
+* :doc:`subtom_scan_angles_exact_multiref`

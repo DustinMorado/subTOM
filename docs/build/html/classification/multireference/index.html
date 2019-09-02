@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>subTOM: Multireference &mdash; subTOM 1.0.3 documentation</title>
+  <title>subTOM: Multireference &mdash; subTOM 1.1.0 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Multireference Classification" href="introduction.html" />
-    <link rel="prev" title="subtom_weighted_average" href="../../functions/subtom_weighted_average.html" /> 
+    <link rel="prev" title="subtom_parallel_xmatrix_msa" href="../msa/functions/subtom_parallel_xmatrix_msa.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                1.0
+                1.1
               </div>
             
           
@@ -136,21 +136,21 @@
 </ul>
 <p class="caption"><span class="caption-text">Classification Documentation:</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../general/index.html">General Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../msa/index.html">MSA</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Multireference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="introduction.html">Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="scripts/subtom_multiref_alignment.html">subtom_multiref_alignment.sh</a></li>
-<li class="toctree-l2"><a class="reference internal" href="scripts/subtom_multiref_average.html">subtom_multiref_average.sh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="scripts/subtom_multiref_initialize.html">subtom_multiref_initialize.sh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="scripts/subtom_multiref_rand_class_motl.html">subtom_multiref_rand_class_motl.sh</a></li>
-<li class="toctree-l2"><a class="reference internal" href="functions/subtom_compare_motls.html">subtom_compare_motls.m</a></li>
-<li class="toctree-l2"><a class="reference internal" href="functions/subtom_parallel_sums.html">subtom_parallel_sums.m</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functions/subtom_compare_motls_multiref.html">subtom_compare_motls_multiref.m</a></li>
 <li class="toctree-l2"><a class="reference internal" href="functions/subtom_rand_class_motl.html">subtom_rand_class_motl.m</a></li>
-<li class="toctree-l2"><a class="reference internal" href="functions/subtom_scan_angles_exact.html">subtom_scan_angles_exact.m</a></li>
-<li class="toctree-l2"><a class="reference internal" href="functions/subtom_weighted_average.html">subtom_weighted_average.m</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functions/subtom_scan_angles_exact_multiref.html">subtom_scan_angles_exact_multiref.m</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../pca/index.html">PCA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../wmd/index.html">WMD</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Analysis Documentation:</span></p>
 <ul>
@@ -231,7 +231,6 @@
 <p class="caption"><span class="caption-text">Links to Individual Script Documentation:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="scripts/subtom_multiref_alignment.html">subtom_multiref_alignment.sh</a></li>
-<li class="toctree-l1"><a class="reference internal" href="scripts/subtom_multiref_average.html">subtom_multiref_average.sh</a></li>
 <li class="toctree-l1"><a class="reference internal" href="scripts/subtom_multiref_initialize.html">subtom_multiref_initialize.sh</a></li>
 <li class="toctree-l1"><a class="reference internal" href="scripts/subtom_multiref_rand_class_motl.html">subtom_multiref_rand_class_motl.sh</a></li>
 </ul>
@@ -239,11 +238,9 @@
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Links to Individual Function Documentation:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="functions/subtom_compare_motls.html">subtom_compare_motls.m</a></li>
-<li class="toctree-l1"><a class="reference internal" href="functions/subtom_parallel_sums.html">subtom_parallel_sums.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functions/subtom_compare_motls_multiref.html">subtom_compare_motls_multiref.m</a></li>
 <li class="toctree-l1"><a class="reference internal" href="functions/subtom_rand_class_motl.html">subtom_rand_class_motl.m</a></li>
-<li class="toctree-l1"><a class="reference internal" href="functions/subtom_scan_angles_exact.html">subtom_scan_angles_exact.m</a></li>
-<li class="toctree-l1"><a class="reference internal" href="functions/subtom_weighted_average.html">subtom_weighted_average.m</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functions/subtom_scan_angles_exact_multiref.html">subtom_scan_angles_exact_multiref.m</a></li>
 </ul>
 </div>
 <div class="section" id="indices-and-tables">
@@ -267,7 +264,7 @@
         <a href="introduction.html" class="btn btn-neutral float-right" title="Multireference Classification" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../../functions/subtom_weighted_average.html" class="btn btn-neutral float-left" title="subtom_weighted_average" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../msa/functions/subtom_parallel_xmatrix_msa.html" class="btn btn-neutral float-left" title="subtom_parallel_xmatrix_msa" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -276,7 +273,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Dustin Reed Morado
+        &copy; Copyright 2019, Dustin Reed Morado
 
     </p>
   </div>

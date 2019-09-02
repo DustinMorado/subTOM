@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Multireference Classification &mdash; subTOM 1.0.3 documentation</title>
+  <title>Multireference Classification &mdash; subTOM 1.1.0 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                1.0
+                1.1
               </div>
             
           
@@ -136,21 +136,21 @@
 </ul>
 <p class="caption"><span class="caption-text">Classification Documentation:</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../general/index.html">General Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../msa/index.html">MSA</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Multireference</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="scripts/subtom_multiref_alignment.html">subtom_multiref_alignment.sh</a></li>
-<li class="toctree-l2"><a class="reference internal" href="scripts/subtom_multiref_average.html">subtom_multiref_average.sh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="scripts/subtom_multiref_initialize.html">subtom_multiref_initialize.sh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="scripts/subtom_multiref_rand_class_motl.html">subtom_multiref_rand_class_motl.sh</a></li>
-<li class="toctree-l2"><a class="reference internal" href="functions/subtom_compare_motls.html">subtom_compare_motls.m</a></li>
-<li class="toctree-l2"><a class="reference internal" href="functions/subtom_parallel_sums.html">subtom_parallel_sums.m</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functions/subtom_compare_motls_multiref.html">subtom_compare_motls_multiref.m</a></li>
 <li class="toctree-l2"><a class="reference internal" href="functions/subtom_rand_class_motl.html">subtom_rand_class_motl.m</a></li>
-<li class="toctree-l2"><a class="reference internal" href="functions/subtom_scan_angles_exact.html">subtom_scan_angles_exact.m</a></li>
-<li class="toctree-l2"><a class="reference internal" href="functions/subtom_weighted_average.html">subtom_weighted_average.m</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functions/subtom_scan_angles_exact_multiref.html">subtom_scan_angles_exact_multiref.m</a></li>
 <li class="toctree-l2"><a class="reference internal" href="index.html#indices-and-tables">Indices and tables</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../pca/index.html">PCA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../wmd/index.html">WMD</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Analysis Documentation:</span></p>
 <ul>
@@ -233,9 +233,9 @@ more migration of particles between subsets is observed and the averages within
 each subset do not change any more.</p>
 <p>Within subTOM a function <code class="docutils literal notranslate"><span class="pre">subtom_rand_class_motl</span></code> serves to initialize random
 classes and initial references if the user does not alread have them, and then
-the subTOM functions <code class="docutils literal notranslate"><span class="pre">subtom_scan_angles_exact</span></code>, <code class="docutils literal notranslate"><span class="pre">subtom_parallel_sums</span></code>,
-<code class="docutils literal notranslate"><span class="pre">subtom_weighted_average</span></code> and <code class="docutils literal notranslate"><span class="pre">subtom_compare_motls</span></code> have been modified to
-fit the new modus of multireference classification and alignment.</p>
+the subTOM functions <code class="docutils literal notranslate"><span class="pre">subtom_scan_angles_exact_multiref</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">subtom_compare_motls_multiref</span></code> have been modified to fit the new modus of
+multireference classification and alignment.</p>
 </div>
 
 
@@ -258,7 +258,7 @@ fit the new modus of multireference classification and alignment.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Dustin Reed Morado
+        &copy; Copyright 2019, Dustin Reed Morado
 
     </p>
   </div>

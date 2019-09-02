@@ -37,10 +37,10 @@ function subtom_parallel_eigenvolumes(varargin)
     fn_parser = inputParser;
     addParameter(fn_parser, 'all_motl_fn_prefix', 'combinedmotl/allmotl');
     addParameter(fn_parser, 'ptcl_fn_prefix', 'subtomograms/subtomo');
-    addParameter(fn_parser, 'eig_vec_fn_prefix', 'pca/eigvec');
-    addParameter(fn_parser, 'eig_val_fn_prefix', 'pca/eigval');
-    addParameter(fn_parser, 'xmatrix_fn_prefix', 'pca/xmatrix');
-    addParameter(fn_parser, 'eig_vol_fn_prefix', 'pca/eigvol');
+    addParameter(fn_parser, 'eig_vec_fn_prefix', 'class/eigvec_pca');
+    addParameter(fn_parser, 'eig_val_fn_prefix', 'class/eigval_pca');
+    addParameter(fn_parser, 'xmatrix_fn_prefix', 'class/xmatrix_pca');
+    addParameter(fn_parser, 'eig_vol_fn_prefix', 'class/eigvol_pca');
     addParameter(fn_parser, 'mask_fn', 'none');
     addParameter(fn_parser, 'iteration', '1');
     addParameter(fn_parser, 'num_xmatrix_batch', 1);
@@ -425,56 +425,6 @@ function subtom_parallel_eigenvolumes(varargin)
     % Calculate the projection of the X-Matrix chunk onto the Eigenvectors
     eigen_volumes = xmatrix * eigen_vectors(ptcl_start_idx:ptcl_end_idx, :);
 
-    % Read in the Eigenvalues.
-    eig_val_fn = sprintf('%s_%d.em', eig_val_fn_prefix, iteration);
-
-    if exist(eig_val_fn, 'file') ~= 2
-        try
-            error('subTOM:missingFileError', ...
-                'parallel_eigenvolumes:File %s does not exist.', ...
-                eig_val_fn);
-
-        catch ME
-            fprintf(2, '%s - %s\n', ME.identifier, ME.message);
-            rethrow(ME);
-        end
-    end
-
-    eigen_values = getfield(tom_emread(eig_val_fn), 'Value');
-    
-    if length(eigen_values) ~= num_eigs
-        try
-            error('subTOM:volDimError', ...
-                'parallel_eigenvolumes:%s %s %s.', eig_val_fn, ...
-                'is not the correct size for ', eig_vec_fn);
-
-        catch ME
-            fprintf(2, '%s - %s\n', ME.identifier, ME.message);
-            rethrow(ME);
-        end
-    end
-
-    % We are using the inverse root for the transition formula so warn about
-    % negative Eigenvalues, which should not exist.
-    if min(eigen_values(:)) < 0
-        warning('subTOM:EigenValueWarning', ...
-            'parallel_eigenvolumes: %s %s.', ...
-            'Negative Eigen values discovered,', ...
-            'maybe try do_algebraic or subtom_svds');
-
-        [msg, msg_id] = lastwarn;
-        fprintf(2, '%s - %s\n', msg_id, msg);
-    end
-
-    % The transition formula intermediate (V * sqrt(L^-1));
-    transition_temp = eigen_vectors * diag(sqrt(1 ./ abs(eigen_values)));
-
-    % Initialize the conjugate space Eigenvectors.
-    % The transition formula is: U = X * V * sqrt(L^-1)
-    % Where X is the X-Matrix, V is the image space Eigenvectors and L is the
-    % diagonal matrix of Eigenvalues.
-    eigen_vectors_ = zeros(num_voxels, num_eigs);
-
     % Setup the progress bar
     delprog = '';
     timings = [];
@@ -491,40 +441,5 @@ function subtom_parallel_eigenvolumes(varargin)
 
         tom_emwrite(eigen_volume_fn, eigen_volume);
         subtom_check_em_file(eigen_volume_fn, eigen_volume);
-
-        batch_idx = 1;
-
-        for ptcl_idx = ptcl_start_idx:ptcl_end_idx
-
-            % Ugh this is hideous. Store at least a shorter name for the value.
-            % transition_temp_value = ttv.
-            ttv  = transition_temp(ptcl_idx, eigen_idx);
-
-            % Eigen_vectors_ column = ev_c.
-            ev_c = arrayfun(@(x) xmatrix(x, batch_idx) * ttv, 1:num_voxels)';
-
-            % From the transition formula we have that:
-            % U_{i,j} = \sum_{n = 1}^{N} X_{i, n} * (V * sqrt(L^-1))_{n, j}
-            % Where N is the number of particles. Since we are dealing with a
-            % subset of particles we only have n from ptcl_start_idx to
-            % ptcl_end_idx, but we can get a subset of the final cumulative sum
-            % for each entry of U and then in join_eigenvolume we can add
-            % all of these together for the final conjugate (pixel-vector) space
-            % Eigenvectors.
-            eigen_vectors_(:, eigen_idx) = eigen_vectors_(:, eigen_idx) + ev_c;
-            batch_idx = batch_idx + 1;
-        end
-
-        % Display some output
-        [delprog, timings] = subtom_display_progress(delprog, timings, ...
-            message, op_type, num_eigs, eigen_idx);
-
     end
-
-    % Write out the partial conjugate space Eigenvectors
-    eig_vec_fn_ = sprintf('%s_conjugate_%d_%d.em', eig_vec_fn_prefix, ...
-        iteration, process_idx);
-
-    tom_emwrite(eig_vec_fn_, eigen_vectors_);
-    subtom_check_em_file(eig_vec_fn_, eigen_vectors_);
 end

@@ -70,8 +70,11 @@ cryo-tomography data.
     :maxdepth: 1
     :caption: Classification Documentation:
 
+    General Utilities <classification/general/index.rst>
+    MSA <classification/msa/index.rst>
     Multireference <classification/multireference/index.rst>
     PCA <classification/pca/index.rst>
+    WMD <classification/wmd/index.rst>
 
 .. toctree::
     :maxdepth: 1

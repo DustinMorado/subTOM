@@ -35,31 +35,9 @@ fi
 # Check that the appropriate directories exist
 if [[ "${skip_local_copy}" -ne 1 ]]
 then
-
     if [[ ! -d "${local_dir}" ]]
     then
         mkdir -p "${local_dir}"
-    fi
-
-    local_all_motl_dir="$(dirname "${local_dir}/${all_motl_fn_prefix}")"
-
-    if [[ ! -d "${local_all_motl_dir}" ]]
-    then
-        mkdir -p "${local_all_motl_dir}"
-    fi
-
-    local_ref_dir="$(dirname "${local_dir}/${ref_fn_prefix}")"
-
-    if [[ ! -d "${local_ref_dir}" ]]
-    then
-        mkdir -p "${local_ref_dir}"
-    fi
-
-    local_weight_sum_dir="$(dirname "${local_dir}/${weight_sum_fn_prefix}")"
-
-    if [[ ! -d "${local_weight_sum_dir}" ]]
-    then
-        mkdir -p "${local_weight_sum_dir}"
     fi
 fi
 
@@ -74,12 +52,6 @@ all_motl_base="$(basename "${all_motl_fn_prefix}")"
 ref_dir="${scratch_dir}/$(dirname "${ref_fn_prefix}")"
 ref_base="$(basename "${ref_fn_prefix}")"
 
-if [[ -f "${ref_dir}/${ref_base}_${iteration}.em" ]]
-then
-    echo "${ref_dir}/${ref_base}_${iteration}.em already complete. SKIPPING"
-    exit 0
-fi
-
 if [[ ! -d "${ref_dir}" ]]
 then
     mkdir -p "${ref_dir}"
@@ -92,25 +64,6 @@ if [[ ! -d "${weight_sum_dir}" ]]
 then
     mkdir -p "${weight_sum_dir}"
 fi
-
-job_name_sums="${job_name}_parallel_sums_${iteration}"
-
-if [[ -f "${job_name_sums}_1" ]]
-then
-    rm -f "${job_name_sums}"_*
-fi
-
-if [[ -f "error_${job_name_sums}_1" ]]
-then
-    rm -f "error_${job_name_sums}"_*
-fi
-
-if [[ -f "log_${job_name_sums}_1" ]]
-then
-    rm -f "log_${job_name_sums}"_*
-fi
-
-job_name_avg="${job_name}_weighted_average_${iteration}"
 
 if [[ ${mem_free%G} -ge 48 ]]
 then
@@ -127,13 +80,13 @@ fi
 #                              PARALLEL AVERAGING                              #
 #                                                                              #
 ################################################################################
-
 # Calculate number of job scripts needed
-num_avg_jobs=$(((num_avg_batch + array_max - 1) / array_max))
+num_jobs=$(((num_avg_batch + array_max - 1) / array_max))
+job_name_="${job_name}_parallel_sums"
 
 # Loop to generate parallel alignment scripts
 for ((job_idx = 1, array_start = 1; \
-      job_idx <= num_avg_jobs; \
+      job_idx <= num_jobs; \
       job_idx++, array_start += array_max))
 do
     array_end=$((array_start + array_max - 1))
@@ -143,15 +96,36 @@ do
         array_end=${num_avg_batch}
     fi
 
-    cat > "${job_name_sums}_${job_idx}"<<-PSUMJOB
+    script_fn="${job_name_}_${job_idx}"
+
+    if [[ -f "${script_fn}" ]]
+    then
+        rm -f "${script_fn}"
+    fi
+
+    error_fn="error_${script_fn}"
+
+    if [[ -f "${error_fn}" ]]
+    then
+        rm -f "${error_fn}"
+    fi
+
+    log_fn="log_${script_fn}"
+
+    if [[ -f "${log_fn}" ]]
+    then
+        rm -f "${log_fn}"
+    fi
+
+    cat>"${script_fn}"<<-PSUMJOB
 #!/bin/bash
-#$ -N "${job_name_sums}_${job_idx}"
+#$ -N "${script_fn}"
 #$ -S /bin/bash
 #$ -V
 #$ -cwd
 #$ -l mem_free=${mem_free},h_vmem=${mem_max}${dedmem}
-#$ -o "log_${job_name_sums}_${job_idx}"
-#$ -e "error_${job_name_sums}_${job_idx}"
+#$ -o "${log_fn}"
+#$ -e "${error_fn}"
 #$ -t ${array_start}-${array_end}
 set +o noclobber
 set -e
@@ -165,14 +139,11 @@ ldpath="\${ldpath}:XXXMCR_DIRXXX/sys/opengl/lib/glnxa64"
 export LD_LIBRARY_PATH="\${ldpath}"
 
 ###for SGE_TASK_ID in {${array_start}..${array_end}}; do
-    mcr_cache_dir="${mcr_cache_dir}/${job_name_sums}_${job_idx}_\${SGE_TASK_ID}"
+    mcr_cache_dir="${mcr_cache_dir}/${job_name_}_\${SGE_TASK_ID}"
 
-    if [[ ! -d "\${mcr_cache_dir}" ]]
+    if [[ -d "\${mcr_cache_dir}" ]]
     then
-        mkdir -p "\${mcr_cache_dir}"
-    else
         rm -rf "\${mcr_cache_dir}"
-        mkdir -p "\${mcr_cache_dir}"
     fi
 
     export MCR_CACHE_ROOT="\${mcr_cache_dir}"
@@ -199,33 +170,52 @@ export LD_LIBRARY_PATH="\${ldpath}"
         process_idx \\
         "\${SGE_TASK_ID}"
 
-    rm -rf "\${mcr_cache_dir}"
-###done 2> "error_${job_name_sums}_${job_idx}" >\\
-###    "log_${job_name_sums}_${job_idx}"
+###done 2>"${error_fn}" >"${log_fn}"
 PSUMJOB
 
-    num_complete=$(find "${ref_dir}" -regex \
-        ".*/${ref_base}_${iteration}_[0-9]+.em" | wc -l)
-
-    num_complete_prev=0
-    unchanged_count=0
-
-    chmod u+x "${job_name_sums}_${job_idx}"
-
-    if [[ "${run_local}" -eq 1 && ${num_complete} -lt ${num_avg_batch} ]]
-    then
-        sed -i 's/\#\#\#//' "${job_name_sums}_${job_idx}"
-        "./${job_name_sums}_${job_idx}" &
-    elif [[ ${num_complete} -lt ${num_avg_batch} ]]
-    then
-        qsub "${job_name_sums}_${job_idx}"
-    fi
 done
 
-echo "STARTING Parallel Average in Iteration Number: ${iteration}"
+ref_fn="${scratch_dir}/${ref_fn_prefix}_${iteration}.em"
+num_complete=$(find "${ref_dir}" -regex \
+    ".*/${ref_base}_${iteration}_[0-9]+.em" | wc -l)
+
+if [[ -f "${ref_fn}" ]]
+then
+    do_run=0
+    num_complete="${num_avg_batch}"
+elif [[ "${num_complete}" -eq "${num_avg_batch}" ]]
+then
+    do_run=0
+else
+    do_run=1
+fi
+
+if [[ "${do_run}" -eq "1" ]]
+then
+    echo -e "\nSTARTING Averaging - Iteration: ${iteration}\n"
+
+    for job_idx in $(seq 1 ${num_jobs})
+    do
+        script_fn="${job_name_}_${job_idx}"
+        chmod u+x "${script_fn}"
+
+        if [[ "${run_local}" -eq 1 ]]
+        then
+            sed -i 's/\#\#\#//' "${script_fn}"
+            "./${script_fn}" &
+        else
+            qsub "${script_fn}"
+        fi
+    done
+else
+    echo -e "\nSKIPPING Averaging - Iteration: ${iteration}\n"
+fi
+
 ################################################################################
 #                         PARALLEL AVERAGING PROGRESS                          #
 ################################################################################
+num_complete_prev=0
+unchanged_count=0
 
 while [[ ${num_complete} -lt ${num_avg_batch} ]]
 do
@@ -243,24 +233,24 @@ do
 
     if [[ ${num_complete} -gt 0 && ${unchanged_count} -gt 120 ]]
     then
-        echo "Parallel averaging has seemed to stall"
+        echo "Parallel Averaging has seemed to stall"
         echo "Please check error logs and resubmit the job if neeeded."
         exit 1
     fi
 
-    if [[ -f "error_${job_name_sums}_1" ]]
+    if [[ -f "error_${job_name_}_1" ]]
     then
-        echo -e "\nERROR Update: Averaging iteration ${iteration}\n"
-        tail "error_${job_name_sums}"_*
+        echo -e "\nERROR Update: Averaging - Iteration: ${iteration}\n"
+        tail "error_${job_name_}"_*
     fi
 
-    if [[ -f "log_${job_name_sums}_1" ]]
+    if [[ -f "log_${job_name_}_1" ]]
     then
-        echo -e "\nLOG Update: Averaging iteration ${iteration}\n"
-        tail "log_${job_name_sums}"_*
+        echo -e "\nLOG Update: Averaging - Iteration: ${iteration}\n"
+        tail "log_${job_name_}"_*
     fi
 
-    echo -e "\nSTATUS Update: Averaging iteration ${iteration}\n"
+    echo -e "\nSTATUS Update: Averaging - Iteration: ${iteration}\n"
     echo -e "\t${num_complete} parallel sums out of ${num_avg_batch}\n"
     sleep 60s
 done
@@ -274,70 +264,84 @@ then
     mkdir avg_${iteration}
 fi
 
-if [[ -e "${job_name_sums}_1" ]]
+if [[ -e "${job_name_}_1" ]]
 then
-    mv -f "${job_name_sums}"_* avg_${iteration}/.
+    mv -f "${job_name_}"_* avg_${iteration}/.
 fi
 
-if [[ -e "log_${job_name_sums}_1" ]]
+if [[ -e "log_${job_name_}_1" ]]
 then
-    mv -f "log_${job_name_sums}"_* avg_${iteration}/.
+    mv -f "log_${job_name_}"_* avg_${iteration}/.
 fi
 
-if [[ -e "error_${job_name_sums}_1" ]]
+if [[ -e "error_${job_name_}_1" ]]
 then
-    mv -f "error_${job_name_sums}"_* avg_${iteration}/.
+    mv -f "error_${job_name_}"_* avg_${iteration}/.
 fi
 
-echo "FINISHED Parallel Average in Iteration Number: ${iteration}"
+find "${mcr_cache_dir}" -regex ".*/${job_name_}_[0-9]+" -print0 |\
+    xargs -0 -I {} rm -rf -- {}
 
 ################################################################################
 #                                FINAL AVERAGE                                 #
 ################################################################################
-
-ldpath="XXXMCR_DIRXXX/runtime/glnxa64"
-ldpath="${ldpath}:XXXMCR_DIRXXX/bin/glnxa64"
-ldpath="${ldpath}:XXXMCR_DIRXXX/sys/os/glnxa64"
-ldpath="${ldpath}:XXXMCR_DIRXXX/sys/opengl/lib/glnxa64"
-export LD_LIBRARY_PATH="${ldpath}"
-
-mcr_cache_dir_avg="${mcr_cache_dir}/${job_name_avg}"
-
-if [[ ! -d "${mcr_cache_dir_avg}" ]]
+if [[ ! -f "${ref_fn}" ]]
 then
-    mkdir -p "${mcr_cache_dir_avg}"
-else
-    rm -rf "${mcr_cache_dir_avg}"
-    mkdir -p "${mcr_cache_dir_avg}"
+    ldpath="XXXMCR_DIRXXX/runtime/glnxa64"
+    ldpath="${ldpath}:XXXMCR_DIRXXX/bin/glnxa64"
+    ldpath="${ldpath}:XXXMCR_DIRXXX/sys/os/glnxa64"
+    ldpath="${ldpath}:XXXMCR_DIRXXX/sys/opengl/lib/glnxa64"
+    export LD_LIBRARY_PATH="${ldpath}"
+
+    job_name_="${job_name}_weighted_average"
+    mcr_cache_dir_="${mcr_cache_dir}/${job_name_}"
+
+    if [[ -d "${mcr_cache_dir_}" ]]
+    then
+        rm -rf "${mcr_cache_dir_}"
+    fi
+
+    export MCR_CACHE_ROOT="${mcr_cache_dir_}"
+
+    "${avg_exec}" \
+        all_motl_fn_prefix \
+        "${scratch_dir}/${all_motl_fn_prefix}" \
+        ref_fn_prefix \
+        "${scratch_dir}/${ref_fn_prefix}" \
+        weight_sum_fn_prefix \
+        "${scratch_dir}/${weight_sum_fn_prefix}" \
+        iteration \
+        "${iteration}" \
+        iclass \
+        "${iclass}" \
+        num_avg_batch \
+        "${num_avg_batch}"
+
+    rm -rf "${mcr_cache_dir_}"
 fi
-
-export MCR_CACHE_ROOT="${mcr_cache_dir_avg}"
-
-"${avg_exec}" \
-    all_motl_fn_prefix \
-    "${scratch_dir}/${all_motl_fn_prefix}" \
-    ref_fn_prefix \
-    "${scratch_dir}/${ref_fn_prefix}" \
-    weight_sum_fn_prefix \
-    "${scratch_dir}/${weight_sum_fn_prefix}" \
-    iteration \
-    "${iteration}" \
-    iclass \
-    "${iclass}" \
-    num_avg_batch \
-    "${num_avg_batch}"
-
-rm -rf "${mcr_cache_dir_avg}"
 
 ################################################################################
 #                            FINAL AVERAGE CLEAN UP                            #
 ################################################################################
-
 if [[ ${skip_local_copy} -ne 1 ]]
 then
+    local_all_motl_dir="$(dirname "${local_dir}/${all_motl_fn_prefix}")"
+
+    if [[ ! -d "${local_all_motl_dir}" ]]
+    then
+        mkdir -p "${local_all_motl_dir}"
+    fi
+
     find "${all_motl_dir}" -regex \
         ".*/${all_motl_base}_${iteration}.em" -print0 |\
         xargs -0 -I {} cp -- {} "${local_all_motl_dir}/."
+
+    local_ref_dir="$(dirname "${local_dir}/${ref_fn_prefix}")"
+
+    if [[ ! -d "${local_ref_dir}" ]]
+    then
+        mkdir -p "${local_ref_dir}"
+    fi
 
     find "${ref_dir}" -regex \
         ".*/${ref_base}_${iteration}.em" -print0 |\
@@ -346,6 +350,13 @@ then
     find "${ref_dir}" -regex \
         ".*/${ref_base}_debug_raw_${iteration}.em" -print0 |\
         xargs -0 -I {} cp -- {} "${local_ref_dir}/."
+
+    local_weight_sum_dir="$(dirname "${local_dir}/${weight_sum_fn_prefix}")"
+
+    if [[ ! -d "${local_weight_sum_dir}" ]]
+    then
+        mkdir -p "${local_weight_sum_dir}"
+    fi
 
     find "${weight_sum_dir}" -regex \
         ".*/${weight_sum_base}_debug_${iteration}.em" -print0 |\
@@ -361,8 +372,7 @@ find "${ref_dir}" -regex ".*/${ref_base}_${iteration}_[0-9]+.em" -delete
 find "${weight_sum_dir}" -regex \
     ".*/${weight_sum_base}_${iteration}_[0-9]+.em" -delete
 
-echo "FINISHED Final Average in Iteration Number: ${iteration}"
-echo "AVERAGE DONE IN ITERATION NUMBER ${iteration}"
+echo -e "\nFINISHED Averaging - Iteration: ${iteration}\n"
 
 if [[ ! -f subTOM_protocol.md ]]
 then

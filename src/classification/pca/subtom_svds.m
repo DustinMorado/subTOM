@@ -28,9 +28,9 @@ function subtom_svds(varargin)
     % defaults we create an input parser to allow for the options to be put in
     % an arbitrary order if at all.
     fn_parser = inputParser;
-    addParameter(fn_parser, 'ccmatrix_fn_prefix', 'pca/ccmatrix');
-    addParameter(fn_parser, 'eig_vec_fn_prefix', 'pca/eigvec');
-    addParameter(fn_parser, 'eig_val_fn_prefix', 'pca/eigval');
+    addParameter(fn_parser, 'ccmatrix_fn_prefix', 'class/ccmatrix_pca');
+    addParameter(fn_parser, 'eig_vec_fn_prefix', 'class/eigvec_pca');
+    addParameter(fn_parser, 'eig_val_fn_prefix', 'class/eigval_pca');
     addParameter(fn_parser, 'iteration', 1);
     addParameter(fn_parser, 'num_svs', 40);
     addParameter(fn_parser, 'svds_iterations', 'default');
@@ -94,7 +94,7 @@ function subtom_svds(varargin)
     try
         validateattributes(iteration, {'numeric'}, ...
             {'scalar', 'nonnan', 'positive', 'integer'}, ...
-            'subtom_eigs', 'iteration');
+            'subtom_svds', 'iteration');
 
     catch ME
         fprintf(2, '%s - %s\n', ME.identifier, ME.message);
@@ -110,7 +110,7 @@ function subtom_svds(varargin)
     try
         validateattributes(num_svs, {'numeric'}, ...
             {'scalar', 'nonnan', 'positive', 'integer'}, ...
-            'subtom_eigs', 'num_svs');
+            'subtom_svds', 'num_svs');
 
     catch ME
         fprintf(2, '%s - %s\n', ME.identifier, ME.message);
@@ -208,4 +208,13 @@ function subtom_svds(varargin)
     eig_val = diag(eig_val);
     tom_emwrite(eig_val_fn, eig_val);
     subtom_check_em_file(eig_val_fn, eig_val);
+
+    % Write out the fast version of the Eigencoefficients, which comes from
+    % Equation (5) in the Borland 90' paper.
+    eig_vec_coeffs = eig_vec * diag(sqrt(abs(eig_val)));
+    eig_vec_coeffs_fn = sprintf('%s_eigcoeffs_%d.em', eig_vec_fn_prefix, ...
+        iteration);
+
+    tom_emwrite(eig_vec_coeffs_fn, eig_vec_coeffs);
+    subtom_check_em_file(eig_vec_coeffs_fn, eig_vec_coeffs);
 end

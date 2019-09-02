@@ -20,13 +20,8 @@ set -o nounset   # Crash on unset variables
 
 source "${1}"
 
-mcr_cache_dir="${mcr_cache_dir}/split_motl_by_row"
-
 if [[ ! -d "${mcr_cache_dir}" ]]
 then
-    mkdir -p "${mcr_cache_dir}"
-else
-    rm -rf "${mcr_cache_dir}"
     mkdir -p "${mcr_cache_dir}"
 fi
 
@@ -43,7 +38,14 @@ ldpath="${ldpath}:XXXMCR_DIRXXX/sys/os/glnxa64"
 ldpath="${ldpath}:XXXMCR_DIRXXX/sys/opengl/lib/glnxa64"
 export LD_LIBRARY_PATH="${ldpath}"
 
-export MCR_CACHE_ROOT="${mcr_cache_dir}"
+mcr_cache_dir_="${mcr_cache_dir}/split_motl_by_row"
+
+if [[ -d "${mcr_cache_dir_}" ]]
+then
+    rm -rf "${mcr_cache_dir_}"
+fi
+
+export MCR_CACHE_ROOT="${mcr_cache_dir_}"
 
 "${split_motl_by_row_exec}" \
     input_motl_fn \
@@ -51,9 +53,9 @@ export MCR_CACHE_ROOT="${mcr_cache_dir}"
     output_motl_fn_prefix \
     "${scratch_dir}/${output_motl_fn_prefix}" \
     split_row \
-    ${split_row} \
+    "${split_row}"
 
-rm -rf "${mcr_cache_dir}"
+rm -rf "${mcr_cache_dir_}"
 
 if [[ ! -f subTOM_protocol.md ]]
 then

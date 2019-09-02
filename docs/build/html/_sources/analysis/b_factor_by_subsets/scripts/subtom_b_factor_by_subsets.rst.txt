@@ -8,9 +8,9 @@ described in Rosenthal, Henderson 2003.
 This subtomogram averaging analysis script uses three MATLAB compiled scripts
 below:
 
-- :doc:`../functions/subtom_maskcorrected_fsc`
-- :doc:`../functions/subtom_parallel_sums`
-- :doc:`../functions/subtom_weighted_average`
+- :doc:`../functions/subtom_maskcorrected_fsc_bfactor`
+- :doc:`../functions/subtom_parallel_sums_bfactor`
+- :doc:`../functions/subtom_weighted_average_bfactor`
 
 -------
 Options
@@ -227,11 +227,11 @@ Example
 
     exec_dir="/net/dstore2/teraraid/dmorado/software/subTOM/bin"
 
-    sum_exec="${exec_dir}/alignment/subtom_parallel_sums"
+    sum_exec="${exec_dir}/alignment/subtom_parallel_sums_bfactor"
 
-    avg_exec="${exec_dir}/alignment/subtom_weighted_average"
+    avg_exec="${exec_dir}/alignment/subtom_weighted_average_bfactor"
 
-    fsc_exec="${exec_dir}/analysis/b_factor_by_subsets/subtom_maskcorrected_fsc"
+    fsc_exec="${exec_dir}/analysis/b_factor_by_subsets/subtom_maskcorrected_fsc_bfactor"
 
     mem_free="1G"
 
