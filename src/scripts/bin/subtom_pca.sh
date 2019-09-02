@@ -947,7 +947,7 @@ done
 num_complete=$(find "${xmatrix_dir}" -regex \
     ".*/${xmatrix_base}_${iteration}_[0-9]+.em" | wc -l)
 
-if [[ ${num_complete} -eq ${num_xmatrix_batch} ]]
+if [[ "${num_complete}" -lt "${num_xmatrix_batch}" ]]
 then
     echo -e "\nSTARTING X-Matrix Calculation - Iteration: ${iteration}\n"
 
