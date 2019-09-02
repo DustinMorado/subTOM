@@ -133,6 +133,10 @@ cluster_all_motl_fn_prefix="class/allmotl_class"
 ################################################################################
 #                            AVERAGING FILE OPTIONS                            #
 ################################################################################
+# Relative path and name of the subtomograms (e.g. part_n.em , the variable will
+# be written as a string e.g. ptcl_fn_prefix='sub-directory/part').
+ptcl_fn_prefix="subtomograms/subtomo"
+
 # Relative path and name prefix of the reference volumes (e.g.  ref_iter.em, the
 # variable will be written as a string e.g.  ref_fn_prefix='sub-directory/ref')
 ref_fn_prefix="class/ref"
