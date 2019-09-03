@@ -131,6 +131,15 @@ num_classes=2
 cluster_all_motl_fn_prefix="class/allmotl_class"
 
 ################################################################################
+#                              AVERAGING OPTIONS                               #
+################################################################################
+# Which row in the motl file contains the correct tomogram number.
+# Usually row 5 and 7 both correspond to the correct value and can be used
+# interchangeably, but there are instances when 5 contains a sequential ordered
+# value starting from 1, while 7 contains the correct corresponding tomogram.
+tomo_row="7"
+
+################################################################################
 #                            AVERAGING FILE OPTIONS                            #
 ################################################################################
 # Relative path and name of the subtomograms (e.g. part_n.em , the variable will
@@ -140,6 +149,9 @@ ptcl_fn_prefix="subtomograms/subtomo"
 # Relative path and name prefix of the reference volumes (e.g.  ref_iter.em, the
 # variable will be written as a string e.g.  ref_fn_prefix='sub-directory/ref')
 ref_fn_prefix="class/ref"
+
+# Relative path and name prefix of the weight file.
+weight_fn_prefix="otherinputs/ampspec"
 
 # Relative path and name prefix of the partial weight files.
 weight_sum_fn_prefix="class/wei"
