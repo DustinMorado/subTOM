@@ -800,7 +800,7 @@ PSUMJOB
     fi
 
     find "${ref_dir}" -regex \
-        "${ref_base}_class_[0-9]+_${avg_iteration}_[0-9]+.em" -delete
+        ".*/${ref_base}_class_[0-9]+_${avg_iteration}_[0-9]+.em" -delete
 
     find "${weight_sum_dir}" -regex \
         ".*/${weight_sum_base}_class_[0-9]+_${avg_iteration}_[0-9]+.em" \

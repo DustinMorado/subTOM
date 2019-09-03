@@ -759,7 +759,7 @@ function subtom_parallel_coeffs(varargin)
 
         % We need to normalize the particle under the mask to a mean of zero and
         % standard deviation of one.
-        wmd_mean = sum(ptcl(:)) / num_mask_vox;
+        wmd_mean = sum(wmd(:)) / num_mask_vox;
         wmd_stdv = sqrt((sum(sum(sum(wmd .* wmd))) / ...
             num_mask_vox) - (wmd_mean ^ 2));
 
