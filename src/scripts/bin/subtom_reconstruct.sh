@@ -580,7 +580,7 @@ RECONSTRUCT
                 "${job_name}_nova_filter_${fmt_idx}.com_\${dstep}"
 
         else
-            echo ${tomo}_filtered.ali_\${dstep} already exists. SKIPPING!"
+            echo "${tomo}_filtered.ali_\${dstep} already exists. SKIPPING!"
         fi
 
 RECONSTRUCT
