@@ -317,7 +317,6 @@ PREPROC
     -GainReferenceFile "${scratch_dir}/${gainref_fn}" \\
     -CameraDefectFile "${scratch_dir}/${defects_fn}" \\
     -RotationAndFlip -1 \\
-    -ImagesAreBinned 1.0 \\
 PREPROC
 
         fi
@@ -401,7 +400,6 @@ PREPROC
     -GainReferenceFile "${scratch_dir}/${gainref_fn}" \\
     -CameraDefectFile "${scratch_dir}/${defects_fn}" \\
     -RotationAndFlip -1 \\
-    -ImagesAreBinned 1.0 \\
 PREPROC
 
         fi
