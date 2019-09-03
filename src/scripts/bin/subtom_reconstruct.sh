@@ -443,7 +443,7 @@ do
         nsteps=$(find "${defocus_dir}" -name "${defocus_base}_*" | \
             awk -F_ '{ print $NF }' | sort -n | tail -n 1)
 
-        nsteps_array[${#nstep[*]}]=${nsteps}
+        nsteps_array[${#nsteps_array[*]}]=${nsteps}
 
         # For each of the strips make a COM script for CTF-correction,
         # filtering, alignment stack generation, and gold-erasing.
