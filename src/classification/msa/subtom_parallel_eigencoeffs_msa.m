@@ -746,7 +746,7 @@ function subtom_parallel_eigencoeffs_msa(varargin)
                     eigen_volume_fft .* rot_weight), 'symmetric');
 
             else
-                eigen_volume = eigen_volume_cell{eigen_idx}
+                eigen_volume = eigen_volume_cell{eigen_idx};
             end
 
             eigen_coeffs(batch_idx, eigen_idx) = sum(sum(sum(...
