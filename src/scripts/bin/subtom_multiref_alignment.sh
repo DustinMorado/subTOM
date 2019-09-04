@@ -739,7 +739,7 @@ PSUMJOB
         export LD_LIBRARY_PATH="${ldpath}"
 
         job_name_="${job_name}_weighted_average_cls"
-        mcr_cache_dir_avg="${mcr_cache_dir}/${job_name_}"
+        mcr_cache_dir_="${mcr_cache_dir}/${job_name_}"
 
         if [[ -d "${mcr_cache_dir_}" ]]
         then
