@@ -1039,6 +1039,6 @@ PSUMJOB
         printf("| %-50s | %25f |\n", "Output Min. CCC", $21);
         printf("| %-50s | %25f |\n", "Output Max. CCC", $22);
         printf("| %-50s | %25f |\n\n", "Number of class changes", $23);
-    }}' "${scratch_dir}/${output_diffs_fn}" >> subTOM_protocol.md
+    }}' "${output_diffs_fn}" >> subTOM_protocol.md
 
 done
