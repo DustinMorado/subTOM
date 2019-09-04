@@ -841,7 +841,7 @@ PSUMJOB
             write_diffs \
             1 \
             output_diffs_fn \
-            "${scratch_dir}/${output_diffs_fn}"
+            "${output_diffs_fn}"
 
         rm -rf "${mcr_cache_dir_}"
     fi
