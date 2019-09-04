@@ -72,6 +72,7 @@ then
 fi
 
 weight_sum_dir="$(dirname "${weight_sum_fn_prefix}")"
+weight_sum_base="$(basename "${weight_sum_fn_prefix}")"
 
 if [[ ! -d "${scratch_dir}/${weight_sum_dir}" ]]
 then
