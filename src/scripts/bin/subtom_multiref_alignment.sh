@@ -470,7 +470,7 @@ ALIJOB
             write_motl \
             "1" \
             output_motl_fn \
-            "${scratch_dir}/${all_motl_fn}" \
+            "${all_motl_fn}" \
             write_star \
             "0" \
             output_star_fn \
