@@ -697,7 +697,7 @@ PSUMJOB
 
         echo -e "\nSTATUS Update: Averaging - Iteration: ${avg_iteration}\n"
         echo -e -n "\t${num_complete} parallel sums out of "
-        echo -e "${num_to_complete}\n"
+        echo -e "${num_complete}\n"
         sleep 60s
     done
 
