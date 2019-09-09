@@ -335,4 +335,59 @@ function subtom_weighted_average_cls(varargin)
         tom_emwrite(average_fn, average);
         subtom_check_em_file(average_fn, average);
     end
+
+    % Write out montages of the averages which is very useful for
+    % visualization
+    num_cols = 10;
+    num_rows = ceil(num_classes / num_cols);
+
+    % We do a montage in X, Y, and Z orientations
+    for montage_idx = 1:3
+        montage = zeros(box_size(1) * num_cols, box_size(2) * num_rows, ...
+            box_size(3));
+
+        for class_idx = 1:num_classes
+            row_idx = floor((class_idx - 1) / num_cols) + 1;
+            col_idx = class_idx - ((row_idx - 1) * num_cols);
+            start_x = (col_idx - 1) * box_size(1) + 1;
+            end_x = start_x + box_size(1) - 1;
+            start_y = (row_idx - 1) * box_size(2) + 1;
+            end_y = start_y + box_size(2) - 1;
+            
+            class = classes(class_idx);
+
+            if montage_idx == 1
+                montage(start_x:end_x, start_y:end_y, :) = ...
+                    getfield(tom_emread(sprintf('%s_class_%d_%d.em', ...
+                    ref_fn_prefix, class, iteration)), 'Value');
+
+            elseif montage_idx == 2
+                montage(start_x:end_x, start_y:end_y, :) = ...
+                    tom_rotate(getfield(tom_emread(sprintf(...
+                    '%s_class_%d_%d.em', ref_fn_prefix, class, iteration)), ...
+                    'Value'), [0, 0, -90]);
+
+            elseif montage_idx == 3
+                montage(start_x:end_x, start_y:end_y, :) = ...
+                    tom_rotate(getfield(tom_emread(sprintf(...
+                    '%s_class_%d_%d.em', ref_fn_prefix, class, iteration)), ...
+                    'Value'), [90, 0, -90]);
+
+            end
+        end
+
+        if montage_idx == 1
+            montage_fn = sprintf('%s_Z_%d.em', ref_fn_prefix, iteration);
+
+        elseif montage_idx == 2
+            montage_fn = sprintf('%s_X_%d.em', ref_fn_prefix, iteration);
+
+        elseif montage_idx == 3
+            montage_fn = sprintf('%s_Y_%d.em', ref_fn_prefix, iteration);
+
+        end
+
+        tom_emwrite(montage_fn, montage);
+        subtom_check_em_file(montage_fn, montage);
+    end
 end

@@ -431,9 +431,6 @@ function subtom_eigenvolumes_wmd(varargin)
         montage = zeros(box_size(1) * num_cols, box_size(2) * num_rows, ...
             box_size(3));
 
-        montage_ = zeros(box_size(1) * num_cols, box_size(2) * num_rows, ...
-            box_size(3));
-
         for sv_idx = 1:num_svs
             row_idx = floor((sv_idx - 1) / num_cols) + 1;
             col_idx = sv_idx - ((row_idx - 1) * num_cols);

@@ -411,6 +411,10 @@ then
         xargs -0 -I {} cp -- {} "${local_ref_dir}/."
 
     find "${ref_dir}" -regex \
+        ".*/${ref_base}_[XYZ]_${iteration}.em" -print0 |\
+        xargs -0 -I {} cp -- {} "${local_ref_dir}/."
+
+    find "${ref_dir}" -regex \
         ".*/${ref_base}_class_[0-9]+_debug_raw_${iteration}.em" -print0 |\
         xargs -0 -I {} cp -- {} "${local_ref_dir}/."
 

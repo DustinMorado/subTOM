@@ -422,9 +422,6 @@ function subtom_eigenvolumes_msa(varargin)
         montage = zeros(box_size(1) * num_cols, box_size(2) * num_rows, ...
             box_size(3));
 
-        montage_ = zeros(box_size(1) * num_cols, box_size(2) * num_rows, ...
-            box_size(3));
-
         for eigen_idx = 1:num_eigs
             row_idx = floor((eigen_idx - 1) / num_cols) + 1;
             col_idx = eigen_idx - ((row_idx - 1) * num_cols);
