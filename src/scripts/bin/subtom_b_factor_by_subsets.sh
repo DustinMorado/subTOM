@@ -78,6 +78,14 @@ then
     mkdir -p "${weight_sum_b_dir}"
 fi
 
+output_dir="${scratch_dir}/$(dirname "${output_fn_prefix}")"
+output_base="$(basename "${output_fn_prefix}")"
+
+if [[ ! -d "${output_dir}" ]]
+then
+    mkdir -p "${output_dir}"
+fi
+
 if [[ ${mem_free%G} -ge 48 ]]
 then
     dedmem=',dedicated=24'
@@ -221,9 +229,9 @@ done
 # MOTL) we have to do this complicated way of calculating the number of
 # particles that are actually used in the subsets average.
 num_subsets_a=$("${motl_dump_exec}" --row 20 \
-    "${scratch_dir}/${all_motl_a_fn_prefix}_${iteration}.em" |\ 
-    awk -viclass=${iclass} 'BEGIN { num_ptcls = 0 }
-    { if ($1 == 1 || $1 == iclass) { num_ptcls++ } }
+    "${scratch_dir}/${all_motl_a_fn_prefix}_${iteration}.em" |\
+    awk -viclass=${iclass} 'BEGIN { num_ptcls = 0 } \
+    { if ($1 == 1 || $1 == iclass) { num_ptcls++ } } \
     END { printf("%d", (int(log(num_ptcls / 128) / log(2)) + 1)) }')
 
 num_total_a=$((num_avg_batch * num_subsets_a))
@@ -234,7 +242,7 @@ all_done_a=$(find "${ref_a_dir}" -regex \
     ".*/${ref_a_base}_subset_[0-9]+_${iteration}.em" | wc -l)
 
 num_subsets_b=$("${motl_dump_exec}" --row 20 \
-    "${scratch_dir}/${all_motl_b_fn_prefix}_${iteration}.em" |\ 
+    "${scratch_dir}/${all_motl_b_fn_prefix}_${iteration}.em" |\
     awk -viclass=${iclass} 'BEGIN { num_ptcls = 0 }
     { if ($1 == 1 || $1 == iclass) { num_ptcls++ } }
     END { printf("%d", (int(log(num_ptcls / 128) / log(2)) + 1)) }')
@@ -421,7 +429,7 @@ then
         num_avg_batch \
         "${num_avg_batch}"
 
-    rm -rf "${mcr_cache_dir_avg}"
+    rm -rf "${mcr_cache_dir_}"
 fi
 
 ################################################################################
@@ -508,17 +516,6 @@ echo -e "\nFINISHED B-factor Subsets Average - Iteration: ${iteration}\n"
 ################################################################################
 #                              MASK CORRECTED FSC                              #
 ################################################################################
-
-mcr_cache_dir_fsc="${mcr_cache_dir}/maskcorrected_FSC"
-
-if [[ ! -d "${mcr_cache_dir_fsc}" ]]
-then
-    mkdir -p "${mcr_cache_dir_fsc}"
-else
-    rm -rf "${mcr_cache_dir_fsc}"
-    mkdir -p "${mcr_cache_dir_fsc}"
-fi
-
 ldpath="XXXMCR_DIRXXX/runtime/glnxa64"
 ldpath="${ldpath}:XXXMCR_DIRXXX/bin/glnxa64"
 ldpath="${ldpath}:XXXMCR_DIRXXX/sys/os/glnxa64"
@@ -578,6 +575,48 @@ export MCR_CACHE_ROOT="${mcr_cache_dir_}"
     "${iclass}"
 
 rm -rf "${mcr_cache_dir_}"
+
+################################################################################
+#                         MASK CORRECTED FSC CLEAN UP                          #
+################################################################################
+if [[ ${skip_local_copy} -ne 1 ]]
+then
+    local_output_dir="$(dirname "${local_dir}/${output_fn_prefix}")"
+
+    if [[ ! -d "${local_output_dir}" ]]
+    then
+        mkdir -p "${local_output_dir}"
+    fi
+
+    find "${output_dir}" -regex \
+        ".*/${output_base}_subset_FSC.[fp][dni][gf]" -print0 |\
+        xargs -0 -I {} cp -- {} "${local_output_dir}/."
+
+    find "${output_dir}" -regex \
+        ".*/${output_base}_subset_b_factor.[fp][dni][gf]" -print0 |\
+        xargs -0 -I {} cp -- {} "${local_output_dir}/."
+
+    find "${output_dir}" -regex \
+        ".*/${output_base}_sharp_-+[0-9]+.[fp][dni][gf]" -print0 |\
+        xargs -0 -I {} cp -- {} "${local_output_dir}/."
+
+    find "${output_dir}" -regex \
+        ".*/${output_base}_unsharpref.em" -print0 |\
+        xargs -0 -I {} cp -- {} "${local_output_dir}/."
+
+    find "${output_dir}" -regex \
+        ".*/${output_base}_finalsharpref_-?[0-9]+.em" -print0 |\
+        xargs -0 -I {} cp -- {} "${local_output_dir}/."
+
+    find "${output_dir}" -regex \
+        ".*/${output_base}_unsharpref_reweight.em" -print0 |\
+        xargs -0 -I {} cp -- {} "${local_output_dir}/."
+
+    find "${output_dir}" -regex \
+        ".*/${output_base}_finalsharpref_-?[0-9]+_reweight.em" -print0 |\
+        xargs -0 -I {} cp -- {} "${local_output_dir}/."
+
+fi
 
 if [[ ! -f subTOM_protocol.md ]]
 then
