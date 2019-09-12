@@ -34,6 +34,8 @@ See Also
 * :doc:`subtom_clean_motl`
 * :doc:`subtom_compare_motls`
 * :doc:`subtom_even_odd_motl`
+* :doc:`subtom_random_subset_motl`
 * :doc:`subtom_scale_motl`
 * :doc:`subtom_seed_positions`
 * :doc:`subtom_transform_motl`
+* :doc:`subtom_unclass_motl`

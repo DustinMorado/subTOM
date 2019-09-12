@@ -1,6 +1,6 @@
 # subTOM
 
-## Version 1.1.0
+## Version 1.1.2
 
 Subtomogram averaging scripts with TOM toolbox.
 
