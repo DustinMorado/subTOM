@@ -318,7 +318,8 @@ function subtom_parallel_sums_bfactor(varargin)
         'UniformOutput', 0);
 
     sum_idx = 1;
-    good_idx = 1;
+    good_idx = sum(all_motl(20, 1:(ptcl_start_idx - 1)) == 1 | ...
+        all_motl(20, 1:(ptcl_start_idx - 1)) == iclass) + 1;
 
     % Setup the progress bar
     delprog = '';
@@ -428,12 +429,12 @@ function subtom_parallel_sums_bfactor(varargin)
 
         % Add wedge and particle to sum arrays
         for subset_idx = 1:num_subsets
-            if mod(good_idx, 2 ^ (subset_idx - 1)) == 0
-               ptcl_average_cell{subset_idx} = ...
-                   ptcl_average_cell{subset_idx} + aligned_ptcl; 
+            if mod(ptcl_idx, 2 ^ (subset_idx - 1)) == 0
+                ptcl_average_cell{subset_idx} = ...
+                    ptcl_average_cell{subset_idx} + aligned_ptcl; 
 
-               weight_sum_cell{subset_idx} = ...
-                   weight_sum_cell{subset_idx} + aligned_weight;
+                weight_sum_cell{subset_idx} = ...
+                    weight_sum_cell{subset_idx} + aligned_weight;
 
             end
         end
