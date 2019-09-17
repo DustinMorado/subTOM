@@ -31,7 +31,7 @@ exec_dir="XXXINSTALLATION_DIRXXX/bin"
 #                                  VARIABLES                                   #
 ################################################################################
 # cat_motls executable
-cat_motls_exec=${exec_dir}/MOTL/subtom_cat_motls
+cat_motls_exec="${exec_dir}/MOTL/subtom_cat_motls"
 
 ################################################################################
 #                                 FILE OPTIONS                                 #

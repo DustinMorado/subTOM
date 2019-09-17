@@ -106,6 +106,12 @@ function subtom_compare_motls(varargin)
         end
     end
 
+    % We need to make sure that the motivelists are together in terms of
+    % particles, in some cases sometime the motivelists get out of order with
+    % respect to each other (???), so we just sort them here.
+    motl_1 = transpose(sortrows(motl_1', 4));
+    motl_2 = transpose(sortrows(motl_2', 4));
+
     if ~all(motl_1(4, :) == motl_2(4, :))
         try
             error('subTOM:argumentError', ...
