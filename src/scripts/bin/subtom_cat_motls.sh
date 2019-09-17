@@ -31,7 +31,7 @@ then
 
     if [[ ! -d "${output_motl_dir}" ]]
     then
-        mkdir -p "${output_motl_dir}" ]]
+        mkdir -p "${output_motl_dir}"
     fi
 fi
 
@@ -41,7 +41,7 @@ then
 
     if [[ ! -d "${output_star_dir}" ]]
     then
-        mkdir -p "${output_star_dir}" ]]
+        mkdir -p "${output_star_dir}"
     fi
 fi
 
