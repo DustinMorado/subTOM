@@ -913,8 +913,16 @@ function subtom_scan_angles_exact(varargin)
                         rot_cc_mask = tom_rotate(cc_mask, [phi, psi, theta]);
                         masked_ccf = ccf .* rot_cc_mask;
 
-                        % Find the integral coordinates and value of the peak
-                        [peak_value, peak_linear_idx] = max(masked_ccf(:));
+                        % Find the integral coordinates and value of the peak.
+                        % Note this used to take the global max of masked_ccf,
+                        % however there is an edge case when all coefficients
+                        % inside the mask are negative in which the 0s from the
+                        % mask become the maximum. To fix this we limit the
+                        % valuse to where the rotated cc-mask is above 0.5. The
+                        % 0.5 is to handle where the interpolation of the
+                        % rotation of the originally binary volume.
+                        peak_value = max(masked_ccf(rot_cc_mask >= 0.5));
+                        peak_linear_idx = find(masked_ccf == peak_value, 1);
                         [x, y, z] = ind2sub(box_size, peak_linear_idx);
                         peak_coord = [x, y, z];
 
