@@ -15,9 +15,9 @@ cryo-tomography data.
     :maxdepth: 1
     :caption: Table of Contents:
 
-    installation
-    conventions
-    tutorial
+    Installation <installation>
+    Conventions <conventions>
+    Example Workflow <workflow>
 
 .. toctree::
     :maxdepth: 1
@@ -38,7 +38,10 @@ cryo-tomography data.
     subtom_plot_filter.sh <scripts/subtom_plot_filter>
     subtom_plot_scanned_angles.sh <scripts/subtom_plot_scanned_angles>
     subtom_reconstruct.sh <scripts/subtom_reconstruct>
+    subtom_renumber_motl.sh <scripts/subtom_renumber_motl>
+    subtom_rotx_motl.sh <scripts/subtom_rotx_motl>
     subtom_scale_motl.sh <scripts/subtom_scale_motl>
+    subtom_scale_noisemotl.sh <scripts/subtom_scale_noisemotl>
     subtom_seed_positions.sh <scripts/subtom_seed_positions>
     subtom_shape.sh <scripts/subtom_shape>
     subtom_split_motl_by_row.sh <scripts/subtom_split_motl_by_row>
@@ -61,6 +64,8 @@ cryo-tomography data.
     subtom_plot_filter.m <functions/subtom_plot_filter>
     subtom_plot_scanned_angles.m <functions/subtom_plot_scanned_angles>
     subtom_random_subset_motl.m <functions/subtom_random_subset_motl>
+    subtom_renumber_motl.m <functions/subtom_renumber_motl>
+    subtom_rotx_motl.m <functions/subtom_rotx_motl>
     subtom_scale_motl.m <functions/subtom_scale_motl>
     subtom_scan_angles_exact.m <functions/subtom_scan_angles_exact>
     subtom_seed_positions.m <functions/subtom_seed_positions>

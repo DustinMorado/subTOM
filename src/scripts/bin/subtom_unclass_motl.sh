@@ -11,7 +11,7 @@
 # mainly because the behaviour of bash is a bit more predictable.
 #
 # This MOTL manipulation script uses one MATLAB compiled scripts below:
-# - subtom_scale_motl
+# - subtom_unclass_motl
 
 # DRM 09-2019
 ################################################################################

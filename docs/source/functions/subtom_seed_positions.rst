@@ -56,6 +56,8 @@ See Also
 * :doc:`subtom_compare_motls`
 * :doc:`subtom_even_odd_motl`
 * :doc:`subtom_random_subset_motl`
+* :doc:`subtom_renumber_motl`
+* :doc:`subtom_rotx_motl`
 * :doc:`subtom_scale_motl`
 * :doc:`subtom_split_motl_by_row`
 * :doc:`subtom_transform_motl`

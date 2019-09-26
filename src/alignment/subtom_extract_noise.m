@@ -856,7 +856,7 @@ function binary_wedge = binary_from_ampspec(ampspec)
     norm_ampspec = (norm_ampspec - mean(norm_ampspec(:))) ./ ...
         std(norm_ampspec(:), 1);
 
-    best_ccc = [-1, -60, 60];
+    best_ccc = [-1, -60, 60, 0];
     n_voxels = numel(norm_ampspec);
 
     for min_angle = -60:-1
@@ -866,12 +866,20 @@ function binary_wedge = binary_from_ampspec(ampspec)
             norm_wedge = (wedge - mean(wedge(:))) ./ std(wedge(:), 1);
             ccc = norm_ampspec .* norm_wedge;
             ccc = sum(ccc(:)) ./ n_voxels;
+            ccc_ = norm_ampspec .* tom_rotate(norm_wedge, [0, 0, -90]);
+            ccc_ = sum(ccc_(:)) ./ n_voxels;
 
-            if ccc > best_ccc(1)
-                best_ccc = [ccc, min_angle, max_angle];
+            if ccc >= best_ccc(1)
+                best_ccc = [ccc, min_angle, max_angle, 0];
+            elseif ccc_ >= best_ccc(1)
+                best_ccc = [ccc, min_angle, max_angle, 1];
             end
         end
     end
 
     binary_wedge = av3_wedge(ampspec, best_ccc(2), best_ccc(3));
+
+    if best_ccc(4) == 1
+        binary_wedge = tom_rotate(binary_wedge, [0, 0, -90]);
+    end
 end

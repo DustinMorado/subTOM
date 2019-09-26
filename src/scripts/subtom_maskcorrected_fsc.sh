@@ -29,7 +29,7 @@ exec_dir="XXXINSTALLATION_DIRXXX/bin"
 #                                  VARIABLES                                   #
 ################################################################################
 # FSC executable
-fsc_exec=${exec_dir}/analysis/subtom_maskcorrected_fsc
+fsc_exec="${exec_dir}/analysis/subtom_maskcorrected_fsc"
 
 ################################################################################
 #                                 FILE OPTIONS                                 #

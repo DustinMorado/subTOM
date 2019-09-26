@@ -104,12 +104,12 @@ function subtom_split_motl_by_row(varargin)
     % Find the unique values with the requested row in the motive list.
     row_values = unique(input_motl(split_row, :));
 
-    % Find the number of unique values within the request row.
-    num_outputs = length(row_values);
+    % Find the largest unique number value within the requested row.
+    row_max = max(abs(row_values(:)));
 
     % Create an initial format string for the eventual output filenames.
     output_motl_fmt = sprintf('%s_%%0%dd.em', output_motl_fn_prefix, ...
-        length(num2str(num_outputs)));
+        length(num2str(row_max)));
 
     % Loop over the unique values within the requested row.
     for row_value = row_values
