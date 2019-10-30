@@ -6,7 +6,7 @@ The installation of subTOM is relatively straight-forward. subTOM is currently
 only built for 64-bit linux computers, with no plans currently to produce builds
 for Windows or Mac.
 
-1. ``git clone /net/dstore2/teraraid/dmorado/subTOM``
+1. ``git clone /net/dstore2/teraraid/dmorado/software/subTOM``
 2. ``cd subTOM``
 3. ``chmod u+x install.sh``
 4. ``./install.sh <INSTALL_DIR> <MCR_DIR>``
@@ -36,7 +36,7 @@ Step-by-Step Instructions
 
 1. From the directory in which you want to install subTOM clone the repository.
 
-  * ``git clone /net/dstore2/teraraid/dmorado/subTOM``
+  * ``git clone /net/dstore2/teraraid/dmorado/software/subTOM``
 
 2. Change into the newly created subTOM directory.
 
@@ -51,5 +51,5 @@ Step-by-Step Instructions
 
   * ``./install.sh <INSTALL_DIR> <MCR_DIR>``
 
-    * *example* ``./install.sh /lmb/home/dmorado/opt/subTOM
+    * *example* ``./install.sh /net/dstore2/teraraid/dmorado/software/subTOM
       /lmb/home/public/matlab/jbriggs``

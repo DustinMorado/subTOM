@@ -155,6 +155,11 @@ defocus_shift_file=""
 # only "imod" is valid as a value for "defocus_file_format".
 do_2dctf=1
 
+# The tilt-axis angle of the tilt series. You can find this value running the
+# command 'header' on the raw sum tiltseries and looking at the first label
+# (Titles) in the header.
+tilt_axis_angle=85.3
+
 # If you want to shift the defocus for some reason away from the center of the
 # mass of the tomogram provide the number of pixels to shift here. The sign of
 # the the shift is the same as for SHIFT in IMOD's tilt.com, but depends on the

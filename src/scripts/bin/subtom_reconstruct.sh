@@ -386,6 +386,7 @@ do
         then
             sed \
                 -e "s/XXXTOMOGRAMXXX/${tomo}/g" \
+                -e "s/XXXIDXXXX/${fmt_idx}/g" \
                 "${job_name}_ctfphaseflip.com" >\
                 "${tomo_dir}/${job_name}_ctfphaseflip_${fmt_idx}.com"
 
@@ -770,7 +771,7 @@ RECONSTRUCT
         if [[ ${do_2dctf} -eq 1 ]]
         then
             cat<<RECONSTRUCT>>"${script_fn}"
-if [[ ! -f "${tomo}.2dctf.rec" && ! -f "${tomo}.2dctf.bin1.rec ]]
+if [[ ! -f "${tomo}.2dctf.rec" && ! -f "${tomo}.2dctf.bin1.rec" ]]
 then
     "${novactf_exe}" -param "${job_name}_nova_reconstruct_${fmt_idx}.com"
 elif [[ -f "${tomo}.2dctf.rec" ]]
