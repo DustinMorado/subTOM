@@ -932,8 +932,10 @@ function subtom_scan_angles_exact(varargin)
 
                     else
                         % Find peak at previous center for no shift
-                        peak_coord = round(old_ref_shift + box_center);
-                        peak_value = ccf(peak_coord);
+                        peak_coord = round(old_ref_shift' + box_center);
+                        peak_value = ccf(peak_coord(1), peak_coord(2), ...
+                            peak_coord(3));
+
                         [ccc, peak] = get_subpixel_peak(ccf, peak_value, ...
                             peak_coord);
 
