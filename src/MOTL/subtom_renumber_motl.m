@@ -185,6 +185,7 @@ function subtom_renumber_motl(varargin)
 
                 % Remove the particles from the input motive list.
                 input_motl(:, input_motl(4, :) == ptcl_idx) = [];
+            end
         end
     end
 
