@@ -590,7 +590,7 @@ function subtom_scan_angles_exact(varargin)
             try
                 error('subTOM:volDimError', ...
                     'scan_angles_exact:%s and %s are not same size.', ...
-                    ccmask_fn, check_fn);
+                    cc_mask_fn, check_fn);
 
             catch ME
                 fprintf(2, '%s - %s\n', ME.identifier, ME.message);

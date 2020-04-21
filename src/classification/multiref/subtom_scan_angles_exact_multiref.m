@@ -628,7 +628,7 @@ function subtom_scan_angles_exact_multiref(varargin)
             try
                 error('subTOM:volDimError', ...
                     'scan_angles_exact_multiref:%s and %s %s.', ...
-                    ccmask_fn, check_fn, 'are not same size');
+                    cc_mask_fn, check_fn, 'are not same size');
 
             catch ME
                 fprintf(2, '%s - %s\n', ME.identifier, ME.message);
