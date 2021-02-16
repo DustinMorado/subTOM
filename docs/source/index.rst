@@ -26,6 +26,7 @@ cryo-tomography data.
     Introduction <scripts/introduction>
     subtom_alignment.sh <scripts/subtom_alignment>
     subtom_average.sh <scripts/subtom_average>
+    subtom_bandpass.sh <scripts/subtom_bandpass>
     subtom_cat_motls.sh <scripts/subtom_cat_motls>
     subtom_clean_motl.sh <scripts/subtom_clean_motl>
     subtom_compare_motls.sh <scripts/subtom_compare_motls>
@@ -53,6 +54,7 @@ cryo-tomography data.
     :caption: Links to Individual Function Documentation:
 
     Introduction <functions/introduction>
+    subtom_bandpass.m <functions/subtom_bandpass>
     subtom_cat_motls.m <functions/subtom_cat_motls>
     subtom_clean_motl.m <functions/subtom_clean_motl>
     subtom_compare_motls.m <functions/subtom_compare_motls>

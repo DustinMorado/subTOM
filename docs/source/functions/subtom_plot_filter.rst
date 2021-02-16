@@ -61,5 +61,6 @@ Example
 See Also
 --------
 
-* :doc:`subtom_plot_filter`
+* :doc:`subtom_plot_scanned_angles`
+* :doc:`subtom_bandpass`
 * :doc:`subtom_shape`
