@@ -5,10 +5,11 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>subtom_preprocess &mdash; subTOM 1.1.5 documentation</title>
+  <title>subtom_preprocess &mdash; subTOM 1.1.6 documentation</title>
   
 
   
@@ -21,11 +22,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -34,6 +34,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="subtom_random_subset_motl" href="subtom_random_subset_motl.html" />
@@ -234,14 +236,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="subtom-preprocess">
+  <section id="subtom-preprocess">
 <h1>subtom_preprocess<a class="headerlink" href="#subtom-preprocess" title="Permalink to this headline">¶</a></h1>
 <p>Aligns dose-fractionated data, sorts and stacks aligned frames, determines the
 defocus of the tilt-series using CTFFIND4, GCTF, or IMOD CTFPLOTTER and then
 dose-filters the tilt-series in prepartion for alignment using IMOD/eTomo.</p>
-<div class="section" id="options">
+<section id="options">
 <h2>Options<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="directories">
+<section id="directories">
 <h3>Directories<a class="headerlink" href="#directories" title="Permalink to this headline">¶</a></h3>
 <dl class="simple">
 <dt>scratch_dir</dt><dd><p>Absolute path to the folder with the input to be processed.
@@ -251,8 +253,8 @@ Other paths are relative to this one.</p>
 located.</p>
 </dd>
 </dl>
-</div>
-<div class="section" id="executables">
+</section>
+<section id="executables">
 <h3>Executables<a class="headerlink" href="#executables" title="Permalink to this headline">¶</a></h3>
 <dl class="simple">
 <dt>alignframes_exe</dt><dd><p>Absolute path to the IMOD alignframes executable. The directory of this will
@@ -267,8 +269,8 @@ works but it seems a version of 1.06 sometimes doesn’t crash.</p>
 <dt>exec_dir</dt><dd><p>Directory for subTOM executables</p>
 </dd>
 </dl>
-</div>
-<div class="section" id="memory-options">
+</section>
+<section id="memory-options">
 <h3>Memory Options<a class="headerlink" href="#memory-options" title="Permalink to this headline">¶</a></h3>
 <dl class="simple">
 <dt>mem_free</dt><dd><p>The amount of memory the job requires for alignment. This variable determines
@@ -283,8 +285,8 @@ will kill the process. This is more of an option for safety of the cluster to
 prevent the user from crashing the cluster requesting too much memory.</p>
 </dd>
 </dl>
-</div>
-<div class="section" id="other-cluster-options">
+</section>
+<section id="other-cluster-options">
 <h3>Other Cluster Options<a class="headerlink" href="#other-cluster-options" title="Permalink to this headline">¶</a></h3>
 <dl class="simple">
 <dt>job_name</dt><dd><p>The job name prefix that will be used for the cluster submission scripts, log
@@ -296,8 +298,8 @@ name prefix will be overwritten in the case of a name collision.</p>
 should be set to 1.</p>
 </dd>
 </dl>
-</div>
-<div class="section" id="file-options">
+</section>
+<section id="file-options">
 <h3>File Options<a class="headerlink" href="#file-options" title="Permalink to this headline">¶</a></h3>
 <dl>
 <dt>ts_fmt</dt><dd><p>The format string for the datasets to process. The string XXXIDXXXX will be
@@ -317,8 +319,8 @@ tilt-image and * is the tilt-angle.</p>
 padding or maybe just flat integers.</p>
 </dd>
 </dl>
-</div>
-<div class="section" id="beam-induced-motion-correction-options">
+</section>
+<section id="beam-induced-motion-correction-options">
 <h3>Beam Induced Motion Correction Options<a class="headerlink" href="#beam-induced-motion-correction-options" title="Permalink to this headline">¶</a></h3>
 <dl>
 <dt>do_aligned</dt><dd><p>If you want to run alignframes to generate the non-dose-weighted tiltseries
@@ -394,8 +396,8 @@ cluster and the GPU as this is not supported.</p>
 <dt>extra_opts</dt><dd><p>If you want to use other options to alignframes specify them here.</p>
 </dd>
 </dl>
-</div>
-<div class="section" id="ctf-estimation-options">
+</section>
+<section id="ctf-estimation-options">
 <h3>CTF Estimation Options<a class="headerlink" href="#ctf-estimation-options" title="Permalink to this headline">¶</a></h3>
 <dl class="simple">
 <dt>apix</dt><dd><p>The pixel size of the raw movie frames if they exist, or the pixelsize of the
@@ -438,16 +440,16 @@ command ‘header’ on the raw sum tiltseries and looking at the first label
 (Titles) in the header.</p>
 </dd>
 </dl>
-</div>
-<div class="section" id="dose-filtering-options">
+</section>
+<section id="dose-filtering-options">
 <h3>Dose Filtering Options<a class="headerlink" href="#dose-filtering-options" title="Permalink to this headline">¶</a></h3>
 <dl class="simple">
 <dt>dose_per_tilt</dt><dd><p>The dose per micrograph in Electrons per square Angstrom.</p>
 </dd>
 </dl>
-</div>
-</div>
-<div class="section" id="example">
+</section>
+</section>
+<section id="example">
 <h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">scratch_dir</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span><span class="s2">&quot;</span>
 
@@ -550,8 +552,8 @@ command ‘header’ on the raw sum tiltseries and looking at the first label
 <span class="nv">dose_per_tilt</span><span class="o">=</span><span class="m">3</span>.5
 </pre></div>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

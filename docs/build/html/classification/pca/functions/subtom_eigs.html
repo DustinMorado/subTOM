@@ -5,10 +5,11 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>subtom_eigs &mdash; subTOM 1.1.5 documentation</title>
+  <title>subtom_eigs &mdash; subTOM 1.1.6 documentation</title>
   
 
   
@@ -21,11 +22,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -34,6 +34,8 @@
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="subtom_join_ccmatrix" href="subtom_join_ccmatrix.html" />
@@ -241,18 +243,18 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="subtom-eigs">
+  <section id="subtom-eigs">
 <h1>subtom_eigs<a class="headerlink" href="#subtom-eigs" title="Permalink to this headline">¶</a></h1>
 <p>Uses MATLAB eigs to calculate a subset of Eigenvalue/vectors.</p>
-<div class="highlight-Matlab notranslate"><div class="highlight"><pre><span></span><span class="n">subtom_eigs</span><span class="p">(</span>
-    <span class="s">&#39;ccmatrix_fn_prefix&#39;</span><span class="p">,</span> <span class="n">ccmatrix_fn_prefix</span> <span class="p">(</span><span class="s">&#39;class/ccmatrix_pca&#39;</span><span class="p">),</span>
-    <span class="s">&#39;eig_vec_fn_prefix&#39;</span><span class="p">,</span> <span class="n">eig_vec_fn_prefix</span> <span class="p">(</span><span class="s">&#39;class/eigvec_pca&#39;</span><span class="p">),</span>
-    <span class="s">&#39;eig_val_fn_prefix&#39;</span><span class="p">,</span> <span class="n">eig_val_fn_prefix</span> <span class="p">(</span><span class="s">&#39;class/eigval_pca&#39;</span><span class="p">),</span>
-    <span class="s">&#39;iteration&#39;</span><span class="p">,</span> <span class="n">iteration</span> <span class="p">(</span><span class="mi">1</span><span class="p">),</span>
-    <span class="s">&#39;num_eigs&#39;</span><span class="p">,</span> <span class="n">num_eigs</span> <span class="p">(</span><span class="mi">40</span><span class="p">),</span>
-    <span class="s">&#39;eigs_iterations&#39;</span><span class="p">,</span> <span class="n">eigs_iterations</span> <span class="p">(</span><span class="s">&#39;default&#39;</span><span class="p">),</span>
-    <span class="s">&#39;eigs_tolerance&#39;</span><span class="p">,</span> <span class="n">eig_tolerance</span> <span class="p">(</span><span class="s">&#39;default&#39;</span><span class="p">),</span>
-    <span class="s">&#39;do_algebraic&#39;</span><span class="p">,</span> <span class="n">do_algebraic</span> <span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+<div class="highlight-Matlab notranslate"><div class="highlight"><pre><span></span><span class="n">subtom_eigs</span><span class="p">(</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;ccmatrix_fn_prefix&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">ccmatrix_fn_prefix</span><span class="w"> </span><span class="p">(</span><span class="s">&#39;class/ccmatrix_pca&#39;</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;eig_vec_fn_prefix&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">eig_vec_fn_prefix</span><span class="w"> </span><span class="p">(</span><span class="s">&#39;class/eigvec_pca&#39;</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;eig_val_fn_prefix&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">eig_val_fn_prefix</span><span class="w"> </span><span class="p">(</span><span class="s">&#39;class/eigval_pca&#39;</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;iteration&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">iteration</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;num_eigs&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">num_eigs</span><span class="w"> </span><span class="p">(</span><span class="mi">40</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;eigs_iterations&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">eigs_iterations</span><span class="w"> </span><span class="p">(</span><span class="s">&#39;default&#39;</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;eigs_tolerance&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">eig_tolerance</span><span class="w"> </span><span class="p">(</span><span class="s">&#39;default&#39;</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;do_algebraic&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">do_algebraic</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">))</span><span class="w"></span>
 </pre></div>
 </div>
 <p>Uses the MATLAB function eigs to calculate a subset of eigenvalues and
@@ -266,21 +268,21 @@ out as specified by <code class="docutils literal notranslate"><span class="pre"
 <code class="docutils literal notranslate"><span class="pre">do_algebraic</span></code> evaluates to true as a boolean ‘la’ will be used in place of
 ‘lm’ in the call to eigs, this could be a valid option in the case when ‘lm’
 returns negative eigenvalues.</p>
-<div class="section" id="example">
+<section id="example">
 <h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-Matlab notranslate"><div class="highlight"><pre><span></span><span class="n">subtom_eigs</span><span class="p">(</span><span class="c">...</span>
-    <span class="s">&#39;ccmatrix_fn_prefix&#39;</span><span class="p">,</span> <span class="s">&#39;class/ccmatrix&#39;</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;eig_vec_fn_prefix&#39;</span><span class="p">,</span> <span class="s">&#39;class/eigvec&#39;</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;eig_val_fn_prefix&#39;</span><span class="p">,</span> <span class="s">&#39;class/eigval&#39;</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;iteration&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;num_eigs&#39;</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;eigs_iterations&#39;</span><span class="p">,</span> <span class="s">&#39;default&#39;</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;eigs_tolerance&#39;</span><span class="p">,</span> <span class="s">&#39;default&#39;</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;do_algebraic&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<div class="highlight-Matlab notranslate"><div class="highlight"><pre><span></span><span class="n">subtom_eigs</span><span class="p">(</span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;ccmatrix_fn_prefix&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;class/ccmatrix&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;eig_vec_fn_prefix&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;class/eigvec&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;eig_val_fn_prefix&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;class/eigval&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;iteration&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;num_eigs&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">50</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;eigs_iterations&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;default&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;eigs_tolerance&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;default&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;do_algebraic&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="see-also">
+</section>
+<section id="see-also">
 <h2>See Also<a class="headerlink" href="#see-also" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p><a class="reference internal" href="subtom_join_ccmatrix.html"><span class="doc">subtom_join_ccmatrix</span></a></p></li>
@@ -293,8 +295,8 @@ returns negative eigenvalues.</p>
 <li><p><a class="reference internal" href="subtom_prepare_ccmatrix.html"><span class="doc">subtom_prepare_ccmatrix</span></a></p></li>
 <li><p><a class="reference internal" href="subtom_svds.html"><span class="doc">subtom_svds</span></a></p></li>
 </ul>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

@@ -1,3 +1,4 @@
 *.swp
 scripts/*.sh
 bin/scripts/*.sh
+lib

@@ -195,7 +195,8 @@ function subtom_rotx_motl(varargin)
         end
 
         % We find the tomogram size from the MRC header.
-        tomo_size = getfield(tom_readmrcheader(tomogram_fn), 'Header', 'Size');
+        tomo_size = getfield(subtom_readmrcheader(tomogram_fn), ...
+            'Header', 'Size');
 
         % If we are applying the rotx operation the thickness is in the
         % Y-dimension, otherwise it is the Z-dimension.

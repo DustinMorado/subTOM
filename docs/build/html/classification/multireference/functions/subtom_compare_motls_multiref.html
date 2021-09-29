@@ -5,10 +5,11 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>subtom_compare_motls_multiref &mdash; subTOM 1.1.5 documentation</title>
+  <title>subtom_compare_motls_multiref &mdash; subTOM 1.1.6 documentation</title>
   
 
   
@@ -21,11 +22,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -34,6 +34,8 @@
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="subtom_rand_class_motl" href="subtom_rand_class_motl.html" />
@@ -236,14 +238,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="subtom-compare-motls-multiref">
+  <section id="subtom-compare-motls-multiref">
 <h1>subtom_compare_motls_multiref<a class="headerlink" href="#subtom-compare-motls-multiref" title="Permalink to this headline">¶</a></h1>
 <p>Compares orientations, shifts and class changes between two MOTLs.</p>
-<div class="highlight-Matlab notranslate"><div class="highlight"><pre><span></span><span class="n">subtom_compare_motls_multiref</span><span class="p">(</span>
-    <span class="s">&#39;motl_1_fn&#39;</span><span class="p">,</span> <span class="n">motl_1_fn</span> <span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">),</span>
-    <span class="s">&#39;motl_2_fn&#39;</span><span class="p">,</span> <span class="n">motl_2_fn</span> <span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">),</span>
-    <span class="s">&#39;write_diffs&#39;</span><span class="p">,</span> <span class="n">write_diffs</span> <span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s">&#39;output_diffs_fn&#39;</span><span class="p">,</span> <span class="n">output_diffs_fn</span> <span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">))</span>
+<div class="highlight-Matlab notranslate"><div class="highlight"><pre><span></span><span class="n">subtom_compare_motls_multiref</span><span class="p">(</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;motl_1_fn&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">motl_1_fn</span><span class="w"> </span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;motl_2_fn&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">motl_2_fn</span><span class="w"> </span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;write_diffs&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">write_diffs</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;output_diffs_fn&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">output_diffs_fn</span><span class="w"> </span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">))</span><span class="w"></span>
 </pre></div>
 </div>
 <p>Takes the motls given by <code class="docutils literal notranslate"><span class="pre">motl_1_fn</span></code> and <code class="docutils literal notranslate"><span class="pre">motl_2_fn</span></code> and calculates the
@@ -252,24 +254,24 @@ particles in each motive list. For multireference alignment the number of
 particles that have changed class is also determined. If <code class="docutils literal notranslate"><span class="pre">write_diffs</span></code>
 evaluates to true as a boolean, then also a CSV file with the differences in
 coordinates and orientations to <code class="docutils literal notranslate"><span class="pre">diffs_output_fn</span></code>.</p>
-<div class="section" id="example">
+<section id="example">
 <h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-Matlab notranslate"><div class="highlight"><pre><span></span><span class="n">subtom_compare_motls_multiref</span><span class="p">(</span><span class="c">...</span>
-    <span class="s">&#39;motl_1_fn&#39;</span><span class="p">,</span> <span class="s">&#39;combinedmotl/allmotl_1.em&#39;</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;motl_2_fn&#39;</span><span class="p">,</span> <span class="s">&#39;combinedmotl/allmotl_2.em&#39;</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;write_diffs&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;output_diffs_fn&#39;</span><span class="p">,</span> <span class="s">&#39;combinedmotl/allmotl_1_2_diff.csv&#39;</span><span class="p">)</span>
+<div class="highlight-Matlab notranslate"><div class="highlight"><pre><span></span><span class="n">subtom_compare_motls_multiref</span><span class="p">(</span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;motl_1_fn&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;combinedmotl/allmotl_1.em&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;motl_2_fn&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;combinedmotl/allmotl_2.em&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;write_diffs&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;output_diffs_fn&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;combinedmotl/allmotl_1_2_diff.csv&#39;</span><span class="p">)</span><span class="w"></span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="see-also">
+</section>
+<section id="see-also">
 <h2>See Also<a class="headerlink" href="#see-also" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p><a class="reference internal" href="subtom_rand_class_motl.html"><span class="doc">subtom_rand_class_motl</span></a></p></li>
 <li><p><a class="reference internal" href="subtom_scan_angles_exact_multiref.html"><span class="doc">subtom_scan_angles_exact_multiref</span></a></p></li>
 </ul>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

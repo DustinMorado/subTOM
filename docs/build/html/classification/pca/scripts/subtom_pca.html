@@ -5,10 +5,11 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>subtom_pca &mdash; subTOM 1.1.5 documentation</title>
+  <title>subtom_pca &mdash; subTOM 1.1.6 documentation</title>
   
 
   
@@ -21,11 +22,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -34,6 +34,8 @@
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="subtom_eigs" href="../functions/subtom_eigs.html" />
@@ -259,7 +261,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="subtom-pca">
+  <section id="subtom-pca">
 <h1>subtom_pca<a class="headerlink" href="#subtom-pca" title="Permalink to this headline">¶</a></h1>
 <p>The main PCA pipeline process script of subTOM.</p>
 <p>This subtomogram classification script uses fourteen MATLAB compiled scripts
@@ -280,9 +282,9 @@ below:</p>
 <li><p><a class="reference internal" href="../../general/functions/subtom_parallel_sums_cls.html"><span class="doc">subtom_parallel_sums_cls</span></a></p></li>
 <li><p><a class="reference internal" href="../../general/functions/subtom_weighted_average_cls.html"><span class="doc">subtom_weighted_average_cls</span></a></p></li>
 </ul>
-<div class="section" id="options">
+<section id="options">
 <h2>Options<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="directories">
+<section id="directories">
 <h3>Directories<a class="headerlink" href="#directories" title="Permalink to this headline">¶</a></h3>
 <dl class="simple">
 <dt>scratch_dir</dt><dd><p>Absolute path to the folder with the input to be processed.
@@ -298,8 +300,8 @@ the option skip_local_copy below.</p>
 <dt>exec_dir</dt><dd><p>Directory for executables</p>
 </dd>
 </dl>
-</div>
-<div class="section" id="variables">
+</section>
+<section id="variables">
 <h3>Variables<a class="headerlink" href="#variables" title="Permalink to this headline">¶</a></h3>
 <dl class="simple">
 <dt>cluster_exec</dt><dd><p>Cluster executable.</p>
@@ -333,8 +335,8 @@ the option skip_local_copy below.</p>
 <dt>motl_dump_exec</dt><dd><p>MOTL dump executable</p>
 </dd>
 </dl>
-</div>
-<div class="section" id="memory-options">
+</section>
+<section id="memory-options">
 <h3>Memory Options<a class="headerlink" href="#memory-options" title="Permalink to this headline">¶</a></h3>
 <dl class="simple">
 <dt>mem_free</dt><dd><p>The amount of memory the job requires. This variable determines whether a
@@ -349,8 +351,8 @@ the process. This is more of an option for safety of the cluster to prevent
 the user from crashing the cluster requesting too much memory.</p>
 </dd>
 </dl>
-</div>
-<div class="section" id="other-cluster-options">
+</section>
+<section id="other-cluster-options">
 <h3>Other Cluster Options<a class="headerlink" href="#other-cluster-options" title="Permalink to this headline">¶</a></h3>
 <dl class="simple">
 <dt>job_name</dt><dd><p>The job name prefix that will be used for the cluster submission scripts, log
@@ -373,8 +375,8 @@ should be set to 1.</p>
 <dt>skip_local_copy</dt><dd><p>Set this option to 1 to skip the copying of data to local_dir.</p>
 </dd>
 </dl>
-</div>
-<div class="section" id="parallelization-options">
+</section>
+<section id="parallelization-options">
 <h3>Parallelization Options<a class="headerlink" href="#parallelization-options" title="Permalink to this headline">¶</a></h3>
 <dl class="simple">
 <dt>iteration</dt><dd><p>The index of the references to generate : input will be
@@ -399,11 +401,11 @@ ignore this option.</p>
 <dt>num_avg_batch</dt><dd><p>The number of batches to split the parallel subtomogram averaging job into.</p>
 </dd>
 </dl>
-<div class="section" id="subtomogram-classification-workflow-options">
+<section id="subtomogram-classification-workflow-options">
 <h4>Subtomogram Classification Workflow Options<a class="headerlink" href="#subtomogram-classification-workflow-options" title="Permalink to this headline">¶</a></h4>
-</div>
-</div>
-<div class="section" id="cc-matrix-options">
+</section>
+</section>
+<section id="cc-matrix-options">
 <h3>CC-Matrix Options<a class="headerlink" href="#cc-matrix-options" title="Permalink to this headline">¶</a></h3>
 <dl class="simple">
 <dt>high_pass_fp</dt><dd><p>High pass filter cutoff (in transform units (pixels): calculate as (box_size *
@@ -432,8 +434,8 @@ calculation, set the following to 1, otherwise the particles will be aligned
 during the computation.</p>
 </dd>
 </dl>
-</div>
-<div class="section" id="cc-matrix-file-options">
+</section>
+<section id="cc-matrix-file-options">
 <h3>CC-Matrix File Options<a class="headerlink" href="#cc-matrix-file-options" title="Permalink to this headline">¶</a></h3>
 <dl class="simple">
 <dt>ccmatrix_all_motl_fn_prefix</dt><dd><p>Relative path and name of the concatenated motivelist of all particles (e.g.
@@ -453,8 +455,8 @@ want to use the default spherical mask set mask_fn to ‘none’.</p>
 <dt>ccmatrix_fn_prefix</dt><dd><p>Relative path and name of the CC-Matrix.</p>
 </dd>
 </dl>
-</div>
-<div class="section" id="eigendecomposition-options">
+</section>
+<section id="eigendecomposition-options">
 <h3>Eigendecomposition Options<a class="headerlink" href="#eigendecomposition-options" title="Permalink to this headline">¶</a></h3>
 <dl class="simple">
 <dt>decomp_type</dt><dd><p>The following determines which type of decomposition to perform. If the
@@ -490,8 +492,8 @@ of the decomposition calculation. If you want to use the default tolerance
 leave this set to ‘default’.</p>
 </dd>
 </dl>
-</div>
-<div class="section" id="eigendecomposition-file-options">
+</section>
+<section id="eigendecomposition-file-options">
 <h3>Eigendecomposition File Options<a class="headerlink" href="#eigendecomposition-file-options" title="Permalink to this headline">¶</a></h3>
 <dl class="simple">
 <dt>eig_vec_fn_prefix</dt><dd><p>Relative path and name of the Eigenvectors (or Left Singular Vectors).</p>
@@ -499,22 +501,22 @@ leave this set to ‘default’.</p>
 <dt>eig_val_fn_prefix</dt><dd><p>Relative path and name of the Eigenvalues (or Singular Values).</p>
 </dd>
 </dl>
-</div>
-<div class="section" id="x-matrix-file-options">
+</section>
+<section id="x-matrix-file-options">
 <h3>X-Matrix File Options<a class="headerlink" href="#x-matrix-file-options" title="Permalink to this headline">¶</a></h3>
 <dl class="simple">
 <dt>xmatrix_fn_prefix</dt><dd><p>Relative path and name of the X-Matrix.</p>
 </dd>
 </dl>
-</div>
-<div class="section" id="eigenvolumes-file-options">
+</section>
+<section id="eigenvolumes-file-options">
 <h3>Eigenvolumes File Options<a class="headerlink" href="#eigenvolumes-file-options" title="Permalink to this headline">¶</a></h3>
 <dl class="simple">
 <dt>eig_vol_fn_prefix</dt><dd><p>Relative path and name of the Eigenvolumes.</p>
 </dd>
 </dl>
-</div>
-<div class="section" id="eigencoefficient-options">
+</section>
+<section id="eigencoefficient-options">
 <h3>Eigencoefficient Options<a class="headerlink" href="#eigencoefficient-options" title="Permalink to this headline">¶</a></h3>
 <dl class="simple">
 <dt>apply_weight</dt><dd><p>If the following is set to 1, the Eigenvolume (or conjugate-space Eigenvector)
@@ -526,8 +528,8 @@ calculation, set the following to 1, otherwise the particles will be aligned
 during the computation.</p>
 </dd>
 </dl>
-</div>
-<div class="section" id="eigencoefficient-file-options">
+</section>
+<section id="eigencoefficient-file-options">
 <h3>Eigencoefficient File Options<a class="headerlink" href="#eigencoefficient-file-options" title="Permalink to this headline">¶</a></h3>
 <dl class="simple">
 <dt>eig_coeff_all_motl_fn_prefix</dt><dd><p>Relative path and name of the concatenated motivelist to project onto the
@@ -537,8 +539,8 @@ than the one used to calculate the CC-Matrix and Eigenvolumes.</p>
 <dt>eig_coeff_fn_prefix</dt><dd><p>Relative path and name of the Eigencoefficients.</p>
 </dd>
 </dl>
-</div>
-<div class="section" id="clustering-options">
+</section>
+<section id="clustering-options">
 <h3>Clustering Options<a class="headerlink" href="#clustering-options" title="Permalink to this headline">¶</a></h3>
 <dl class="simple">
 <dt>cluster_type</dt><dd><p>The following determines which algorithm will be used to cluster the
@@ -555,16 +557,16 @@ and the fifteenth through the nineteenth for classification. If it is left as
 <dt>num_classes</dt><dd><p>How many classes should the particles be clustered into.</p>
 </dd>
 </dl>
-</div>
-<div class="section" id="clustering-file-options">
+</section>
+<section id="clustering-file-options">
 <h3>Clustering File Options<a class="headerlink" href="#clustering-file-options" title="Permalink to this headline">¶</a></h3>
 <dl class="simple">
 <dt>cluster_all_motl_fn_prefix</dt><dd><p>Relative path and name of the concatenated motivelist of the output classified
 particles.</p>
 </dd>
 </dl>
-</div>
-<div class="section" id="averaging-file-options">
+</section>
+<section id="averaging-file-options">
 <h3>Averaging File Options<a class="headerlink" href="#averaging-file-options" title="Permalink to this headline">¶</a></h3>
 <dl class="simple">
 <dt>ref_fn_prefix</dt><dd><p>Relative path and name prefix of the reference volumes (e.g.  ref_iter.em, the
@@ -573,9 +575,9 @@ variable will be written as a string e.g.  ref_fn_prefix=’sub-directory/ref’
 <dt>weight_sum_fn_prefix</dt><dd><p>Relative path and name prefix of the partial weight files.</p>
 </dd>
 </dl>
-</div>
-</div>
-<div class="section" id="example">
+</section>
+</section>
+<section id="example">
 <h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">scratch_dir</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span><span class="s2">&quot;</span>
 
@@ -710,8 +712,8 @@ variable will be written as a string e.g.  ref_fn_prefix=’sub-directory/ref’
 <span class="nv">weight_sum_fn_prefix</span><span class="o">=</span><span class="s2">&quot;class/wei_pca&quot;</span>
 </pre></div>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

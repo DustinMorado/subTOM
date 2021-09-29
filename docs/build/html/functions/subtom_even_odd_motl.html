@@ -5,10 +5,11 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>subtom_even_odd_motl &mdash; subTOM 1.1.5 documentation</title>
+  <title>subtom_even_odd_motl &mdash; subTOM 1.1.6 documentation</title>
   
 
   
@@ -21,11 +22,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -34,6 +34,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="subtom_extract_noise" href="subtom_extract_noise.html" />
@@ -224,15 +226,15 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="subtom-even-odd-motl">
+  <section id="subtom-even-odd-motl">
 <h1>subtom_even_odd_motl<a class="headerlink" href="#subtom-even-odd-motl" title="Permalink to this headline">¶</a></h1>
 <p>Split a MOTL file into even odd halves.</p>
-<div class="highlight-Matlab notranslate"><div class="highlight"><pre><span></span><span class="n">subtom_even_odd_motl</span><span class="p">(</span>
-    <span class="s">&#39;input_motl_fn&#39;</span><span class="p">,</span> <span class="n">input_motl_fn</span> <span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">),</span>
-    <span class="s">&#39;output_motl_fn&#39;</span><span class="p">,</span> <span class="n">output_motl_fn</span> <span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">),</span>
-    <span class="s">&#39;even_motl_fn&#39;</span><span class="p">,</span> <span class="n">even_motl_fn</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">),</span>
-    <span class="s">&#39;odd_motl_fn&#39;</span><span class="p">,</span> <span class="n">odd_motl_fn</span> <span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">),</span>
-    <span class="s">&#39;split_row&#39;</span><span class="p">,</span> <span class="n">split_row</span> <span class="p">(</span><span class="mi">4</span><span class="p">))</span>
+<div class="highlight-Matlab notranslate"><div class="highlight"><pre><span></span><span class="n">subtom_even_odd_motl</span><span class="p">(</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;input_motl_fn&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">input_motl_fn</span><span class="w"> </span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;output_motl_fn&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">output_motl_fn</span><span class="w"> </span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;even_motl_fn&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">even_motl_fn</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;odd_motl_fn&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">odd_motl_fn</span><span class="w"> </span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;split_row&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">split_row</span><span class="w"> </span><span class="p">(</span><span class="mi">4</span><span class="p">))</span><span class="w"></span>
 </pre></div>
 </div>
 <p>Takes the MOTL file specified by <code class="docutils literal notranslate"><span class="pre">input_motl_fn</span></code> and writes out seperate MOTL
@@ -244,18 +246,18 @@ plus 100 and the even half takes the particle’s current class number plus 200.
 The MOTL is split by the values in <code class="docutils literal notranslate"><span class="pre">split_row</span></code>, initially just taking even/odd
 halves of the unique values in that given row, and then this is slightly
 adjusted by naively adding to the lesser half until closest to half is found.</p>
-<div class="section" id="example">
+<section id="example">
 <h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-Matlab notranslate"><div class="highlight"><pre><span></span><span class="n">subtom_even_odd_motl</span><span class="p">(</span><span class="c">...</span>
-    <span class="s">&#39;input_motl_fn&#39;</span><span class="p">,</span> <span class="s">&#39;combinedmotl/allmotl_1.em&#39;</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;output_motl_fn&#39;</span><span class="p">,</span> <span class="s">&#39;combinedmotl/allmotl_eo_1.em&#39;</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;even_motl_fn&#39;</span><span class="p">,</span> <span class="s">&#39;even/combinedmotl/allmotl_1.em&#39;</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;odd_motl_fn&#39;</span><span class="p">,</span> <span class="s">&#39;odd/combinedmotl/allmotl_1.em&#39;</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;split_row&#39;</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<div class="highlight-Matlab notranslate"><div class="highlight"><pre><span></span><span class="n">subtom_even_odd_motl</span><span class="p">(</span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;input_motl_fn&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;combinedmotl/allmotl_1.em&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;output_motl_fn&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;combinedmotl/allmotl_eo_1.em&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;even_motl_fn&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;even/combinedmotl/allmotl_1.em&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;odd_motl_fn&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;odd/combinedmotl/allmotl_1.em&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;split_row&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span><span class="w"></span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="see-also">
+</section>
+<section id="see-also">
 <h2>See Also<a class="headerlink" href="#see-also" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p><a class="reference internal" href="subtom_cat_motls.html"><span class="doc">subtom_cat_motls</span></a></p></li>
@@ -270,8 +272,8 @@ adjusted by naively adding to the lesser half until closest to half is found.</p
 <li><p><a class="reference internal" href="subtom_transform_motl.html"><span class="doc">subtom_transform_motl</span></a></p></li>
 <li><p><a class="reference internal" href="subtom_unclass_motl.html"><span class="doc">subtom_unclass_motl</span></a></p></li>
 </ul>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

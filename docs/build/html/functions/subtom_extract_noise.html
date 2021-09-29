@@ -5,10 +5,11 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>subtom_extract_noise &mdash; subTOM 1.1.5 documentation</title>
+  <title>subtom_extract_noise &mdash; subTOM 1.1.6 documentation</title>
   
 
   
@@ -21,11 +22,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -34,6 +34,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="subtom_extract_subtomograms" href="subtom_extract_subtomograms.html" />
@@ -224,27 +226,27 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="subtom-extract-noise">
+  <section id="subtom-extract-noise">
 <h1>subtom_extract_noise<a class="headerlink" href="#subtom-extract-noise" title="Permalink to this headline">¶</a></h1>
 <p>Extract noise amplitude spectra on the cluster.</p>
-<div class="highlight-Matlab notranslate"><div class="highlight"><pre><span></span><span class="n">subtom_extract_noise</span><span class="p">(</span>
-    <span class="s">&#39;tomogram_dir&#39;</span><span class="p">,</span> <span class="n">tomogram_dir</span> <span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">),</span>
-    <span class="s">&#39;tomo_row&#39;</span><span class="p">,</span> <span class="n">tomo_row</span> <span class="p">(</span><span class="mi">7</span><span class="p">),</span>
-    <span class="s">&#39;ampspec_fn_prefix&#39;</span><span class="p">,</span> <span class="n">ampspec_fn_prefix</span> <span class="p">(</span><span class="s">&#39;otherinputs/ampspec&#39;</span><span class="p">),</span>
-    <span class="s">&#39;binary_fn_prefix&#39;</span><span class="p">,</span> <span class="n">binary_fn_prefix</span> <span class="p">(</span><span class="s">&#39;otherinputs/binary&#39;</span><span class="p">),</span>
-    <span class="s">&#39;all_motl_fn_prefix&#39;</span><span class="p">,</span> <span class="n">all_motl_fn_prefix</span> <span class="p">(</span><span class="s">&#39;combinedmotl/allmotl&#39;</span><span class="p">),</span>
-    <span class="s">&#39;noise_motl_fn_prefix&#39;</span><span class="p">,</span> <span class="n">noise_motl_fn_prefix</span> <span class="p">(</span><span class="s">&#39;combinedmotl/noisemotl&#39;</span><span class="p">),</span>
-    <span class="s">&#39;iteration&#39;</span><span class="p">,</span> <span class="n">iteration</span> <span class="p">(</span><span class="mi">1</span><span class="p">),</span>
-    <span class="s">&#39;box_size&#39;</span><span class="p">,</span> <span class="n">box_size</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span>
-    <span class="s">&#39;just_extract&#39;</span><span class="p">,</span> <span class="n">just_extract</span> <span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s">&#39;ptcl_overlap_factor&#39;</span><span class="p">,</span> <span class="n">ptcl_overlap_factor</span> <span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s">&#39;noise_overlap_factor&#39;</span><span class="p">,</span> <span class="n">noise_overlap_factor</span> <span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s">&#39;num_noise&#39;</span><span class="p">,</span> <span class="n">num_noise</span> <span class="p">(</span><span class="mi">1000</span><span class="p">),</span>
-    <span class="s">&#39;process_idx&#39;</span><span class="p">,</span> <span class="n">process_idx</span> <span class="p">(</span><span class="mi">1</span><span class="p">),</span>
-    <span class="s">&#39;reextract&#39;</span><span class="p">,</span> <span class="n">reextract</span> <span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s">&#39;preload_tomogram&#39;</span><span class="p">,</span> <span class="n">preload_tomogram</span> <span class="p">(</span><span class="mi">1</span><span class="p">),</span>
-    <span class="s">&#39;use_tom_red&#39;</span><span class="p">,</span> <span class="n">use_tom_red</span> <span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s">&#39;use_memmap&#39;</span><span class="p">,</span> <span class="n">use_memmap</span> <span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+<div class="highlight-Matlab notranslate"><div class="highlight"><pre><span></span><span class="n">subtom_extract_noise</span><span class="p">(</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;tomogram_dir&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">tomogram_dir</span><span class="w"> </span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;tomo_row&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">tomo_row</span><span class="w"> </span><span class="p">(</span><span class="mi">7</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;ampspec_fn_prefix&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">ampspec_fn_prefix</span><span class="w"> </span><span class="p">(</span><span class="s">&#39;otherinputs/ampspec&#39;</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;binary_fn_prefix&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">binary_fn_prefix</span><span class="w"> </span><span class="p">(</span><span class="s">&#39;otherinputs/binary&#39;</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;all_motl_fn_prefix&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">all_motl_fn_prefix</span><span class="w"> </span><span class="p">(</span><span class="s">&#39;combinedmotl/allmotl&#39;</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;noise_motl_fn_prefix&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">noise_motl_fn_prefix</span><span class="w"> </span><span class="p">(</span><span class="s">&#39;combinedmotl/noisemotl&#39;</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;iteration&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">iteration</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;box_size&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">box_size</span><span class="w"> </span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;just_extract&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">just_extract</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;ptcl_overlap_factor&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">ptcl_overlap_factor</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;noise_overlap_factor&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">noise_overlap_factor</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;num_noise&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">num_noise</span><span class="w"> </span><span class="p">(</span><span class="mi">1000</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;process_idx&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">process_idx</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;reextract&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">reextract</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;preload_tomogram&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">preload_tomogram</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;use_tom_red&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">use_tom_red</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;use_memmap&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">use_memmap</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">))</span><span class="w"></span>
 </pre></div>
 </div>
 <p>Takes the tomograms given in <code class="docutils literal notranslate"><span class="pre">tomogram_dir</span></code> and extracts average amplitude
@@ -280,30 +282,30 @@ only for legacy support and is not suggested for use. Finally if <code class="do
 evaluates to true as a boolean then in place of reading each particle from disk
 a memory-mapped version of the file of will be created to attempt faster access
 in extraction.</p>
-<div class="section" id="example">
+<section id="example">
 <h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">subtom_extract_noise</span><span class="p">(</span><span class="c">...</span>
-    <span class="s">&#39;tomogram_dir&#39;</span><span class="p">,</span> <span class="s">&#39;../data/tomos/bin8&#39;</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;tomo_row&#39;</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;ampspec_fn_prefix&#39;</span><span class="p">,</span> <span class="s">&#39;otherinputs/ampspec&#39;</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;binary_fn_prefix&#39;</span><span class="p">,</span> <span class="s">&#39;otherinputs/binary&#39;</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;all_motl_fn_prefix&#39;</span><span class="p">,</span> <span class="s">&#39;combinedmotl/allmotl&#39;</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;noise_motl_prefix&#39;</span><span class="p">,</span> <span class="s">&#39;combinedmotl/noisemotl&#39;</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;iteration&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;box_size&#39;</span><span class="p">,</span> <span class="mi">36</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;just_extract&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;ptcl_overlap_factor&#39;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;noise_overlap_factor, 0.75, ...</span>
-<span class="s">    &#39;</span><span class="n">num_noise</span><span class="o">&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span>
-    <span class="s">&#39;process_idx&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;reextract&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;preload_tomogram&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;use_tom_red&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;use_memmap&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">subtom_extract_noise</span><span class="p">(</span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;tomogram_dir&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;../data/tomos/bin8&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;tomo_row&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;ampspec_fn_prefix&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;otherinputs/ampspec&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;binary_fn_prefix&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;otherinputs/binary&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;all_motl_fn_prefix&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;combinedmotl/allmotl&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;noise_motl_prefix&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;combinedmotl/noisemotl&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;iteration&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;box_size&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">36</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;just_extract&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;ptcl_overlap_factor&#39;</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;noise_overlap_factor, 0.75, ...</span>
+<span class="s">    &#39;</span><span class="n">num_noise</span><span class="o">&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">1000</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;process_idx&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;reextract&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;preload_tomogram&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;use_tom_red&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;use_memmap&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="see-also">
+</section>
+<section id="see-also">
 <h2>See also<a class="headerlink" href="#see-also" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p><a class="reference internal" href="subtom_extract_subtomograms.html"><span class="doc">subtom_extract_subtomograms</span></a></p></li>
@@ -311,8 +313,8 @@ in extraction.</p>
 <li><p><a class="reference internal" href="subtom_scan_angles_exact.html"><span class="doc">subtom_scan_angles_exact</span></a></p></li>
 <li><p><a class="reference internal" href="subtom_weighted_average.html"><span class="doc">subtom_weighted_average</span></a></p></li>
 </ul>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

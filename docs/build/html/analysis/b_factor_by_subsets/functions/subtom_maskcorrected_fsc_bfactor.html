@@ -5,10 +5,11 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>subtom_maskcorrected_FSC_bfactor &mdash; subTOM 1.1.5 documentation</title>
+  <title>subtom_maskcorrected_FSC_bfactor &mdash; subTOM 1.1.6 documentation</title>
   
 
   
@@ -21,11 +22,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -34,6 +34,8 @@
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="subtom_parallel_sums_bfactor" href="subtom_parallel_sums_bfactor.html" />
@@ -234,30 +236,30 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="subtom-maskcorrected-fsc-bfactor">
+  <section id="subtom-maskcorrected-fsc-bfactor">
 <h1>subtom_maskcorrected_FSC_bfactor<a class="headerlink" href="#subtom-maskcorrected-fsc-bfactor" title="Permalink to this headline">¶</a></h1>
 <p>Calculates “mask-corrected” FSC and sharpened refs.</p>
-<div class="highlight-Matlab notranslate"><div class="highlight"><pre><span></span><span class="n">subtom_maskcorrected_fsc_bfactor</span><span class="p">(</span>
-    <span class="s">&#39;ref_a_fn_prefix&#39;</span><span class="p">,</span> <span class="n">ref_a_fn_prefix</span> <span class="p">(</span><span class="s">&#39;even/ref/ref&#39;</span><span class="p">),</span>
-    <span class="s">&#39;ref_b_fn_prefix&#39;</span><span class="p">,</span> <span class="n">ref_b_fn_prefix</span> <span class="p">(</span><span class="s">&#39;odd/ref/ref&#39;</span><span class="p">),</span>
-    <span class="s">&#39;motl_a_fn_prefix&#39;</span><span class="p">,</span> <span class="n">motl_a_fn_prefix</span> <span class="p">(</span><span class="s">&#39;even/combinedmotl/allmotl&#39;</span><span class="p">),</span>
-    <span class="s">&#39;motl_b_fn_prefix&#39;</span><span class="p">,</span> <span class="n">motl_b_fn_prefix</span> <span class="p">(</span><span class="s">&#39;odd/combinedmotl/allmotl&#39;</span><span class="p">),</span>
-    <span class="s">&#39;fsc_mask_fn&#39;</span><span class="p">,</span> <span class="n">fsc_mask_fn</span> <span class="p">(</span><span class="s">&#39;FSC/fsc_mask.em&#39;</span><span class="p">),</span>
-    <span class="s">&#39;output_fn_prefix&#39;</span><span class="p">,</span> <span class="n">output_fn_prefix</span> <span class="p">(</span><span class="s">&#39;FSC/ref&#39;</span><span class="p">),</span>
-    <span class="s">&#39;filter_a_fn&#39;</span><span class="p">,</span> <span class="n">filter_a_fn</span> <span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">),</span>
-    <span class="s">&#39;filter_b_fn&#39;</span><span class="p">,</span> <span class="n">filter_b_fn</span> <span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">),</span>
-    <span class="s">&#39;do_reweight&#39;</span><span class="p">,</span> <span class="n">do_reweight</span> <span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s">&#39;do_sharpen&#39;</span><span class="p">,</span> <span class="n">do_sharpen</span> <span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s">&#39;plot_fsc&#39;</span><span class="p">,</span> <span class="n">plot_fsc</span> <span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s">&#39;plot_sharpen&#39;</span><span class="p">,</span> <span class="n">plot_sharpen</span> <span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s">&#39;filter_mode&#39;</span><span class="p">,</span> <span class="n">filter_mode</span> <span class="p">(</span><span class="mi">1</span><span class="p">),</span>
-    <span class="s">&#39;pixelsize&#39;</span><span class="p">,</span> <span class="n">pixelsize</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">),</span>
-    <span class="s">&#39;nfold&#39;</span><span class="p">,</span> <span class="n">nfold</span> <span class="p">(</span><span class="mi">1</span><span class="p">),</span>
-    <span class="s">&#39;filter_threshold&#39;</span><span class="p">,</span> <span class="n">filter_threshold</span> <span class="p">(</span><span class="mf">0.143</span><span class="p">),</span>
-    <span class="s">&#39;rand_threshold&#39;</span><span class="p">,</span> <span class="n">rand_threshold</span> <span class="p">(</span><span class="mf">0.8</span><span class="p">),</span>
-    <span class="s">&#39;box_gaussian&#39;</span><span class="p">,</span> <span class="n">box_gaussian</span> <span class="p">(</span><span class="mi">1</span><span class="p">),</span>
-    <span class="s">&#39;iclass&#39;</span><span class="p">,</span> <span class="n">iclass</span> <span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s">&#39;iteration&#39;</span><span class="p">,</span> <span class="n">iteration</span> <span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+<div class="highlight-Matlab notranslate"><div class="highlight"><pre><span></span><span class="n">subtom_maskcorrected_fsc_bfactor</span><span class="p">(</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;ref_a_fn_prefix&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">ref_a_fn_prefix</span><span class="w"> </span><span class="p">(</span><span class="s">&#39;even/ref/ref&#39;</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;ref_b_fn_prefix&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">ref_b_fn_prefix</span><span class="w"> </span><span class="p">(</span><span class="s">&#39;odd/ref/ref&#39;</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;motl_a_fn_prefix&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">motl_a_fn_prefix</span><span class="w"> </span><span class="p">(</span><span class="s">&#39;even/combinedmotl/allmotl&#39;</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;motl_b_fn_prefix&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">motl_b_fn_prefix</span><span class="w"> </span><span class="p">(</span><span class="s">&#39;odd/combinedmotl/allmotl&#39;</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;fsc_mask_fn&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">fsc_mask_fn</span><span class="w"> </span><span class="p">(</span><span class="s">&#39;FSC/fsc_mask.em&#39;</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;output_fn_prefix&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">output_fn_prefix</span><span class="w"> </span><span class="p">(</span><span class="s">&#39;FSC/ref&#39;</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;filter_a_fn&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">filter_a_fn</span><span class="w"> </span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;filter_b_fn&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">filter_b_fn</span><span class="w"> </span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;do_reweight&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">do_reweight</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;do_sharpen&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">do_sharpen</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;plot_fsc&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">plot_fsc</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;plot_sharpen&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">plot_sharpen</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;filter_mode&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">filter_mode</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;pixelsize&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">pixelsize</span><span class="w"> </span><span class="p">(</span><span class="mf">1.0</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;nfold&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">nfold</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;filter_threshold&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">filter_threshold</span><span class="w"> </span><span class="p">(</span><span class="mf">0.143</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;rand_threshold&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">rand_threshold</span><span class="w"> </span><span class="p">(</span><span class="mf">0.8</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;box_gaussian&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">box_gaussian</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;iclass&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">iclass</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;iteration&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">iteration</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">))</span><span class="w"></span>
 </pre></div>
 </div>
 <p>Takes in two references <code class="docutils literal notranslate"><span class="pre">ref_a_fn_prefix</span></code> _#.em and <code class="docutils literal notranslate"><span class="pre">ref_b_fn_prefix</span></code> _#.em
@@ -284,40 +286,40 @@ doi:10.1016/j.jmb.2003.07.013</p>
 <p>Finally this script can also perform and output reweighted maps if
 <code class="docutils literal notranslate"><span class="pre">do_reweight</span></code> is true, and the pre-calculated Fourier weight volumes
 <code class="docutils literal notranslate"><span class="pre">filter_a_fn</span></code> and <code class="docutils literal notranslate"><span class="pre">filter_b_fn</span></code>.</p>
-<div class="section" id="example">
+<section id="example">
 <h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-Matlab notranslate"><div class="highlight"><pre><span></span><span class="n">subtom_maskcorrected_fsc_bfactor</span><span class="p">(</span><span class="c">...</span>
-    <span class="s">&#39;ref_a_fn_prefix&#39;</span><span class="p">,</span> <span class="s">&#39;even/ref/ref&#39;</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;ref_b_fn_prefix&#39;</span><span class="p">,</span> <span class="s">&#39;odd/ref/ref&#39;</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;motl_a_fn_prefix&#39;</span><span class="p">,</span> <span class="s">&#39;even/combinedmotl&#39;</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;motl_b_fn_prefix&#39;</span><span class="p">,</span> <span class="s">&#39;odd/combinedmotl&#39;</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;fsc_mask_fn&#39;</span><span class="p">,</span> <span class="s">&#39;FSC/fsc_mask.em&#39;</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;output_fn_prefix&#39;</span><span class="p">,</span> <span class="s">&#39;FSC/ref&#39;</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;filter_a_fn&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;filter_b_fn&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;do_reweight&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;do_sharpen&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;plot_fsc&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;plot_sharpen&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;filter_mode&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;pixelsize&#39;</span><span class="p">,</span> <span class="mf">1.35</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;nfold&#39;</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;filter_threshold&#39;</span><span class="p">,</span> <span class="mf">0.143</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;rand_threshold&#39;</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;box_gaussian&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;iclass&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;iteration&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<div class="highlight-Matlab notranslate"><div class="highlight"><pre><span></span><span class="n">subtom_maskcorrected_fsc_bfactor</span><span class="p">(</span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;ref_a_fn_prefix&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;even/ref/ref&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;ref_b_fn_prefix&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;odd/ref/ref&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;motl_a_fn_prefix&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;even/combinedmotl&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;motl_b_fn_prefix&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;odd/combinedmotl&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;fsc_mask_fn&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;FSC/fsc_mask.em&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;output_fn_prefix&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;FSC/ref&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;filter_a_fn&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;filter_b_fn&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;do_reweight&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;do_sharpen&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;plot_fsc&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;plot_sharpen&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;filter_mode&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;pixelsize&#39;</span><span class="p">,</span><span class="w"> </span><span class="mf">1.35</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;nfold&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;filter_threshold&#39;</span><span class="p">,</span><span class="w"> </span><span class="mf">0.143</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;rand_threshold&#39;</span><span class="p">,</span><span class="w"> </span><span class="mf">0.8</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;box_gaussian&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;iclass&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;iteration&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="see-also">
+</section>
+<section id="see-also">
 <h2>See Also<a class="headerlink" href="#see-also" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p><a class="reference internal" href="subtom_parallel_sums_bfactor.html"><span class="doc">subtom_parallel_sums_bfactor</span></a></p></li>
 <li><p><a class="reference internal" href="subtom_weighted_average_bfactor.html"><span class="doc">subtom_weighted_average_bfactor</span></a></p></li>
 </ul>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

@@ -5,10 +5,11 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Installation &mdash; subTOM 1.1.5 documentation</title>
+  <title>Installation &mdash; subTOM 1.1.6 documentation</title>
   
 
   
@@ -21,11 +22,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -34,6 +34,8 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Conventions" href="conventions.html" />
@@ -89,6 +91,7 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#step-by-step-instructions">Step-by-Step Instructions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#building">Building</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="conventions.html">Conventions</a></li>
@@ -223,7 +226,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="installation">
+  <section id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
 <p>The installation of subTOM is relatively straight-forward. subTOM is currently
 only built for 64-bit linux computers, with no plans currently to produce builds
@@ -240,14 +243,14 @@ with the TOM toolbox. However, the effort has been made to make sure that the
 pipeline can run as a whole using only the Matlab Compiler Runtime, which is
 freely available software, and can be found here:</p>
 <p><a class="reference external" href="https://uk.mathworks.com/products/compiler/matlab-runtime.html">https://uk.mathworks.com/products/compiler/matlab-runtime.html</a></p>
-<p>subTOM is currently built against the 2016b/v91 MCR so that is the one that you
+<p>subTOM is currently built against the 2021b/v911 MCR so that is the one that you
 need to have downloaded and have access to.</p>
 <p>At the LMB we have the MCR already installed at
 <code class="docutils literal notranslate"><span class="pre">/lmb/home/public/matlab/jbriggs</span></code>, which you can use for your installation.</p>
 <p>subTOM is also distributed like most software nowadays as a Git repository, so
 if you do not have Git you can find out how to install and use Git here:</p>
 <p><a class="reference external" href="https://git-scm.com/doc">https://git-scm.com/doc</a></p>
-<div class="section" id="step-by-step-instructions">
+<section id="step-by-step-instructions">
 <h2>Step-by-Step Instructions<a class="headerlink" href="#step-by-step-instructions" title="Permalink to this headline">¶</a></h2>
 <ol class="arabic simple">
 <li><p>From the directory in which you want to install subTOM clone the repository.</p></li>
@@ -287,8 +290,32 @@ directory that contains the MCR installation.</p></li>
 </li>
 </ul>
 </div></blockquote>
-</div>
-</div>
+</section>
+<section id="building">
+<h2>Building<a class="headerlink" href="#building" title="Permalink to this headline">¶</a></h2>
+<p>If you have access to the MATLAB compiler you can also build subTOM from the
+source simply following the steps here, beginning in the subTOM installation
+directory:</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">src</span></code></p></li>
+<li><p>Edit <code class="docutils literal notranslate"><span class="pre">subtom_mcc_build.m</span></code> and change the top three variables to point
+correctly at:</p>
+<ul class="simple">
+<li><p>The subTOM source directory</p></li>
+<li><p>The root folder of the TOM Toolbox</p></li>
+<li><p>The path to the MATLAB Toolbox directory
+* The Statistics and Machine Learning Toolbox is needed for
+<a class="reference internal" href="classification/general/functions/subtom_cluster.html"><span class="doc">subtom_cluster</span></a></p></li>
+</ul>
+</li>
+<li><p>Run <code class="docutils literal notranslate"><span class="pre">subtom_mcc_build.m</span></code> in MATLAB and it should correctly compile all
+neccessary functions and place them in the correct locations.</p></li>
+<li><p>If you run into an issue with a MEX-function in TOM toolbox (such as
+tom_rotate), then you can recompile such a function with the command <code class="docutils literal notranslate"><span class="pre">mex</span>
+<span class="pre">-R2018a</span> <span class="pre">&lt;filename&gt;</span></code> and then recompile subTOM.</p></li>
+</ol>
+</section>
+</section>
 
 
            </div>

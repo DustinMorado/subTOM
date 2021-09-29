@@ -5,10 +5,11 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>subtom_cluster &mdash; subTOM 1.1.5 documentation</title>
+  <title>subtom_cluster &mdash; subTOM 1.1.6 documentation</title>
   
 
   
@@ -21,11 +22,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -34,6 +34,8 @@
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="subtom_multiref_average" href="subtom_multiref_average.html" />
@@ -249,7 +251,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="subtom-cluster">
+  <section id="subtom-cluster">
 <h1>subtom_cluster<a class="headerlink" href="#subtom-cluster" title="Permalink to this headline">¶</a></h1>
 <p>Clusters a motive-list using pre-calculated and supplied coefficients and
 outputs a classified motive-list and class averages.</p>
@@ -260,9 +262,9 @@ below:</p>
 <li><p><a class="reference internal" href="../functions/subtom_parallel_sums_cls.html"><span class="doc">subtom_parallel_sums_cls</span></a></p></li>
 <li><p><a class="reference internal" href="../functions/subtom_weighted_average_cls.html"><span class="doc">subtom_weighted_average_cls</span></a></p></li>
 </ul>
-<div class="section" id="options">
+<section id="options">
 <h2>Options<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="directories">
+<section id="directories">
 <h3>Directories<a class="headerlink" href="#directories" title="Permalink to this headline">¶</a></h3>
 <dl class="simple">
 <dt>scratch_dir</dt><dd><p>Absolute path to the folder with the input to be processed.
@@ -278,8 +280,8 @@ the option skip_local_copy below.</p>
 <dt>exec_dir</dt><dd><p>Directory for executables</p>
 </dd>
 </dl>
-</div>
-<div class="section" id="variables">
+</section>
+<section id="variables">
 <h3>Variables<a class="headerlink" href="#variables" title="Permalink to this headline">¶</a></h3>
 <dl class="simple">
 <dt>cluster_exec</dt><dd><p>Cluster executable.</p>
@@ -289,8 +291,8 @@ the option skip_local_copy below.</p>
 <dt>avg_exec</dt><dd><p>Final Averaging executable</p>
 </dd>
 </dl>
-</div>
-<div class="section" id="memory-options">
+</section>
+<section id="memory-options">
 <h3>Memory Options<a class="headerlink" href="#memory-options" title="Permalink to this headline">¶</a></h3>
 <dl class="simple">
 <dt>mem_free</dt><dd><p>The amount of memory the job requires. This variable determines whether a
@@ -305,8 +307,8 @@ the process. This is more of an option for safety of the cluster to prevent
 the user from crashing the cluster requesting too much memory.</p>
 </dd>
 </dl>
-</div>
-<div class="section" id="other-cluster-options">
+</section>
+<section id="other-cluster-options">
 <h3>Other Cluster Options<a class="headerlink" href="#other-cluster-options" title="Permalink to this headline">¶</a></h3>
 <dl class="simple">
 <dt>job_name</dt><dd><p>The job name prefix that will be used for the cluster submission scripts, log
@@ -329,8 +331,8 @@ should be set to 1.</p>
 <dt>skip_local_copy</dt><dd><p>Set this option to 1 to skip the copying of data to local_dir.</p>
 </dd>
 </dl>
-</div>
-<div class="section" id="parallelization-options">
+</section>
+<section id="parallelization-options">
 <h3>Parallelization Options<a class="headerlink" href="#parallelization-options" title="Permalink to this headline">¶</a></h3>
 <dl class="simple">
 <dt>iteration</dt><dd><p>The index of the references to generate : input will be
@@ -339,11 +341,11 @@ all_motl_fn_prefix_iteration.em (define as integer e.g. iteration=1)</p>
 <dt>num_avg_batch</dt><dd><p>The number of batches to split the parallel subtomogram averaging job into.</p>
 </dd>
 </dl>
-<div class="section" id="subtomogram-classification-workflow-options">
+<section id="subtomogram-classification-workflow-options">
 <h4>Subtomogram Classification Workflow Options<a class="headerlink" href="#subtomogram-classification-workflow-options" title="Permalink to this headline">¶</a></h4>
-</div>
-</div>
-<div class="section" id="coefficient-file-options">
+</section>
+</section>
+<section id="coefficient-file-options">
 <h3>Coefficient File Options<a class="headerlink" href="#coefficient-file-options" title="Permalink to this headline">¶</a></h3>
 <dl class="simple">
 <dt>coeff_all_motl_fn_prefix</dt><dd><p>Relative path and name of the concatenated motivelist to cluster and classify.</p>
@@ -351,8 +353,8 @@ all_motl_fn_prefix_iteration.em (define as integer e.g. iteration=1)</p>
 <dt>coeff_fn_prefix</dt><dd><p>Relative path and name of the coefficients.</p>
 </dd>
 </dl>
-</div>
-<div class="section" id="clustering-options">
+</section>
+<section id="clustering-options">
 <h3>Clustering Options<a class="headerlink" href="#clustering-options" title="Permalink to this headline">¶</a></h3>
 <dl class="simple">
 <dt>cluster_type</dt><dd><p>The following determines which algorithm will be used to cluster the
@@ -369,16 +371,16 @@ the fifteenth through the nineteenth for classification. If it is left as
 <dt>num_classes</dt><dd><p>How many classes should the particles be clustered into.</p>
 </dd>
 </dl>
-</div>
-<div class="section" id="clustering-file-options">
+</section>
+<section id="clustering-file-options">
 <h3>Clustering File Options<a class="headerlink" href="#clustering-file-options" title="Permalink to this headline">¶</a></h3>
 <dl class="simple">
 <dt>cluster_all_motl_fn_prefix</dt><dd><p>Relative path and name of the concatenated motivelist of the output classified
 particles.</p>
 </dd>
 </dl>
-</div>
-<div class="section" id="averaging-file-options">
+</section>
+<section id="averaging-file-options">
 <h3>Averaging File Options<a class="headerlink" href="#averaging-file-options" title="Permalink to this headline">¶</a></h3>
 <dl class="simple">
 <dt>ref_fn_prefix</dt><dd><p>Relative path and name prefix of the reference volumes (e.g.  ref_iter.em, the
@@ -387,9 +389,9 @@ variable will be written as a string e.g.  ref_fn_prefix=’sub-directory/ref’
 <dt>weight_sum_fn_prefix</dt><dd><p>Relative path and name prefix of the partial weight files.</p>
 </dd>
 </dl>
-</div>
-</div>
-<div class="section" id="example">
+</section>
+</section>
+<section id="example">
 <h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">scratch_dir</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span><span class="s2">&quot;</span>
 
@@ -440,8 +442,8 @@ variable will be written as a string e.g.  ref_fn_prefix=’sub-directory/ref’
 <span class="nv">weight_sum_fn_prefix</span><span class="o">=</span><span class="s2">&quot;class/wei&quot;</span>
 </pre></div>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

@@ -1,6 +1,6 @@
 # subTOM
 
-## Version 1.1.5
+## Version 1.1.6
 
 Subtomogram averaging scripts with TOM toolbox.
 
@@ -10,4 +10,4 @@ The subTOM documentation is in the directory docs/build/index.html.
 (v91) whereas in the near future binaries will be built against whatever version
 noted here.
 
-*Built with MATLAB R2020b (v99)*
+*Built with MATLAB R2021b (v911)*

@@ -406,7 +406,7 @@ function subtom_extract_subtomograms(varargin)
     if preload_tomogram
         tomogram = getfield(tom_mrcread(tomogram_fn), 'Value');
     else
-        header = getfield(getfield(tom_readmrcheader(tomogram_fn), ...
+        header = getfield(getfield(subtom_readmrcheader(tomogram_fn), ...
             'Header'), 'MRC');
 
     end

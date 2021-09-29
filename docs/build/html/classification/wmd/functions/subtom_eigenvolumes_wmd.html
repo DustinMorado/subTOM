@@ -5,10 +5,11 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>subtom_eigenvolumes_wmd &mdash; subTOM 1.1.5 documentation</title>
+  <title>subtom_eigenvolumes_wmd &mdash; subTOM 1.1.6 documentation</title>
   
 
   
@@ -21,11 +22,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -34,6 +34,8 @@
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="subtom_join_coeffs" href="subtom_join_coeffs.html" />
@@ -236,22 +238,22 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="subtom-eigenvolumes-wmd">
+  <section id="subtom-eigenvolumes-wmd">
 <h1>subtom_eigenvolumes_wmd<a class="headerlink" href="#subtom-eigenvolumes-wmd" title="Permalink to this headline">¶</a></h1>
 <p>Computes Singular Value Decomposition of D-Matrix and projects data on
 right Singular Vectors.</p>
-<div class="highlight-Matlab notranslate"><div class="highlight"><pre><span></span><span class="n">subtom_eigenvolumes_wmd</span><span class="p">(</span>
-    <span class="s">&#39;all_motl_fn_prefix&#39;</span><span class="p">,</span> <span class="n">all_motl_fn_prefix</span> <span class="p">(</span><span class="s">&#39;combinedmotl/allmotl&#39;</span><span class="p">),</span>
-    <span class="s">&#39;ptcl_fn_prefix&#39;</span><span class="p">,</span> <span class="n">ptcl_fn_prefix</span> <span class="p">(</span><span class="s">&#39;subtomograms/subtomo&#39;</span><span class="p">),</span>
-    <span class="s">&#39;dmatrix_fn_prefix&#39;</span><span class="p">,</span> <span class="n">dmatrix_fn_prefix</span> <span class="p">(</span><span class="s">&#39;class/dmatrix_wmd&#39;</span><span class="p">),</span>
-    <span class="s">&#39;eig_val_fn_prefix&#39;</span><span class="p">,</span> <span class="n">eig_val_fn_prefix</span> <span class="p">(</span><span class="s">&#39;class/eigval_wmd&#39;</span><span class="p">),</span>
-    <span class="s">&#39;eig_vol_fn_prefix&#39;</span><span class="p">,</span> <span class="n">eig_vol_fn_prefix</span> <span class="p">(</span><span class="s">&#39;class/eigvol_wmd&#39;</span><span class="p">),</span>
-    <span class="s">&#39;variance_fn_prefix&#39;</span><span class="p">,</span> <span class="n">variance_fn_prefix</span> <span class="p">(</span><span class="s">&#39;class/variance_wmd&#39;</span><span class="p">),</span>
-    <span class="s">&#39;mask_fn&#39;</span><span class="p">,</span> <span class="n">mask_fn</span> <span class="p">(</span><span class="s">&#39;none&#39;</span><span class="p">),</span>
-    <span class="s">&#39;iteration&#39;</span><span class="p">,</span> <span class="n">iteration</span> <span class="p">(</span><span class="mi">1</span><span class="p">),</span>
-    <span class="s">&#39;num_svs&#39;</span><span class="p">,</span> <span class="n">num_svs</span> <span class="p">(</span><span class="mi">40</span><span class="p">),</span>
-    <span class="s">&#39;svds_iterations&#39;</span><span class="p">,</span> <span class="n">svds_iterations</span> <span class="p">(</span><span class="s">&#39;default&#39;</span><span class="p">),</span>
-    <span class="s">&#39;svds_tolerance&#39;</span><span class="p">,</span> <span class="n">svds_tolerance</span> <span class="p">(</span><span class="s">&#39;default&#39;</span><span class="p">))</span>
+<div class="highlight-Matlab notranslate"><div class="highlight"><pre><span></span><span class="n">subtom_eigenvolumes_wmd</span><span class="p">(</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;all_motl_fn_prefix&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">all_motl_fn_prefix</span><span class="w"> </span><span class="p">(</span><span class="s">&#39;combinedmotl/allmotl&#39;</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;ptcl_fn_prefix&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">ptcl_fn_prefix</span><span class="w"> </span><span class="p">(</span><span class="s">&#39;subtomograms/subtomo&#39;</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;dmatrix_fn_prefix&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">dmatrix_fn_prefix</span><span class="w"> </span><span class="p">(</span><span class="s">&#39;class/dmatrix_wmd&#39;</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;eig_val_fn_prefix&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">eig_val_fn_prefix</span><span class="w"> </span><span class="p">(</span><span class="s">&#39;class/eigval_wmd&#39;</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;eig_vol_fn_prefix&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">eig_vol_fn_prefix</span><span class="w"> </span><span class="p">(</span><span class="s">&#39;class/eigvol_wmd&#39;</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;variance_fn_prefix&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">variance_fn_prefix</span><span class="w"> </span><span class="p">(</span><span class="s">&#39;class/variance_wmd&#39;</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;mask_fn&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">mask_fn</span><span class="w"> </span><span class="p">(</span><span class="s">&#39;none&#39;</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;iteration&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">iteration</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;num_svs&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">num_svs</span><span class="w"> </span><span class="p">(</span><span class="mi">40</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;svds_iterations&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">svds_iterations</span><span class="w"> </span><span class="p">(</span><span class="s">&#39;default&#39;</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;svds_tolerance&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">svds_tolerance</span><span class="w"> </span><span class="p">(</span><span class="s">&#39;default&#39;</span><span class="p">))</span><span class="w"></span>
 </pre></div>
 </div>
 <p>Calculates <code class="docutils literal notranslate"><span class="pre">num_svs</span></code> weighted projections of wedge-masked differences onto the
@@ -268,24 +270,24 @@ vectors are also written oun as given by <code class="docutils literal notransla
 <code class="docutils literal notranslate"><span class="pre">variance_fn_prefix</span></code> and <code class="docutils literal notranslate"><span class="pre">iteration</span></code>.  Two options <code class="docutils literal notranslate"><span class="pre">svds_iterations</span></code> and
 <code class="docutils literal notranslate"><span class="pre">svds_tolerance</span></code> are also available to tune how svds is run. If the string
 ‘default’ is given for either the default values in svds will be used.</p>
-<div class="section" id="example">
+<section id="example">
 <h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-Matlab notranslate"><div class="highlight"><pre><span></span><span class="n">subtom_eigenvolumes_wmd</span><span class="p">(</span><span class="c">...</span>
-    <span class="s">&#39;all_motl_fn_prefix&#39;</span><span class="p">,</span> <span class="s">&#39;combinedmotl/allmotl&#39;</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;ptcl_fn_prefix&#39;</span><span class="p">,</span> <span class="s">&#39;subtomograms/subtomo&#39;</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;dmatrix_fn_prefix&#39;</span><span class="p">,</span> <span class="s">&#39;class/dmatrix&#39;</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;eig_val_fn_prefix&#39;</span><span class="p">,</span> <span class="s">&#39;class/eigval&#39;</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;eig_vol_fn_prefix&#39;</span><span class="p">,</span> <span class="s">&#39;class/eigvol&#39;</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;variance_fn_prefix&#39;</span><span class="p">,</span> <span class="s">&#39;class/variance&#39;</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;mask_fn&#39;</span><span class="p">,</span> <span class="s">&#39;class/class_mask.em&#39;</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;iteration&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;num_svs&#39;</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;svds_iterations&#39;</span><span class="p">,</span> <span class="s">&#39;default&#39;</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;svds_tolerance&#39;</span><span class="p">,</span> <span class="s">&#39;default&#39;</span><span class="p">)</span>
+<div class="highlight-Matlab notranslate"><div class="highlight"><pre><span></span><span class="n">subtom_eigenvolumes_wmd</span><span class="p">(</span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;all_motl_fn_prefix&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;combinedmotl/allmotl&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;ptcl_fn_prefix&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;subtomograms/subtomo&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;dmatrix_fn_prefix&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;class/dmatrix&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;eig_val_fn_prefix&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;class/eigval&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;eig_vol_fn_prefix&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;class/eigvol&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;variance_fn_prefix&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;class/variance&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;mask_fn&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;class/class_mask.em&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;iteration&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;num_svs&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">40</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;svds_iterations&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;default&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;svds_tolerance&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;default&#39;</span><span class="p">)</span><span class="w"></span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="see-also">
+</section>
+<section id="see-also">
 <h2>See Also<a class="headerlink" href="#see-also" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p><a class="reference internal" href="subtom_join_coeffs.html"><span class="doc">subtom_join_coeffs</span></a></p></li>
@@ -293,8 +295,8 @@ vectors are also written oun as given by <code class="docutils literal notransla
 <li><p><a class="reference internal" href="subtom_parallel_coeffs.html"><span class="doc">subtom_parallel_coeffs</span></a></p></li>
 <li><p><a class="reference internal" href="subtom_parallel_dmatrix.html"><span class="doc">subtom_parallel_dmatrix</span></a></p></li>
 </ul>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

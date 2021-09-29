@@ -5,10 +5,11 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>subtom_random_subset_motl &mdash; subTOM 1.1.5 documentation</title>
+  <title>subtom_random_subset_motl &mdash; subTOM 1.1.6 documentation</title>
   
 
   
@@ -21,11 +22,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -34,6 +34,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="subtom_renumber_motl" href="subtom_renumber_motl.html" />
@@ -224,31 +226,31 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="subtom-random-subset-motl">
+  <section id="subtom-random-subset-motl">
 <h1>subtom_random_subset_motl<a class="headerlink" href="#subtom-random-subset-motl" title="Permalink to this headline">¶</a></h1>
 <p>Generates a random subset of a motive list.</p>
-<div class="highlight-Matlab notranslate"><div class="highlight"><pre><span></span><span class="n">subtom_random_subset_motl</span><span class="p">(</span>
-    <span class="s">&#39;input_motl_fn&#39;</span><span class="p">,</span> <span class="n">input_motl_fn</span> <span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">),</span>
-    <span class="s">&#39;output_motl_fn&#39;</span><span class="p">,</span> <span class="n">output_motl_fn</span> <span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">),</span>
-    <span class="s">&#39;subset_size&#39;</span><span class="p">,</span> <span class="n">subset_size</span> <span class="p">(</span><span class="mi">1000</span><span class="p">),</span>
-    <span class="s">&#39;subset_row&#39;</span><span class="p">,</span> <span class="n">subset_row</span> <span class="p">(</span><span class="mi">7</span><span class="p">))</span>
+<div class="highlight-Matlab notranslate"><div class="highlight"><pre><span></span><span class="n">subtom_random_subset_motl</span><span class="p">(</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;input_motl_fn&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">input_motl_fn</span><span class="w"> </span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;output_motl_fn&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">output_motl_fn</span><span class="w"> </span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;subset_size&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">subset_size</span><span class="w"> </span><span class="p">(</span><span class="mi">1000</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;subset_row&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">subset_row</span><span class="w"> </span><span class="p">(</span><span class="mi">7</span><span class="p">))</span><span class="w"></span>
 </pre></div>
 </div>
 <p>Takes the motive list given by <code class="docutils literal notranslate"><span class="pre">input_motl_fn</span></code>, and generates a random
 subset of <code class="docutils literal notranslate"><span class="pre">subset_size</span></code> particles where the subset is distributed equally
 over the motive list field <code class="docutils literal notranslate"><span class="pre">subset_row</span></code>, and then writes the subset motive
 list out as <code class="docutils literal notranslate"><span class="pre">output_motl_fn</span></code>.</p>
-<div class="section" id="example">
+<section id="example">
 <h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-Matlab notranslate"><div class="highlight"><pre><span></span><span class="n">subtom_random_subset_motl</span><span class="p">(</span><span class="c">...</span>
-    <span class="s">&#39;input_motl_fn&#39;</span><span class="p">,</span> <span class="s">&#39;combinedmotl/allmotl_2.em&#39;</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;output_motl_fn&#39;</span><span class="p">,</span> <span class="s">&#39;combinedmotl/s5kmotl_2.em&#39;</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;subset_size&#39;</span><span class="p">,</span> <span class="mi">5000</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;subset_row&#39;</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>
+<div class="highlight-Matlab notranslate"><div class="highlight"><pre><span></span><span class="n">subtom_random_subset_motl</span><span class="p">(</span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;input_motl_fn&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;combinedmotl/allmotl_2.em&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;output_motl_fn&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;combinedmotl/s5kmotl_2.em&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;subset_size&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">5000</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;subset_row&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="p">)</span><span class="w"></span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="see-also">
+</section>
+<section id="see-also">
 <h2>See Also<a class="headerlink" href="#see-also" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p><a class="reference internal" href="subtom_cat_motls.html"><span class="doc">subtom_cat_motls</span></a></p></li>
@@ -263,8 +265,8 @@ list out as <code class="docutils literal notranslate"><span class="pre">output_
 <li><p><a class="reference internal" href="subtom_transform_motl.html"><span class="doc">subtom_transform_motl</span></a></p></li>
 <li><p><a class="reference internal" href="subtom_unclass_motl.html"><span class="doc">subtom_unclass_motl</span></a></p></li>
 </ul>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

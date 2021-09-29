@@ -1,6 +1,6 @@
-subtom_src_dir = '/home/dmorado/opt/subTOM/src';
-tom_src_dir = '/home/dmorado/Builds/tom';
-toolbox_src_dir = '/home/dmorado/opt/MATLAB/R2020b/toolbox';
+subtom_src_dir = '/home/dmorado/opt/subTOM_test/src';
+tom_src_dir = '/home/dmorado/opt/subTOM_test/lib/tom';
+toolbox_src_dir = '/home/dmorado/opt/MATLAB/R2021b/toolbox';
 
 include_filtrans = fullfile(tom_src_dir, 'Filtrans');
 include_geom = fullfile(tom_src_dir, 'Geom');
@@ -29,6 +29,8 @@ mcc('-m', '-v', ...
 !rm requiredMCRProducts.txt
 !rm readme.txt
 !rm run_subtom_cat_motls.sh
+!rm includedSupportPackages.txt
+!rm unresolvedSymbols.txt
 !mv subtom_cat_motls ../../bin/MOTL/subtom_cat_motls
 
 mcc('-m', '-v', ...
@@ -48,6 +50,8 @@ mcc('-m', '-v', ...
 !rm requiredMCRProducts.txt
 !rm readme.txt
 !rm run_subtom_clean_motl.sh
+!rm includedSupportPackages.txt
+!rm unresolvedSymbols.txt
 !mv subtom_clean_motl ../../bin/MOTL/subtom_clean_motl
 
 mcc('-m', '-v', ...
@@ -67,6 +71,8 @@ mcc('-m', '-v', ...
 !rm requiredMCRProducts.txt
 !rm readme.txt
 !rm run_subtom_compare_motls.sh
+!rm includedSupportPackages.txt
+!rm unresolvedSymbols.txt
 !mv subtom_compare_motls ../../bin/MOTL/subtom_compare_motls
 
 mcc('-m', '-v', ...
@@ -86,6 +92,8 @@ mcc('-m', '-v', ...
 !rm requiredMCRProducts.txt
 !rm readme.txt
 !rm run_subtom_even_odd_motl.sh
+!rm includedSupportPackages.txt
+!rm unresolvedSymbols.txt
 !mv subtom_even_odd_motl ../../bin/MOTL/subtom_even_odd_motl
 
 mcc('-m', '-v', ...
@@ -105,6 +113,8 @@ mcc('-m', '-v', ...
 !rm requiredMCRProducts.txt
 !rm readme.txt
 !rm run_subtom_random_subset_motl.sh
+!rm includedSupportPackages.txt
+!rm unresolvedSymbols.txt
 !mv subtom_random_subset_motl ../../bin/MOTL/subtom_random_subset_motl
 
 mcc('-m', '-v', ...
@@ -124,6 +134,8 @@ mcc('-m', '-v', ...
 !rm requiredMCRProducts.txt
 !rm readme.txt
 !rm run_subtom_renumber_motl.sh
+!rm includedSupportPackages.txt
+!rm unresolvedSymbols.txt
 !mv subtom_renumber_motl ../../bin/MOTL/subtom_renumber_motl
 
 mcc('-m', '-v', ...
@@ -143,6 +155,8 @@ mcc('-m', '-v', ...
 !rm requiredMCRProducts.txt
 !rm readme.txt
 !rm run_subtom_rotx_motl.sh
+!rm includedSupportPackages.txt
+!rm unresolvedSymbols.txt
 !mv subtom_rotx_motl ../../bin/MOTL/subtom_rotx_motl
 
 mcc('-m', '-v', ...
@@ -162,6 +176,8 @@ mcc('-m', '-v', ...
 !rm requiredMCRProducts.txt
 !rm readme.txt
 !rm run_subtom_scale_motl.sh
+!rm includedSupportPackages.txt
+!rm unresolvedSymbols.txt
 !mv subtom_scale_motl ../../bin/MOTL/subtom_scale_motl
 
 mcc('-m', '-v', ...
@@ -181,6 +197,8 @@ mcc('-m', '-v', ...
 !rm requiredMCRProducts.txt
 !rm readme.txt
 !rm run_subtom_seed_positions.sh
+!rm includedSupportPackages.txt
+!rm unresolvedSymbols.txt
 !mv subtom_seed_positions ../../bin/MOTL/subtom_seed_positions
 
 mcc('-m', '-v', ...
@@ -200,6 +218,8 @@ mcc('-m', '-v', ...
 !rm requiredMCRProducts.txt
 !rm readme.txt
 !rm run_subtom_split_motl_by_row.sh
+!rm includedSupportPackages.txt
+!rm unresolvedSymbols.txt
 !mv subtom_split_motl_by_row ../../bin/MOTL/subtom_split_motl_by_row
 
 mcc('-m', '-v', ...
@@ -219,6 +239,8 @@ mcc('-m', '-v', ...
 !rm requiredMCRProducts.txt
 !rm readme.txt
 !rm run_subtom_transform_motl.sh
+!rm includedSupportPackages.txt
+!rm unresolvedSymbols.txt
 !mv subtom_transform_motl ../../bin/MOTL/subtom_transform_motl
 
 mcc('-m', '-v', ...
@@ -238,6 +260,8 @@ mcc('-m', '-v', ...
 !rm requiredMCRProducts.txt
 !rm readme.txt
 !rm run_subtom_unclass_motl.sh
+!rm includedSupportPackages.txt
+!rm unresolvedSymbols.txt
 !mv subtom_unclass_motl ../../bin/MOTL/subtom_unclass_motl
 
 cd(fullfile(subtom_src_dir, 'alignment'));
@@ -258,6 +282,8 @@ mcc('-m', '-v', ...
 !rm requiredMCRProducts.txt
 !rm readme.txt
 !rm run_subtom_extract_noise.sh
+!rm includedSupportPackages.txt
+!rm unresolvedSymbols.txt
 !mv subtom_extract_noise ../../bin/alignment/subtom_extract_noise
 
 mcc('-m', '-v', ...
@@ -277,6 +303,8 @@ mcc('-m', '-v', ...
 !rm requiredMCRProducts.txt
 !rm readme.txt
 !rm run_subtom_extract_subtomograms.sh
+!rm includedSupportPackages.txt
+!rm unresolvedSymbols.txt
 !mv subtom_extract_subtomograms ../../bin/alignment/subtom_extract_subtomograms
 
 mcc('-m', '-v', ...
@@ -296,6 +324,8 @@ mcc('-m', '-v', ...
 !rm requiredMCRProducts.txt
 !rm readme.txt
 !rm run_subtom_parallel_sums.sh
+!rm includedSupportPackages.txt
+!rm unresolvedSymbols.txt
 !mv subtom_parallel_sums ../../bin/alignment/subtom_parallel_sums
 
 mcc('-m', '-v', ...
@@ -315,6 +345,8 @@ mcc('-m', '-v', ...
 !rm requiredMCRProducts.txt
 !rm readme.txt
 !rm run_subtom_scan_angles_exact.sh
+!rm includedSupportPackages.txt
+!rm unresolvedSymbols.txt
 !mv subtom_scan_angles_exact ../../bin/alignment/subtom_scan_angles_exact
 
 mcc('-m', '-v', ...
@@ -334,6 +366,8 @@ mcc('-m', '-v', ...
 !rm requiredMCRProducts.txt
 !rm readme.txt
 !rm run_subtom_weighted_average.sh
+!rm includedSupportPackages.txt
+!rm unresolvedSymbols.txt
 !mv subtom_weighted_average ../../bin/alignment/subtom_weighted_average
 
 cd(fullfile(subtom_src_dir, 'analysis'));
@@ -352,6 +386,8 @@ mcc('-m', '-v', ...
 !rm requiredMCRProducts.txt
 !rm readme.txt
 !rm run_subtom_maskcorrected_fsc.sh
+!rm includedSupportPackages.txt
+!rm unresolvedSymbols.txt
 !mv subtom_maskcorrected_fsc ../../bin/analysis/subtom_maskcorrected_fsc
 
 cd(fullfile(subtom_src_dir, 'analysis', 'b_factor_by_subsets'));
@@ -370,6 +406,8 @@ mcc('-m', '-v', ...
 !rm requiredMCRProducts.txt
 !rm readme.txt
 !rm run_subtom_maskcorrected_fsc_bfactor.sh
+!rm includedSupportPackages.txt
+!rm unresolvedSymbols.txt
 !mv subtom_maskcorrected_fsc_bfactor ../../../bin/analysis/b_factor_by_subsets/subtom_maskcorrected_fsc_bfactor
 
 mcc('-m', '-v', ...
@@ -389,6 +427,8 @@ mcc('-m', '-v', ...
 !rm requiredMCRProducts.txt
 !rm readme.txt
 !rm run_subtom_parallel_sums_bfactor.sh
+!rm includedSupportPackages.txt
+!rm unresolvedSymbols.txt
 !mv subtom_parallel_sums_bfactor ../../../bin/analysis/b_factor_by_subsets/subtom_parallel_sums_bfactor
 
 mcc('-m', '-v', ...
@@ -408,6 +448,8 @@ mcc('-m', '-v', ...
 !rm requiredMCRProducts.txt
 !rm readme.txt
 !rm run_subtom_weighted_average_bfactor.sh
+!rm includedSupportPackages.txt
+!rm unresolvedSymbols.txt
 !mv subtom_weighted_average_bfactor ../../../bin/analysis/b_factor_by_subsets/subtom_weighted_average_bfactor
 
 cd(fullfile(subtom_src_dir, 'classification', 'general'));
@@ -429,6 +471,8 @@ mcc('-m', '-v', ...
 !rm requiredMCRProducts.txt
 !rm readme.txt
 !rm run_subtom_cluster.sh
+!rm includedSupportPackages.txt
+!rm unresolvedSymbols.txt
 !mv subtom_cluster ../../../bin/classification/general/subtom_cluster
 
 mcc('-m', '-v', ...
@@ -448,6 +492,8 @@ mcc('-m', '-v', ...
 !rm requiredMCRProducts.txt
 !rm readme.txt
 !rm run_subtom_parallel_prealign.sh
+!rm includedSupportPackages.txt
+!rm unresolvedSymbols.txt
 !mv subtom_parallel_prealign ../../../bin/classification/general/subtom_parallel_prealign
 
 mcc('-m', '-v', ...
@@ -467,6 +513,8 @@ mcc('-m', '-v', ...
 !rm requiredMCRProducts.txt
 !rm readme.txt
 !rm run_subtom_parallel_sums_cls.sh
+!rm includedSupportPackages.txt
+!rm unresolvedSymbols.txt
 !mv subtom_parallel_sums_cls ../../../bin/classification/general/subtom_parallel_sums_cls
 
 mcc('-m', '-v', ...
@@ -486,6 +534,8 @@ mcc('-m', '-v', ...
 !rm requiredMCRProducts.txt
 !rm readme.txt
 !rm run_subtom_scan_angles_exact_refs.sh
+!rm includedSupportPackages.txt
+!rm unresolvedSymbols.txt
 !mv subtom_scan_angles_exact_refs ../../../bin/classification/general/subtom_scan_angles_exact_refs
 
 mcc('-m', '-v', ...
@@ -505,6 +555,8 @@ mcc('-m', '-v', ...
 !rm requiredMCRProducts.txt
 !rm readme.txt
 !rm run_subtom_weighted_average_cls.sh
+!rm includedSupportPackages.txt
+!rm unresolvedSymbols.txt
 !mv subtom_weighted_average_cls ../../../bin/classification/general/subtom_weighted_average_cls
 
 cd(fullfile(subtom_src_dir, 'classification', 'msa'));
@@ -525,6 +577,8 @@ mcc('-m', '-v', ...
 !rm requiredMCRProducts.txt
 !rm readme.txt
 !rm run_subtom_eigenvolumes_msa.sh
+!rm includedSupportPackages.txt
+!rm unresolvedSymbols.txt
 !mv subtom_eigenvolumes_msa ../../../bin/classification/msa/subtom_eigenvolumes_msa
 
 mcc('-m', '-v', ...
@@ -544,6 +598,8 @@ mcc('-m', '-v', ...
 !rm requiredMCRProducts.txt
 !rm readme.txt
 !rm run_subtom_join_eigencoeffs_msa.sh
+!rm includedSupportPackages.txt
+!rm unresolvedSymbols.txt
 !mv subtom_join_eigencoeffs_msa ../../../bin/classification/msa/subtom_join_eigencoeffs_msa
 
 mcc('-m', '-v', ...
@@ -563,6 +619,8 @@ mcc('-m', '-v', ...
 !rm requiredMCRProducts.txt
 !rm readme.txt
 !rm run_subtom_join_xmatrix.sh
+!rm includedSupportPackages.txt
+!rm unresolvedSymbols.txt
 !mv subtom_join_xmatrix ../../../bin/classification/msa/subtom_join_xmatrix
 
 mcc('-m', '-v', ...
@@ -582,6 +640,8 @@ mcc('-m', '-v', ...
 !rm requiredMCRProducts.txt
 !rm readme.txt
 !rm run_subtom_parallel_eigencoeffs_msa.sh
+!rm includedSupportPackages.txt
+!rm unresolvedSymbols.txt
 !mv subtom_parallel_eigencoeffs_msa ../../../bin/classification/msa/subtom_parallel_eigencoeffs_msa
 
 mcc('-m', '-v', ...
@@ -601,6 +661,8 @@ mcc('-m', '-v', ...
 !rm requiredMCRProducts.txt
 !rm readme.txt
 !rm run_subtom_parallel_xmatrix_msa.sh
+!rm includedSupportPackages.txt
+!rm unresolvedSymbols.txt
 !mv subtom_parallel_xmatrix_msa ../../../bin/classification/msa/subtom_parallel_xmatrix_msa
 
 cd(fullfile(subtom_src_dir, 'classification', 'multiref'));
@@ -621,6 +683,8 @@ mcc('-m', '-v', ...
 !rm requiredMCRProducts.txt
 !rm readme.txt
 !rm run_subtom_compare_motls_multiref.sh
+!rm includedSupportPackages.txt
+!rm unresolvedSymbols.txt
 !mv subtom_compare_motls_multiref ../../../bin/classification/multiref/subtom_compare_motls_multiref
 
 mcc('-m', '-v', ...
@@ -640,6 +704,8 @@ mcc('-m', '-v', ...
 !rm requiredMCRProducts.txt
 !rm readme.txt
 !rm run_subtom_rand_class_motl.sh
+!rm includedSupportPackages.txt
+!rm unresolvedSymbols.txt
 !mv subtom_rand_class_motl ../../../bin/classification/multiref/subtom_rand_class_motl
 
 mcc('-m', '-v', ...
@@ -659,6 +725,8 @@ mcc('-m', '-v', ...
 !rm requiredMCRProducts.txt
 !rm readme.txt
 !rm run_subtom_scan_angles_exact_multiref.sh
+!rm includedSupportPackages.txt
+!rm unresolvedSymbols.txt
 !mv subtom_scan_angles_exact_multiref ../../../bin/classification/multiref/subtom_scan_angles_exact_multiref
 
 cd(fullfile(subtom_src_dir, 'classification', 'pca'));
@@ -679,6 +747,8 @@ mcc('-m', '-v', ...
 !rm requiredMCRProducts.txt
 !rm readme.txt
 !rm run_subtom_eigs.sh
+!rm includedSupportPackages.txt
+!rm unresolvedSymbols.txt
 !mv subtom_eigs ../../../bin/classification/pca/subtom_eigs
 
 mcc('-m', '-v', ...
@@ -698,6 +768,8 @@ mcc('-m', '-v', ...
 !rm requiredMCRProducts.txt
 !rm readme.txt
 !rm run_subtom_join_ccmatrix.sh
+!rm includedSupportPackages.txt
+!rm unresolvedSymbols.txt
 !mv subtom_join_ccmatrix ../../../bin/classification/pca/subtom_join_ccmatrix
 
 mcc('-m', '-v', ...
@@ -717,6 +789,8 @@ mcc('-m', '-v', ...
 !rm requiredMCRProducts.txt
 !rm readme.txt
 !rm run_subtom_join_eigencoeffs_pca.sh
+!rm includedSupportPackages.txt
+!rm unresolvedSymbols.txt
 !mv subtom_join_eigencoeffs_pca ../../../bin/classification/pca/subtom_join_eigencoeffs_pca
 
 mcc('-m', '-v', ...
@@ -736,6 +810,8 @@ mcc('-m', '-v', ...
 !rm requiredMCRProducts.txt
 !rm readme.txt
 !rm run_subtom_join_eigenvolumes.sh
+!rm includedSupportPackages.txt
+!rm unresolvedSymbols.txt
 !mv subtom_join_eigenvolumes ../../../bin/classification/pca/subtom_join_eigenvolumes
 
 mcc('-m', '-v', ...
@@ -755,6 +831,8 @@ mcc('-m', '-v', ...
 !rm requiredMCRProducts.txt
 !rm readme.txt
 !rm run_subtom_parallel_ccmatrix.sh
+!rm includedSupportPackages.txt
+!rm unresolvedSymbols.txt
 !mv subtom_parallel_ccmatrix ../../../bin/classification/pca/subtom_parallel_ccmatrix
 
 mcc('-m', '-v', ...
@@ -774,6 +852,8 @@ mcc('-m', '-v', ...
 !rm requiredMCRProducts.txt
 !rm readme.txt
 !rm run_subtom_parallel_eigencoeffs_pca.sh
+!rm includedSupportPackages.txt
+!rm unresolvedSymbols.txt
 !mv subtom_parallel_eigencoeffs_pca ../../../bin/classification/pca/subtom_parallel_eigencoeffs_pca
 
 mcc('-m', '-v', ...
@@ -793,6 +873,8 @@ mcc('-m', '-v', ...
 !rm requiredMCRProducts.txt
 !rm readme.txt
 !rm run_subtom_parallel_eigenvolumes.sh
+!rm includedSupportPackages.txt
+!rm unresolvedSymbols.txt
 !mv subtom_parallel_eigenvolumes ../../../bin/classification/pca/subtom_parallel_eigenvolumes
 
 mcc('-m', '-v', ...
@@ -812,6 +894,8 @@ mcc('-m', '-v', ...
 !rm requiredMCRProducts.txt
 !rm readme.txt
 !rm run_subtom_parallel_xmatrix_pca.sh
+!rm includedSupportPackages.txt
+!rm unresolvedSymbols.txt
 !mv subtom_parallel_xmatrix_pca ../../../bin/classification/pca/subtom_parallel_xmatrix_pca
 
 mcc('-m', '-v', ...
@@ -831,6 +915,8 @@ mcc('-m', '-v', ...
 !rm requiredMCRProducts.txt
 !rm readme.txt
 !rm run_subtom_prepare_ccmatrix.sh
+!rm includedSupportPackages.txt
+!rm unresolvedSymbols.txt
 !mv subtom_prepare_ccmatrix ../../../bin/classification/pca/subtom_prepare_ccmatrix
 
 mcc('-m', '-v', ...
@@ -850,6 +936,8 @@ mcc('-m', '-v', ...
 !rm requiredMCRProducts.txt
 !rm readme.txt
 !rm run_subtom_svds.sh
+!rm includedSupportPackages.txt
+!rm unresolvedSymbols.txt
 !mv subtom_svds ../../../bin/classification/pca/subtom_svds
 
 cd(fullfile(subtom_src_dir, 'classification', 'wmd'));
@@ -870,6 +958,8 @@ mcc('-m', '-v', ...
 !rm requiredMCRProducts.txt
 !rm readme.txt
 !rm run_subtom_eigenvolumes_wmd.sh
+!rm includedSupportPackages.txt
+!rm unresolvedSymbols.txt
 !mv subtom_eigenvolumes_wmd ../../../bin/classification/wmd/subtom_eigenvolumes_wmd
 
 mcc('-m', '-v', ...
@@ -889,6 +979,8 @@ mcc('-m', '-v', ...
 !rm requiredMCRProducts.txt
 !rm readme.txt
 !rm run_subtom_join_coeffs.sh
+!rm includedSupportPackages.txt
+!rm unresolvedSymbols.txt
 !mv subtom_join_coeffs ../../../bin/classification/wmd/subtom_join_coeffs
 
 mcc('-m', '-v', ...
@@ -908,6 +1000,8 @@ mcc('-m', '-v', ...
 !rm requiredMCRProducts.txt
 !rm readme.txt
 !rm run_subtom_join_dmatrix.sh
+!rm includedSupportPackages.txt
+!rm unresolvedSymbols.txt
 !mv subtom_join_dmatrix ../../../bin/classification/wmd/subtom_join_dmatrix
 
 mcc('-m', '-v', ...
@@ -927,6 +1021,8 @@ mcc('-m', '-v', ...
 !rm requiredMCRProducts.txt
 !rm readme.txt
 !rm run_subtom_parallel_coeffs.sh
+!rm includedSupportPackages.txt
+!rm unresolvedSymbols.txt
 !mv subtom_parallel_coeffs ../../../bin/classification/wmd/subtom_parallel_coeffs
 
 mcc('-m', '-v', ...
@@ -946,6 +1042,8 @@ mcc('-m', '-v', ...
 !rm requiredMCRProducts.txt
 !rm readme.txt
 !rm run_subtom_parallel_dmatrix.sh
+!rm includedSupportPackages.txt
+!rm unresolvedSymbols.txt
 !mv subtom_parallel_dmatrix ../../../bin/classification/wmd/subtom_parallel_dmatrix
 
 cd(fullfile(subtom_src_dir, 'utils'));
@@ -964,6 +1062,8 @@ mcc('-m', '-v', ...
 !rm requiredMCRProducts.txt
 !rm readme.txt
 !rm run_subtom_bandpass.sh
+!rm includedSupportPackages.txt
+!rm unresolvedSymbols.txt
 !mv subtom_bandpass ../../bin/utils/subtom_bandpass
 
 mcc('-m', '-v', ...
@@ -981,6 +1081,8 @@ mcc('-m', '-v', ...
 !rm requiredMCRProducts.txt
 !rm readme.txt
 !rm run_subtom_plot_filter.sh
+!rm includedSupportPackages.txt
+!rm unresolvedSymbols.txt
 !mv subtom_plot_filter ../../bin/utils/subtom_plot_filter
 
 mcc('-m', '-v', ...
@@ -998,6 +1100,8 @@ mcc('-m', '-v', ...
 !rm requiredMCRProducts.txt
 !rm readme.txt
 !rm run_subtom_plot_scanned_angles.sh
+!rm includedSupportPackages.txt
+!rm unresolvedSymbols.txt
 !mv subtom_plot_scanned_angles ../../bin/utils/subtom_plot_scanned_angles
 
 mcc('-m', '-v', ...
@@ -1017,6 +1121,8 @@ mcc('-m', '-v', ...
 !rm requiredMCRProducts.txt
 !rm readme.txt
 !rm run_subtom_shape.sh
+!rm includedSupportPackages.txt
+!rm unresolvedSymbols.txt
 !mv subtom_shape ../../bin/utils/subtom_shape
 
 cd(start_dir);

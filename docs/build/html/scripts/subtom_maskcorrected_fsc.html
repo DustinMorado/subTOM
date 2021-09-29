@@ -5,10 +5,11 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>subtom_maskcorrected_fsc &mdash; subTOM 1.1.5 documentation</title>
+  <title>subtom_maskcorrected_fsc &mdash; subTOM 1.1.6 documentation</title>
   
 
   
@@ -21,11 +22,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -34,6 +34,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="subtom_preprocess" href="subtom_preprocess.html" />
@@ -232,7 +234,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="subtom-maskcorrected-fsc">
+  <section id="subtom-maskcorrected-fsc">
 <h1>subtom_maskcorrected_fsc<a class="headerlink" href="#subtom-maskcorrected-fsc" title="Permalink to this headline">¶</a></h1>
 <p>Calculates a <em>“mask-corrected”</em> Fourier Shell Correlation between two volumes
 and generates a final average as well as optionally ad-hoc B-factor sharpened
@@ -245,9 +247,9 @@ if not it could be run remotely on the cluster, but it shouldn’t be necessary.
 <ul class="simple">
 <li><p><a class="reference internal" href="../functions/subtom_maskcorrected_fsc.html"><span class="doc">subtom_maskcorrected_FSC</span></a></p></li>
 </ul>
-<div class="section" id="options">
+<section id="options">
 <h2>Options<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="directories">
+<section id="directories">
 <h3>Directories<a class="headerlink" href="#directories" title="Permalink to this headline">¶</a></h3>
 <dl class="simple">
 <dt>scratch_dir</dt><dd><p>Absolute path to the folder with the input to be processed.
@@ -258,15 +260,15 @@ Other paths are relative to this one.</p>
 <dt>exec_dir</dt><dd><p>Directory for executables.</p>
 </dd>
 </dl>
-</div>
-<div class="section" id="variables">
+</section>
+<section id="variables">
 <h3>Variables<a class="headerlink" href="#variables" title="Permalink to this headline">¶</a></h3>
 <dl class="simple">
 <dt>fsc_exec</dt><dd><p>Mask-corrected FSC executable.</p>
 </dd>
 </dl>
-</div>
-<div class="section" id="file-options">
+</section>
+<section id="file-options">
 <h3>File Options<a class="headerlink" href="#file-options" title="Permalink to this headline">¶</a></h3>
 <dl class="simple">
 <dt>ref_a_fn_prefix</dt><dd><p>Relative path and filename prefix of the first half-map.</p>
@@ -287,8 +289,8 @@ If not using the option do_reweight just leave this set to “”</p>
 <dt>output_fn_prefix</dt><dd><p>Relative path and prefix for the name of the output maps and figures.</p>
 </dd>
 </dl>
-</div>
-<div class="section" id="fsc-options">
+</section>
+<section id="fsc-options">
 <h3>FSC Options<a class="headerlink" href="#fsc-options" title="Permalink to this headline">¶</a></h3>
 <dl class="simple">
 <dt>pixelsize</dt><dd><p>Pixelsize of the half-maps in Angstroms.</p>
@@ -301,8 +303,8 @@ the point where the unmasked FSC falls below this threshold.</p>
 <dt>plot_fsc</dt><dd><p>Plot the FSC curves - 1 = yes, 0 = no</p>
 </dd>
 </dl>
-</div>
-<div class="section" id="sharpening-options">
+</section>
+<section id="sharpening-options">
 <h3>Sharpening Options<a class="headerlink" href="#sharpening-options" title="Permalink to this headline">¶</a></h3>
 <dl class="simple">
 <dt>do_sharpen</dt><dd><p>Set to 1 to sharpen map or 0 to skip and just calculate the FSC.</p>
@@ -324,17 +326,17 @@ pixel-based threshold (mode 2).</p>
 <dt>plot_sharpen</dt><dd><p>Plot the sharpening curve - 1 = yes, 0 = no.</p>
 </dd>
 </dl>
-</div>
-<div class="section" id="reweighting-options">
+</section>
+<section id="reweighting-options">
 <h3>Reweighting Options<a class="headerlink" href="#reweighting-options" title="Permalink to this headline">¶</a></h3>
 <dl class="simple">
 <dt>do_reweight</dt><dd><p>Set to 1 to apply the externally calculated Fourier weights filter_A_fn and
 filter_B_fn to each half-map to reweight the final output map.</p>
 </dd>
 </dl>
-</div>
-</div>
-<div class="section" id="example">
+</section>
+</section>
+<section id="example">
 <h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">scratch_dir</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span><span class="s2">&quot;</span>
 
@@ -381,8 +383,8 @@ filter_B_fn to each half-map to reweight the final output map.</p>
 <span class="nv">do_reweight</span><span class="o">=</span><span class="m">0</span>
 </pre></div>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

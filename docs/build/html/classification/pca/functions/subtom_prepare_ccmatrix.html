@@ -5,10 +5,11 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>subtom_prepare_ccmatrix &mdash; subTOM 1.1.5 documentation</title>
+  <title>subtom_prepare_ccmatrix &mdash; subTOM 1.1.6 documentation</title>
   
 
   
@@ -21,11 +22,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -34,6 +34,8 @@
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="subtom_svds" href="subtom_svds.html" />
@@ -241,14 +243,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="subtom-prepare-ccmatrix">
+  <section id="subtom-prepare-ccmatrix">
 <h1>subtom_prepare_ccmatrix<a class="headerlink" href="#subtom-prepare-ccmatrix" title="Permalink to this headline">¶</a></h1>
 <p>Calculates batch of pairwise comparisons of particles.</p>
-<div class="highlight-Matlab notranslate"><div class="highlight"><pre><span></span><span class="n">subtom_prepare_ccmatrix</span><span class="p">(</span>
-    <span class="s">&#39;all_motl_fn_prefix&#39;</span><span class="p">,</span> <span class="n">all_motl_fn_prefix</span> <span class="p">(</span><span class="s">&#39;combinedmotl/allmotl&#39;</span><span class="p">),</span>
-    <span class="s">&#39;ccmatrix_fn_prefix&#39;</span><span class="p">,</span> <span class="n">ccmatrix_fn_prefix</span> <span class="p">(</span><span class="s">&#39;class/ccmatrix_pca&#39;</span><span class="p">),</span>
-    <span class="s">&#39;iteration&#39;</span><span class="p">,</span> <span class="n">iteration</span> <span class="p">(</span><span class="mi">1</span><span class="p">),</span>
-    <span class="s">&#39;num_ccmatrix_batch&#39;</span><span class="p">,</span> <span class="n">num_ccmatrix_batch</span> <span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+<div class="highlight-Matlab notranslate"><div class="highlight"><pre><span></span><span class="n">subtom_prepare_ccmatrix</span><span class="p">(</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;all_motl_fn_prefix&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">all_motl_fn_prefix</span><span class="w"> </span><span class="p">(</span><span class="s">&#39;combinedmotl/allmotl&#39;</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;ccmatrix_fn_prefix&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">ccmatrix_fn_prefix</span><span class="w"> </span><span class="p">(</span><span class="s">&#39;class/ccmatrix_pca&#39;</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;iteration&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">iteration</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;num_ccmatrix_batch&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">num_ccmatrix_batch</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">))</span><span class="w"></span>
 </pre></div>
 </div>
 <p>Figures out the pairwise comparisons to make from the motivelist given by
@@ -257,17 +259,17 @@
 out as an array with the ‘reference’ particle index and ‘target’ particle index
 to an EM-file with the name described by <code class="docutils literal notranslate"><span class="pre">ccmatrix_fn_prefix</span></code>, <code class="docutils literal notranslate"><span class="pre">iteration</span></code>,
 #, and ‘_pairs’ where the # is the batch index.</p>
-<div class="section" id="example">
+<section id="example">
 <h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-Matlab notranslate"><div class="highlight"><pre><span></span><span class="n">subtom_prepare_ccmatrix</span><span class="p">(</span>
-    <span class="s">&#39;all_motl_fn_prefix&#39;</span><span class="p">,</span> <span class="s">&#39;combinedmotl/allmotl&#39;</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;ccmatrix_fn_prefix&#39;</span><span class="p">,</span> <span class="s">&#39;class/ccmatrix&#39;</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;iteration&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;num_ccmatrix_batch&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">);</span>
+<div class="highlight-Matlab notranslate"><div class="highlight"><pre><span></span><span class="n">subtom_prepare_ccmatrix</span><span class="p">(</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;all_motl_fn_prefix&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;combinedmotl/allmotl&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;ccmatrix_fn_prefix&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;class/ccmatrix&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;iteration&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;num_ccmatrix_batch&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">1000</span><span class="p">);</span><span class="w"></span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="see-also">
+</section>
+<section id="see-also">
 <h2>See Also<a class="headerlink" href="#see-also" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p><a class="reference internal" href="subtom_eigs.html"><span class="doc">subtom_eigs</span></a></p></li>
@@ -280,8 +282,8 @@ to an EM-file with the name described by <code class="docutils literal notransla
 <li><p><a class="reference internal" href="subtom_parallel_xmatrix_pca.html"><span class="doc">subtom_parallel_xmatrix_pca</span></a></p></li>
 <li><p><a class="reference internal" href="subtom_svds.html"><span class="doc">subtom_svds</span></a></p></li>
 </ul>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

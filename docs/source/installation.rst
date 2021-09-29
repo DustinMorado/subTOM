@@ -19,7 +19,7 @@ freely available software, and can be found here:
 
 `<https://uk.mathworks.com/products/compiler/matlab-runtime.html>`_
 
-subTOM is currently built against the 2016b/v91 MCR so that is the one that you
+subTOM is currently built against the 2021b/v911 MCR so that is the one that you
 need to have downloaded and have access to.
 
 At the LMB we have the MCR already installed at
@@ -53,3 +53,28 @@ Step-by-Step Instructions
 
     * *example* ``./install.sh /net/dstore2/teraraid/dmorado/software/subTOM
       /lmb/home/public/matlab/jbriggs``
+
+--------
+Building
+--------
+
+If you have access to the MATLAB compiler you can also build subTOM from the
+source simply following the steps here, beginning in the subTOM installation
+directory:
+
+1. ``cd src``
+2. Edit ``subtom_mcc_build.m`` and change the top three variables to point
+   correctly at:
+
+   * The subTOM source directory
+   * The root folder of the TOM Toolbox
+   * The path to the MATLAB Toolbox directory
+     * The Statistics and Machine Learning Toolbox is needed for
+     :doc:`classification/general/functions/subtom_cluster`
+
+3. Run ``subtom_mcc_build.m`` in MATLAB and it should correctly compile all
+   neccessary functions and place them in the correct locations.
+4. If you run into an issue with a MEX-function in TOM toolbox (such as
+   tom_rotate), then you can recompile such a function with the command ``mex
+   -R2018a <filename>`` and then recompile subTOM.
+

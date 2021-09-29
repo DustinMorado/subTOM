@@ -508,7 +508,7 @@ function subtom_extract_noise(varargin)
     end
 
     % Read in the tomogram to get its dimension
-    tomogram_size = getfield(getfield(tom_readmrcheader(tomogram_fn), ...
+    tomogram_size = getfield(getfield(subtom_readmrcheader(tomogram_fn), ...
         'Header'), 'Size');
 
     % Make sure that the boxsize is not bigger in any dimension than the
@@ -730,7 +730,7 @@ function noise_ampspec_avg = extract_noise_ampspec(box_size, tomogram_fn, ...
     if preload_tomogram
         tomogram = getfield(tom_mrcread(tomogram_fn), 'Value');
     else
-        header = getfield(getfield(tom_readmrcheader(tomogram_fn), ...
+        header = getfield(getfield(subtom_readmrcheader(tomogram_fn), ...
             'Header'), 'MRC');
     end
 

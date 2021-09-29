@@ -10,6 +10,19 @@ fi
 install_dir="${1%/}"
 mcr_dir="${2%/}"
 
+if [[ ! -d "${install_dir}/lib" ]]
+then
+    mkdir "${install_dir}/lib"
+fi
+
+if [[ ! -d "${install_dir}/lib/tom" ]]
+then
+    oldpwd="${PWD}"
+    cd "${install_dir}/lib"
+    git clone https://github.com/dustinmorado/tom
+    cd "${oldpwd}"
+fi
+
 if [[ ! -d "${install_dir}/scripts" ]]
 then
     mkdir "${install_dir}/scripts"

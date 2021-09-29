@@ -5,10 +5,11 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>subtom_transform_motl &mdash; subTOM 1.1.5 documentation</title>
+  <title>subtom_transform_motl &mdash; subTOM 1.1.6 documentation</title>
   
 
   
@@ -21,11 +22,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -34,6 +34,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="subtom_weighted_average" href="subtom_weighted_average.html" />
@@ -225,19 +227,19 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="subtom-transform-motl">
+  <section id="subtom-transform-motl">
 <h1>subtom_transform_motl<a class="headerlink" href="#subtom-transform-motl" title="Permalink to this headline">¶</a></h1>
 <p>Apply a rotation and a shift to a MOTL file.</p>
-<div class="highlight-Matlab notranslate"><div class="highlight"><pre><span></span><span class="n">subtom_transform_motl</span><span class="p">(</span>
-    <span class="s">&#39;input_motl_fn&#39;</span><span class="p">,</span> <span class="n">input_motl_fn</span> <span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">),</span>
-    <span class="s">&#39;output_motl_fn&#39;</span><span class="p">,</span> <span class="n">output_motl_fn</span> <span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">),</span>
-    <span class="s">&#39;shift_x&#39;</span><span class="p">,</span> <span class="n">shift_x</span> <span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s">&#39;shift_y&#39;</span><span class="p">,</span> <span class="n">shift_y</span> <span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s">&#39;shift_z&#39;</span><span class="p">,</span> <span class="n">shift_z</span> <span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s">&#39;rotate_phi&#39;</span><span class="p">,</span> <span class="n">rotate_phi</span> <span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s">&#39;rotate_psi&#39;</span><span class="p">,</span> <span class="n">rotate_psi</span> <span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s">&#39;rotate_theta&#39;</span><span class="p">,</span> <span class="n">rotate_theta</span> <span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s">&#39;rand_inplane&#39;</span><span class="p">,</span> <span class="n">rand_inplane</span> <span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+<div class="highlight-Matlab notranslate"><div class="highlight"><pre><span></span><span class="n">subtom_transform_motl</span><span class="p">(</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;input_motl_fn&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">input_motl_fn</span><span class="w"> </span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;output_motl_fn&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">output_motl_fn</span><span class="w"> </span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;shift_x&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">shift_x</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;shift_y&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">shift_y</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;shift_z&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">shift_z</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;rotate_phi&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">rotate_phi</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;rotate_psi&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">rotate_psi</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;rotate_theta&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">rotate_theta</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;rand_inplane&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">rand_inplane</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">))</span><span class="w"></span>
 </pre></div>
 </div>
 <p>Takes the motl given by <code class="docutils literal notranslate"><span class="pre">input_motl_fn</span></code>, and first applies the rotation
@@ -251,7 +253,7 @@ particle, but that the rotation and shift here describe an affine transform of
 the reference to a new reference. If <code class="docutils literal notranslate"><span class="pre">rand_inplane</span></code> evaluates to true as a
 boolean, then the final Euler angle (phi in AV3 notation, and psi/spin/inplane
 in other notations) will be randomized after the given transform.</p>
-<div class="section" id="explanation-of-how-the-transforms-are-derived">
+<section id="explanation-of-how-the-transforms-are-derived">
 <h2>Explanation of how the transforms are derived<a class="headerlink" href="#explanation-of-how-the-transforms-are-derived" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">The alignments in the motive list describe the rotation and shift of the</span>
 <span class="go">reference to each particle. Since this is a rotation followed by a shift</span>
@@ -310,23 +312,23 @@ in other notations) will be randomized after the given transform.</p>
 <span class="go">T_? = T_1 - R_1 * R_2^-1 * T_2</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="example">
+</section>
+<section id="example">
 <h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-Matlab notranslate"><div class="highlight"><pre><span></span><span class="n">subtom_transform_motl</span><span class="p">(</span><span class="c">...</span>
-    <span class="s">&#39;input_motl_fn&#39;</span><span class="p">,</span> <span class="s">&#39;combinedmotl/allmotl_1.em&#39;</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;output_motl_fn&#39;</span><span class="p">,</span> <span class="s">&#39;combinedmotl/allmotl_1_shifted.em&#39;</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;shift_x&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;shift_y&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;shift_z&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;rotate_phi&#39;</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;rotate_psi&#39;</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;rotate_theta&#39;</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;rand_inplane&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<div class="highlight-Matlab notranslate"><div class="highlight"><pre><span></span><span class="n">subtom_transform_motl</span><span class="p">(</span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;input_motl_fn&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;combinedmotl/allmotl_1.em&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;output_motl_fn&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;combinedmotl/allmotl_1_shifted.em&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;shift_x&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;shift_y&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;shift_z&#39;</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;rotate_phi&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">60</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;rotate_psi&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">15</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;rotate_theta&#39;</span><span class="p">,</span><span class="w"> </span><span class="mf">0.5</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;rand_inplane&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="see-also">
+</section>
+<section id="see-also">
 <h2>See Also<a class="headerlink" href="#see-also" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p><a class="reference internal" href="subtom_cat_motls.html"><span class="doc">subtom_cat_motls</span></a></p></li>
@@ -341,8 +343,8 @@ in other notations) will be randomized after the given transform.</p>
 <li><p><a class="reference internal" href="subtom_split_motl_by_row.html"><span class="doc">subtom_split_motl_by_row</span></a></p></li>
 <li><p><a class="reference internal" href="subtom_unclass_motl.html"><span class="doc">subtom_unclass_motl</span></a></p></li>
 </ul>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

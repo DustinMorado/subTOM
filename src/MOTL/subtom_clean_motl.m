@@ -442,7 +442,7 @@ function subtom_clean_motl(varargin)
             % Get just the header of the tomogram to find its dimensions while
             % also avoiding reading the whole thing into memory.
             header = getfield(getfield(...
-                tom_readmrcheader(tomogram_fn), 'Header'), 'MRC');
+                subtom_readmrcheader(tomogram_fn), 'Header'), 'MRC');
 
             % Define the center of the box
             origin_offset = floor(box_size / 2);

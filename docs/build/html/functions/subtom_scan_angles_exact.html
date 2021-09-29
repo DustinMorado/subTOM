@@ -5,10 +5,11 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>subtom_scan_angles_exact &mdash; subTOM 1.1.5 documentation</title>
+  <title>subtom_scan_angles_exact &mdash; subTOM 1.1.6 documentation</title>
   
 
   
@@ -21,11 +22,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -34,6 +34,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="subtom_seed_positions" href="subtom_seed_positions.html" />
@@ -224,33 +226,33 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="subtom-scan-angles-exact">
+  <section id="subtom-scan-angles-exact">
 <h1>subtom_scan_angles_exact<a class="headerlink" href="#subtom-scan-angles-exact" title="Permalink to this headline">¶</a></h1>
 <p>Align a particle batch over local search angles.</p>
-<div class="highlight-Matlab notranslate"><div class="highlight"><pre><span></span><span class="n">subtom_scan_angles_exact</span><span class="p">(</span>
-    <span class="s">&#39;all_motl_fn_prefix&#39;</span><span class="p">,</span> <span class="n">all_motl_fn_prefix</span> <span class="p">(</span><span class="s">&#39;combinedmotl/allmotl&#39;</span><span class="p">),</span>
-    <span class="s">&#39;ref_fn_prefix&#39;</span><span class="p">,</span> <span class="n">ref_fn_prefix</span> <span class="p">(</span><span class="s">&#39;ref/ref&#39;</span><span class="p">),</span>
-    <span class="s">&#39;ptcl_fn_prefix&#39;</span><span class="p">,</span> <span class="n">ptcl_fn_prefix</span> <span class="p">(</span><span class="s">&#39;subtomograms/subtomo&#39;</span><span class="p">),</span>
-    <span class="s">&#39;weight_fn_prefix&#39;</span><span class="p">,</span> <span class="n">weight_fn_prefix</span> <span class="p">(</span><span class="s">&#39;otherinputs/ampspec&#39;</span><span class="p">),</span>
-    <span class="s">&#39;align_mask_fn&#39;</span><span class="p">,</span> <span class="n">align_mask_fn</span> <span class="p">(</span><span class="s">&#39;none&#39;</span><span class="p">),</span>
-    <span class="s">&#39;cc_mask_fn&#39;</span><span class="p">,</span> <span class="n">cc_mask_fn</span> <span class="p">(</span><span class="s">&#39;noshift&#39;</span><span class="p">),</span>
-    <span class="s">&#39;apply_weight&#39;</span><span class="p">,</span> <span class="n">apply_weight</span> <span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s">&#39;apply_mask&#39;</span><span class="p">,</span> <span class="n">apply_mask</span> <span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s">&#39;psi_angle_step&#39;</span><span class="p">,</span> <span class="n">psi_angle_step</span> <span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s">&#39;psi_angle_shells&#39;</span><span class="p">,</span> <span class="n">psi_angle_shells</span> <span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s">&#39;phi_angle_step&#39;</span><span class="p">,</span> <span class="n">phi_angle_step</span> <span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s">&#39;phi_angle_shells&#39;</span><span class="p">,</span> <span class="n">phi_angle_shells</span> <span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s">&#39;high_pass_fp&#39;</span><span class="p">,</span> <span class="n">high_pass_fp</span> <span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s">&#39;high_pass_sigma&#39;</span><span class="p">,</span> <span class="n">high_pass_sigma</span> <span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s">&#39;low_pass_fp&#39;</span><span class="p">,</span> <span class="n">low_pass_fp</span> <span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s">&#39;low_pass_sigma&#39;</span><span class="p">,</span> <span class="n">low_pass_sigma</span> <span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s">&#39;nfold&#39;</span><span class="p">,</span> <span class="n">nfold</span> <span class="p">(</span><span class="mi">1</span><span class="p">),</span>
-    <span class="s">&#39;threshold&#39;</span><span class="p">,</span> <span class="n">threshold</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span>
-    <span class="s">&#39;iteration&#39;</span><span class="p">,</span> <span class="n">iteration</span> <span class="p">(</span><span class="mi">1</span><span class="p">),</span>
-    <span class="s">&#39;tomo_row&#39;</span><span class="p">,</span> <span class="n">tomo_row</span> <span class="p">(</span><span class="mi">7</span><span class="p">),</span>
-    <span class="s">&#39;iclass&#39;</span><span class="p">,</span> <span class="n">iclass</span> <span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s">&#39;num_ali_batch&#39;</span><span class="p">,</span> <span class="n">num_ali_batch</span> <span class="p">(</span><span class="mi">1</span><span class="p">),</span>
-    <span class="s">&#39;process_idx&#39;</span><span class="p">,</span> <span class="n">process_idx</span> <span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+<div class="highlight-Matlab notranslate"><div class="highlight"><pre><span></span><span class="n">subtom_scan_angles_exact</span><span class="p">(</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;all_motl_fn_prefix&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">all_motl_fn_prefix</span><span class="w"> </span><span class="p">(</span><span class="s">&#39;combinedmotl/allmotl&#39;</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;ref_fn_prefix&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">ref_fn_prefix</span><span class="w"> </span><span class="p">(</span><span class="s">&#39;ref/ref&#39;</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;ptcl_fn_prefix&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">ptcl_fn_prefix</span><span class="w"> </span><span class="p">(</span><span class="s">&#39;subtomograms/subtomo&#39;</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;weight_fn_prefix&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">weight_fn_prefix</span><span class="w"> </span><span class="p">(</span><span class="s">&#39;otherinputs/ampspec&#39;</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;align_mask_fn&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">align_mask_fn</span><span class="w"> </span><span class="p">(</span><span class="s">&#39;none&#39;</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;cc_mask_fn&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">cc_mask_fn</span><span class="w"> </span><span class="p">(</span><span class="s">&#39;noshift&#39;</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;apply_weight&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">apply_weight</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;apply_mask&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">apply_mask</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;psi_angle_step&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">psi_angle_step</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;psi_angle_shells&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">psi_angle_shells</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;phi_angle_step&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">phi_angle_step</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;phi_angle_shells&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">phi_angle_shells</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;high_pass_fp&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">high_pass_fp</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;high_pass_sigma&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">high_pass_sigma</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;low_pass_fp&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">low_pass_fp</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;low_pass_sigma&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">low_pass_sigma</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;nfold&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">nfold</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;threshold&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">threshold</span><span class="w"> </span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;iteration&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">iteration</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;tomo_row&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">tomo_row</span><span class="w"> </span><span class="p">(</span><span class="mi">7</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;iclass&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">iclass</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;num_ali_batch&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">num_ali_batch</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;process_idx&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">process_idx</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">))</span><span class="w"></span>
 </pre></div>
 </div>
 <p>Aligns a batch of particles from the collective motive list with the name format
@@ -351,36 +353,36 @@ below <code class="docutils literal notranslate"><span class="pre">threshold</sp
 <li><p>The class number is stored in the 20th field of the motive list.</p></li>
 </ul>
 </div></blockquote>
-<div class="section" id="example">
+<section id="example">
 <h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-Matlab notranslate"><div class="highlight"><pre><span></span><span class="n">subtom_scan_angles</span><span class="p">(</span><span class="c">...</span>
-    <span class="s">&#39;all_motl_fn_prefix&#39;</span><span class="p">,</span> <span class="s">&#39;combinedmotl/allmotl&#39;</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;ref_fn_prefix&#39;</span><span class="p">,</span> <span class="s">&#39;ref/ref&#39;</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;ptcl_fn_prefix&#39;</span><span class="p">,</span> <span class="s">&#39;subtomograms/subtomo&#39;</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;weight_fn_prefix&#39;</span><span class="p">,</span> <span class="s">&#39;otherinputs/ampspec&#39;</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;align_mask_fn&#39;</span><span class="p">,</span> <span class="s">&#39;otherinputs/align_mask.em&#39;</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;cc_mask_fn&#39;</span><span class="p">,</span> <span class="s">&#39;otherinputs/cc_mask.em&#39;</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;apply_weight&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;apply_mask&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;psi_angle_step&#39;</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;psi_angle_shells&#39;</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;phi_angle_step&#39;</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;phi_angle_shells&#39;</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;high_pass_fp&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;high_pass_sigma&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;low_pass_fp&#39;</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;low_pass_sigma&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;nfold&#39;</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;threshold&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;iteration&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;tomo_row&#39;</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;iclass&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;num_ali_batch&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="c">...</span>
-    <span class="s">&#39;process_idx&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<div class="highlight-Matlab notranslate"><div class="highlight"><pre><span></span><span class="n">subtom_scan_angles</span><span class="p">(</span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;all_motl_fn_prefix&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;combinedmotl/allmotl&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;ref_fn_prefix&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;ref/ref&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;ptcl_fn_prefix&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;subtomograms/subtomo&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;weight_fn_prefix&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;otherinputs/ampspec&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;align_mask_fn&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;otherinputs/align_mask.em&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;cc_mask_fn&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;otherinputs/cc_mask.em&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;apply_weight&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;apply_mask&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;psi_angle_step&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;psi_angle_shells&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;phi_angle_step&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;phi_angle_shells&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;high_pass_fp&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;high_pass_sigma&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;low_pass_fp&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;low_pass_sigma&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;nfold&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;threshold&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;iteration&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;tomo_row&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;iclass&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;num_ali_batch&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">    </span><span class="s">&#39;process_idx&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="see-also">
+</section>
+<section id="see-also">
 <h2>See Also<a class="headerlink" href="#see-also" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p><a class="reference internal" href="subtom_extract_noise.html"><span class="doc">subtom_extract_noise</span></a></p></li>
@@ -388,8 +390,8 @@ below <code class="docutils literal notranslate"><span class="pre">threshold</sp
 <li><p><a class="reference internal" href="subtom_parallel_sums.html"><span class="doc">subtom_parallel_sums</span></a></p></li>
 <li><p><a class="reference internal" href="subtom_weighted_average.html"><span class="doc">subtom_weighted_average</span></a></p></li>
 </ul>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

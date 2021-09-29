@@ -5,10 +5,11 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Conventions &mdash; subTOM 1.1.5 documentation</title>
+  <title>Conventions &mdash; subTOM 1.1.6 documentation</title>
   
 
   
@@ -21,11 +22,11 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -34,6 +35,8 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Example Workflow" href="workflow.html" />
@@ -239,9 +242,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="conventions">
+  <section id="conventions">
 <h1>Conventions<a class="headerlink" href="#conventions" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="preprocessing">
+<section id="preprocessing">
 <h2>Preprocessing<a class="headerlink" href="#preprocessing" title="Permalink to this headline">¶</a></h2>
 <p>Preprocessing is done for dose-fractionated data that comes from detectors that
 collect movie tilt-images. Preprocessing is done with several programs from
@@ -284,14 +287,14 @@ tilt-image.</p></li>
 </ul>
 </li>
 </ul>
-</div>
-<div class="section" id="ctf-correction">
+</section>
+<section id="ctf-correction">
 <h2>CTF Correction<a class="headerlink" href="#ctf-correction" title="Permalink to this headline">¶</a></h2>
 <p>CTF correction is done in 3D using the program <a class="reference external" href="https://github.com/turonova/novaCTF">novaCTF</a>, and a run script
 <code class="docutils literal notranslate"><span class="pre">run_nova.sh</span></code> is included to facilitate performing novaCTF in parallel and on
 an SGE cluster.</p>
-</div>
-<div class="section" id="particle-picking">
+</section>
+<section id="particle-picking">
 <h2>Particle Picking<a class="headerlink" href="#particle-picking" title="Permalink to this headline">¶</a></h2>
 <p>Particle picking is done using <a class="reference external" href="https://www.cgl.ucsf.edu/chimera/">UCSF Chimera</a>. First users use the built-in
 <a class="reference external" href="https://www.cgl.ucsf.edu/chimera/docs/ContributedSoftware/volumepathtracer/framevolpath.html">Volume Tracer</a> utility to create a Marker Set of
@@ -316,8 +319,8 @@ per tomogram with the name format:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">&lt;BASENAME&gt;_&lt;TOMOGRAM_IDX&gt;.em</span></code></p></li>
 </ul>
-</div>
-<div class="section" id="alignment-and-averaging">
+</section>
+<section id="alignment-and-averaging">
 <h2>Alignment and Averaging<a class="headerlink" href="#alignment-and-averaging" title="Permalink to this headline">¶</a></h2>
 <p>The alignment parameters for a set of data are stored in a MOTive List or
 so-called MOTL file, which is a table of 20-fields stored in an EM-format binary
@@ -326,15 +329,15 @@ tomograms which are expected to be in MRC-format with the name:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">&lt;TOMOGRAM_IDX&gt;.rec</span></code></p></li>
 </ul>
-<div class="section" id="orientations">
+<section id="orientations">
 <h3>Orientations<a class="headerlink" href="#orientations" title="Permalink to this headline">¶</a></h3>
-<div class="section" id="coordinate-system">
+<section id="coordinate-system">
 <h4>Coordinate System<a class="headerlink" href="#coordinate-system" title="Permalink to this headline">¶</a></h4>
 <p>subTOM uses a right-handed coordinate system where positive rotations are
 clockwise looking along the directed axis. The orthogonal axes X, Y, Z are with
 the positive Z-axis pointing out of the screen out at the user.</p>
-</div>
-<div class="section" id="image-center">
+</section>
+<section id="image-center">
 <h4>Image Center<a class="headerlink" href="#image-center" title="Permalink to this headline">¶</a></h4>
 <p>Since Matlab uses array-indices that start from 1, unlike most other programming
 languages which count from zero, the origin of a subvolume with dimensions,
@@ -343,8 +346,8 @@ languages which count from zero, the origin of a subvolume with dimensions,
 \[O = (\left\lfloor{NX / 2}\right\rfloor + 1,
      \left\lfloor{NY / 2}\right\rfloor + 1,
      \left\lfloor{NZ / 2}\right\rfloor + 1)\]</div>
-</div>
-<div class="section" id="euler-angle-rotations">
+</section>
+<section id="euler-angle-rotations">
 <h4>Euler Angle Rotations<a class="headerlink" href="#euler-angle-rotations" title="Permalink to this headline">¶</a></h4>
 <p>Rotations in MOTLs describe the best-found rotation of the reference to the
 particle in terms of ZXZ Euler angles in degrees. The Euler angle definition in
@@ -358,16 +361,16 @@ subTOM is:</p>
 other software packages, but is kept for historical reasons from the
 TOM-toolbox. Therefore care has been taken to use the unambiguous notation
 azimuth, zenith, and spin in most of the subTOM code and documentation.</p>
-</div>
-<div class="section" id="translations">
+</section>
+<section id="translations">
 <h4>Translations<a class="headerlink" href="#translations" title="Permalink to this headline">¶</a></h4>
 <p>Translations in MOTLs describe the best-found translation of the reference to
 the particle in pixels with respect to the subvolume origin. This translation
 occurs after the rotation of the reference about the subvolume origin.</p>
-</div>
-</div>
-</div>
-<div class="section" id="motive-list-specification">
+</section>
+</section>
+</section>
+<section id="motive-list-specification">
 <h2>Motive List Specification<a class="headerlink" href="#motive-list-specification" title="Permalink to this headline">¶</a></h2>
 <table class="docutils align-default">
 <colgroup>
@@ -442,7 +445,7 @@ occurs after the rotation of the reference about the subvolume origin.</p>
 </tr>
 </tbody>
 </table>
-<div class="section" id="class-number">
+<section id="class-number">
 <h3>Class Number<a class="headerlink" href="#class-number" title="Permalink to this headline">¶</a></h3>
 <p>The class number field acts as a field for classification, but also
 thresholding. Historically:</p>
@@ -456,9 +459,9 @@ in the final average.</p></li>
 </ul>
 <p>Remaining class numbers <span class="math notranslate nohighlight">\(\gt 2\)</span> can be used in classification to identify
 homogeneous subsets within a heterogeneous dataset.</p>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
 
            </div>
